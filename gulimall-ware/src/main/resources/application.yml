@@ -1,0 +1,28 @@
+server:
+  port: 38230
+
+spring:
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://gulimall.com:3306/gulimall_wms
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  application:
+    name: gulimall-ware
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/**/*.xml
+  global-config:
+    db-config:
+      id-type: auto
+
+#seata:
+#  config:
+#    type: nacos
+#    nacos:
+#      server-addr: localhost:8848
