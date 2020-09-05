@@ -1,0 +1,20 @@
+spring:
+  cloud:
+    alicloud:
+      access-key: YOURKEYHERE
+      secret-key: YOURKEYHERE
+      oss:
+        endpoint: oss-cn-shenzhen.aliyuncs.com
+        bucket: proj1
+      sms:
+        host: "http://localhost:38300"
+        path: "/api/thirdparty/sms/"
+        sign: "1"
+        skin: "1"
+        appcode: "abc"
+
+  application:
+    name: gulimall-third-party
+
+server:
+  port: 38250
