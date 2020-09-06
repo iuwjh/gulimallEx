@@ -68,13 +68,15 @@ subprojects {
         implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-sentinel'
         implementation 'com.alibaba.csp:sentinel-spring-webmvc-adapter'
 
+        // SQL Database
+        implementation 'mysql:mysql-connector-java:8.0.17'
+        testImplementation "com.h2database:h2"
 
         implementation 'com.baomidou:mybatis-plus-boot-starter:3.2.0'
         implementation 'redis.clients:jedis:3.1.0'
         implementation 'org.projectlombok:lombok:1.18.8'
         implementation 'org.apache.httpcomponents:fluent-hc:4.5.12'
         implementation 'commons-lang:commons-lang:2.6'
-        implementation 'mysql:mysql-connector-java:8.0.17'
         implementation 'javax.validation:validation-api:2.0.1.Final'
         implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
         compileOnly 'javax.servlet:servlet-api:2.5'
