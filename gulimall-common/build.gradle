@@ -1,0 +1,29 @@
+
+
+//dependencies {
+//    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+//    implementation 'org.springframework.boot:spring-boot-configuration-processor'
+//    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:2.2.3.RELEASE'
+//    implementation 'org.springframework.cloud:spring-cloud-starter-zipkin:2.2.3.RELEASE'
+//    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+//    implementation 'redis.clients:jedis:3.1.0'
+//    implementation 'org.springframework.session:spring-session-data-redis:2.2.2.RELEASE'
+//    implementation 'com.baomidou:mybatis-plus-boot-starter:3.2.0'
+//    implementation 'org.projectlombok:lombok:1.18.8'
+//    implementation 'org.apache.httpcomponents:fluent-hc:4.5.12'
+//    implementation 'commons-lang:commons-lang:2.6'
+//    implementation 'mysql:mysql-connector-java:8.0.17'
+//    implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery:2.2.0.RELEASE'
+//    implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config:2.2.0.RELEASE'
+//    implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-sentinel:2.2.0.RELEASE'
+//    implementation 'javax.validation:validation-api:2.0.1.Final'
+//    implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
+//    compileOnly 'javax.servlet:servlet-api:2.5'
+//}
+
+
+description = 'gulimall-common'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
