@@ -1,0 +1,13 @@
+
+
+dependencies {
+    implementation project(':gulimall-common')
+    implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
+    implementation 'com.alibaba.cloud:spring-cloud-alibaba-sentinel-gateway:2.2.0.RELEASE'
+}
+
+
+description = 'gulimall-gateway'
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}

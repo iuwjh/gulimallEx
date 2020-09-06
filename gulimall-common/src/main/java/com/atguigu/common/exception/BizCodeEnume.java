@@ -1,5 +1,7 @@
 package com.atguigu.common.exception;
 
+import org.springframework.http.HttpStatus;
+
 /***
  * 错误码和错误信息定义类
  * 1. 错误码定义规则为5为数字
@@ -19,22 +21,24 @@ package com.atguigu.common.exception;
  *
  */
 public enum BizCodeEnume {
-    UNKNOW_EXCEPTION(10000, "系统未知异常"),
-    VAILD_EXCEPTION(10001, "参数格式校验失败"),
-    SMS_CODE_EXCEPTION(10002, "验证码获取频率太高。稍后再试"),
-    TOO_MANY_REQUEST(10003, "请求频率太高"),
-    PRODUCT_UP_EXCEPTION(11000, "商品上架异常"),
-    USER_EXIST_EXCEPTION(15001, "用户已存在"),
-    PHONE_EXIST_EXCEPTION(15002, "手机号已存在"),
-    LOGINACCT_PASSWORD_INVALID_EXCEPTION(15003, "账号密码错误"),
-    NO_STOCK_EXCEPTION(21000, " 商品库存不足");
+    UNKNOW_EXCEPTION(10000, "系统未知异常", HttpStatus.INTERNAL_SERVER_ERROR.value()),
+    VAILD_EXCEPTION(10001, "参数格式校验失败", HttpStatus.BAD_REQUEST.value()),
+    SMS_CODE_EXCEPTION(10002, "验证码获取频率太高。稍后再试", HttpStatus.TOO_MANY_REQUESTS.value()),
+    TOO_MANY_REQUEST(10003, "请求频率太高", HttpStatus.TOO_MANY_REQUESTS.value()),
+    PRODUCT_UP_EXCEPTION(11000, "商品上架异常", HttpStatus.INTERNAL_SERVER_ERROR.value()),
+    USER_EXIST_EXCEPTION(15001, "用户已存在", HttpStatus.BAD_REQUEST.value()),
+    PHONE_EXIST_EXCEPTION(15002, "手机号已存在", HttpStatus.BAD_REQUEST.value()),
+    LOGINACCT_PASSWORD_INVALID_EXCEPTION(15003, "账号密码错误", HttpStatus.BAD_REQUEST.value()),
+    NO_STOCK_EXCEPTION(21000, "商品库存不足", HttpStatus.BAD_REQUEST.value());
 
-    private int code;
-    private String msg;
+    private final int code;
+    private final String msg;
+    private final int status;
 
-    BizCodeEnume(int code, String msg) {
+    BizCodeEnume(int code, String msg, int status) {
         this.code = code;
         this.msg = msg;
+        this.status = status;
     }
 
     public int getCode() {
@@ -43,5 +47,9 @@ public enum BizCodeEnume {
 
     public String getMsg() {
         return msg;
+    }
+
+    public int getStatus() {
+        return status;
     }
 }
