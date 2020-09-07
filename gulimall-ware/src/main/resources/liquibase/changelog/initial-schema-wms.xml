@@ -1,0 +1,190 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+    <changeSet context="load-data" author="iuwjh" id="1599474657016-1">
+        <createTable tableName="undo_log">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="branch_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="xid" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="context" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rollback_info" type="LONGBLOB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="log_status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="log_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="log_modified" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474657016-2">
+        <createTable remarks="采购信息" tableName="wms_purchase">
+            <column autoIncrement="true" name="id" remarks="采购单id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="assignee_id" remarks="采购人id" type="BIGINT"/>
+            <column name="assignee_name" remarks="采购人名" type="VARCHAR(255)"/>
+            <column name="phone" remarks="联系方式" type="CHAR(13)"/>
+            <column name="priority" remarks="优先级" type="INT"/>
+            <column name="status" remarks="状态" type="INT"/>
+            <column name="ware_id" remarks="仓库id" type="BIGINT"/>
+            <column name="amount" remarks="总金额" type="DECIMAL(18, 4)"/>
+            <column name="create_time" remarks="创建日期" type="datetime"/>
+            <column name="update_time" remarks="更新日期" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474657016-3">
+        <createTable tableName="wms_purchase_detail">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="purchase_id" remarks="采购单id" type="BIGINT"/>
+            <column name="sku_id" remarks="采购商品id" type="BIGINT"/>
+            <column name="sku_num" remarks="采购数量" type="INT"/>
+            <column name="sku_price" remarks="采购金额" type="DECIMAL(18, 4)"/>
+            <column name="ware_id" remarks="仓库id" type="BIGINT"/>
+            <column name="status" remarks="状态[0新建，1已分配，2正在采购，3已完成，4采购失败]" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474657016-4">
+        <createTable remarks="仓库信息" tableName="wms_ware_info">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" remarks="仓库名" type="VARCHAR(255)"/>
+            <column name="address" remarks="仓库地址" type="VARCHAR(255)"/>
+            <column name="areacode" remarks="区域编码" type="VARCHAR(20)"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474657016-5">
+        <createTable remarks="库存工作单" tableName="wms_ware_order_task">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="order_id" remarks="order_id" type="BIGINT"/>
+            <column name="order_sn" remarks="order_sn" type="VARCHAR(255)"/>
+            <column name="consignee" remarks="收货人" type="VARCHAR(100)"/>
+            <column name="consignee_tel" remarks="收货人电话" type="CHAR(15)"/>
+            <column name="delivery_address" remarks="配送地址" type="VARCHAR(500)"/>
+            <column name="order_comment" remarks="订单备注" type="VARCHAR(200)"/>
+            <column name="payment_way" remarks="付款方式【 1:在线付款 2:货到付款】" type="BIT(1)"/>
+            <column name="task_status" remarks="任务状态" type="TINYINT(3)"/>
+            <column name="order_body" remarks="订单描述" type="VARCHAR(255)"/>
+            <column name="tracking_no" remarks="物流单号" type="CHAR(30)"/>
+            <column name="create_time" remarks="create_time" type="datetime"/>
+            <column name="ware_id" remarks="仓库id" type="BIGINT"/>
+            <column name="task_comment" remarks="工作单备注" type="VARCHAR(500)"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474657016-6">
+        <createTable remarks="库存工作单" tableName="wms_ware_order_task_detail">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="sku_id" remarks="sku_id" type="BIGINT"/>
+            <column name="sku_name" remarks="sku_name" type="VARCHAR(255)"/>
+            <column name="sku_num" remarks="购买个数" type="INT"/>
+            <column name="task_id" remarks="工作单id" type="BIGINT"/>
+            <column name="ware_id" remarks="仓库id" type="BIGINT"/>
+            <column name="lock_status" remarks="1-锁定 2-释放 3-扣减" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474657016-7">
+        <createTable remarks="商品库存" tableName="wms_ware_sku">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="sku_id" remarks="sku_id" type="BIGINT"/>
+            <column name="ware_id" remarks="仓库id" type="BIGINT"/>
+            <column name="stock" remarks="库存数" type="INT"/>
+            <column name="sku_name" remarks="sku_name" type="VARCHAR(200)"/>
+            <column defaultValueNumeric="0" name="stock_locked" remarks="锁定库存" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474657016-8">
+        <loadData relativeToChangelogFile="true" commentLineStartsWith="#" encoding="UTF-8" file="../data/wms_purchase.csv" quotchar="&quot;" separator="," tableName="wms_purchase">
+            <column header="id" name="id" type="NUMERIC"/>
+            <column header="assignee_id" name="assignee_id" type="NUMERIC"/>
+            <column header="assignee_name" name="assignee_name" type="STRING"/>
+            <column header="phone" name="phone" type="STRING"/>
+            <column header="priority" name="priority" type="NUMERIC"/>
+            <column header="status" name="status" type="NUMERIC"/>
+            <column header="ware_id" name="ware_id" type="skip"/>
+            <column header="amount" name="amount" type="skip"/>
+            <column header="create_time" name="create_time" type="DATE"/>
+            <column header="update_time" name="update_time" type="DATE"/>
+        </loadData>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474657016-9">
+        <loadData relativeToChangelogFile="true" commentLineStartsWith="#" encoding="UTF-8" file="../data/wms_purchase_detail.csv" quotchar="&quot;" separator="," tableName="wms_purchase_detail">
+            <column header="id" name="id" type="NUMERIC"/>
+            <column header="purchase_id" name="purchase_id" type="NUMERIC"/>
+            <column header="sku_id" name="sku_id" type="NUMERIC"/>
+            <column header="sku_num" name="sku_num" type="NUMERIC"/>
+            <column header="sku_price" name="sku_price" type="skip"/>
+            <column header="ware_id" name="ware_id" type="NUMERIC"/>
+            <column header="status" name="status" type="NUMERIC"/>
+        </loadData>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474657016-10">
+        <loadData relativeToChangelogFile="true" commentLineStartsWith="#" encoding="UTF-8" file="../data/wms_ware_info.csv" quotchar="&quot;" separator="," tableName="wms_ware_info">
+            <column header="id" name="id" type="NUMERIC"/>
+            <column header="name" name="name" type="STRING"/>
+            <column header="address" name="address" type="STRING"/>
+            <column header="areacode" name="areacode" type="STRING"/>
+        </loadData>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474657016-11">
+        <loadData relativeToChangelogFile="true" commentLineStartsWith="#" encoding="UTF-8" file="../data/wms_ware_order_task.csv" quotchar="&quot;" separator="," tableName="wms_ware_order_task">
+            <column header="id" name="id" type="NUMERIC"/>
+            <column header="order_id" name="order_id" type="skip"/>
+            <column header="order_sn" name="order_sn" type="STRING"/>
+            <column header="consignee" name="consignee" type="skip"/>
+            <column header="consignee_tel" name="consignee_tel" type="skip"/>
+            <column header="delivery_address" name="delivery_address" type="skip"/>
+            <column header="order_comment" name="order_comment" type="skip"/>
+            <column header="payment_way" name="payment_way" type="skip"/>
+            <column header="task_status" name="task_status" type="skip"/>
+            <column header="order_body" name="order_body" type="skip"/>
+            <column header="tracking_no" name="tracking_no" type="skip"/>
+            <column header="create_time" name="create_time" type="skip"/>
+            <column header="ware_id" name="ware_id" type="skip"/>
+            <column header="task_comment" name="task_comment" type="skip"/>
+        </loadData>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474657016-12">
+        <loadData relativeToChangelogFile="true" commentLineStartsWith="#" encoding="UTF-8" file="../data/wms_ware_order_task_detail.csv" quotchar="&quot;" separator="," tableName="wms_ware_order_task_detail">
+            <column header="id" name="id" type="NUMERIC"/>
+            <column header="sku_id" name="sku_id" type="NUMERIC"/>
+            <column header="sku_name" name="sku_name" type="STRING"/>
+            <column header="sku_num" name="sku_num" type="NUMERIC"/>
+            <column header="task_id" name="task_id" type="NUMERIC"/>
+            <column header="ware_id" name="ware_id" type="NUMERIC"/>
+            <column header="lock_status" name="lock_status" type="NUMERIC"/>
+        </loadData>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474657016-13">
+        <loadData relativeToChangelogFile="true" commentLineStartsWith="#" encoding="UTF-8" file="../data/wms_ware_sku.csv" quotchar="&quot;" separator="," tableName="wms_ware_sku">
+            <column header="id" name="id" type="NUMERIC"/>
+            <column header="sku_id" name="sku_id" type="NUMERIC"/>
+            <column header="ware_id" name="ware_id" type="NUMERIC"/>
+            <column header="stock" name="stock" type="NUMERIC"/>
+            <column header="sku_name" name="sku_name" type="STRING"/>
+            <column header="stock_locked" name="stock_locked" type="NUMERIC"/>
+        </loadData>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474657016-14">
+        <addUniqueConstraint columnNames="xid, branch_id" constraintName="ux_undo_log" tableName="undo_log"/>
+    </changeSet>
+</databaseChangeLog>

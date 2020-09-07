@@ -1,7 +1,7 @@
 
 
 dependencies {
-    implementation project(':gulimall-common')
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
@@ -11,6 +11,3 @@ dependencies {
 
 
 description = 'gulimall-seckill'
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}

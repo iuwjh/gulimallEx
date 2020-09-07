@@ -1,0 +1,374 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-1">
+        <createTable remarks="商品属性" tableName="pms_attr">
+            <column autoIncrement="true" name="attr_id" remarks="属性id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="attr_name" remarks="属性名" type="CHAR(30)"/>
+            <column name="search_type" remarks="是否需要检索[0-不需要，1-需要]" type="TINYINT(3)"/>
+            <column name="value_type" remarks="值类型[0-为单个值，1-可以选择多个值]" type="TINYINT(3)"/>
+            <column name="icon" remarks="属性图标" type="VARCHAR(255)"/>
+            <column name="value_select" remarks="可选值列表[用逗号分隔]" type="CHAR(255)"/>
+            <column name="attr_type" remarks="属性类型[0-销售属性，1-基本属性" type="TINYINT(3)"/>
+            <column name="enable" remarks="启用状态[0 - 禁用，1 - 启用]" type="BIGINT"/>
+            <column name="catelog_id" remarks="所属分类" type="BIGINT"/>
+            <column name="show_desc" remarks="快速展示【是否展示在介绍上；0-否 1-是】，在sku中仍然可以调整" type="TINYINT(3)"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-2">
+        <createTable remarks="属性&amp;属性分组关联" tableName="pms_attr_attrgroup_relation">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="attr_id" remarks="属性id" type="BIGINT"/>
+            <column name="attr_group_id" remarks="属性分组id" type="BIGINT"/>
+            <column name="attr_sort" remarks="属性组内排序" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-3">
+        <createTable remarks="属性分组" tableName="pms_attr_group">
+            <column autoIncrement="true" name="attr_group_id" remarks="分组id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="attr_group_name" remarks="组名" type="CHAR(20)"/>
+            <column name="sort" remarks="排序" type="INT"/>
+            <column name="descript" remarks="描述" type="VARCHAR(255)"/>
+            <column name="icon" remarks="组图标" type="VARCHAR(255)"/>
+            <column name="catelog_id" remarks="所属分类id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-4">
+        <createTable remarks="品牌" tableName="pms_brand">
+            <column autoIncrement="true" name="brand_id" remarks="品牌id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" remarks="品牌名" type="CHAR(50)"/>
+            <column name="logo" remarks="品牌logo地址" type="VARCHAR(2000)"/>
+            <column name="descript" remarks="介绍" type="LONGTEXT"/>
+            <column name="show_status" remarks="显示状态[0-不显示；1-显示]" type="TINYINT(3)"/>
+            <column name="first_letter" remarks="检索首字母" type="CHAR(1)"/>
+            <column name="sort" remarks="排序" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-5">
+        <createTable remarks="商品三级分类" tableName="pms_category">
+            <column autoIncrement="true" name="cat_id" remarks="分类id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" remarks="分类名称" type="CHAR(50)"/>
+            <column name="parent_cid" remarks="父分类id" type="BIGINT"/>
+            <column name="cat_level" remarks="层级" type="INT"/>
+            <column name="show_status" remarks="是否显示[0-不显示，1显示]" type="TINYINT(3)"/>
+            <column name="sort" remarks="排序" type="INT"/>
+            <column name="icon" remarks="图标地址" type="CHAR(255)"/>
+            <column name="product_unit" remarks="计量单位" type="CHAR(50)"/>
+            <column name="product_count" remarks="商品数量" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-6">
+        <createTable remarks="品牌分类关联" tableName="pms_category_brand_relation">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="brand_id" remarks="品牌id" type="BIGINT"/>
+            <column name="catelog_id" remarks="分类id" type="BIGINT"/>
+            <column name="brand_name" type="VARCHAR(255)"/>
+            <column name="catelog_name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-7">
+        <createTable remarks="商品评价回复关系" tableName="pms_comment_replay">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="comment_id" remarks="评论id" type="BIGINT"/>
+            <column name="reply_id" remarks="回复id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-8">
+        <createTable remarks="spu属性值" tableName="pms_product_attr_value">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="spu_id" remarks="商品id" type="BIGINT"/>
+            <column name="attr_id" remarks="属性id" type="BIGINT"/>
+            <column name="attr_name" remarks="属性名" type="VARCHAR(200)"/>
+            <column name="attr_value" remarks="属性值" type="VARCHAR(200)"/>
+            <column name="attr_sort" remarks="顺序" type="INT"/>
+            <column name="quick_show" remarks="快速展示【是否展示在介绍上；0-否 1-是】" type="TINYINT(3)"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-9">
+        <createTable remarks="sku图片" tableName="pms_sku_images">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="sku_id" remarks="sku_id" type="BIGINT"/>
+            <column name="img_url" remarks="图片地址" type="VARCHAR(255)"/>
+            <column name="img_sort" remarks="排序" type="INT"/>
+            <column name="default_img" remarks="默认图[0 - 不是默认图，1 - 是默认图]" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-10">
+        <createTable remarks="sku信息" tableName="pms_sku_info">
+            <column autoIncrement="true" name="sku_id" remarks="skuId" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="spu_id" remarks="spuId" type="BIGINT"/>
+            <column name="sku_name" remarks="sku名称" type="VARCHAR(255)"/>
+            <column name="sku_desc" remarks="sku介绍描述" type="VARCHAR(2000)"/>
+            <column name="catalog_id" remarks="所属分类id" type="BIGINT"/>
+            <column name="brand_id" remarks="品牌id" type="BIGINT"/>
+            <column name="sku_default_img" remarks="默认图片" type="VARCHAR(255)"/>
+            <column name="sku_title" remarks="标题" type="VARCHAR(255)"/>
+            <column name="sku_subtitle" remarks="副标题" type="VARCHAR(2000)"/>
+            <column name="price" remarks="价格" type="DECIMAL(18, 4)"/>
+            <column name="sale_count" remarks="销量" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-11">
+        <createTable remarks="sku销售属性&amp;值" tableName="pms_sku_sale_attr_value">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="sku_id" remarks="sku_id" type="BIGINT"/>
+            <column name="attr_id" remarks="attr_id" type="BIGINT"/>
+            <column name="attr_name" remarks="销售属性名" type="VARCHAR(200)"/>
+            <column name="attr_value" remarks="销售属性值" type="VARCHAR(200)"/>
+            <column name="attr_sort" remarks="顺序" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-12">
+        <createTable remarks="商品评价" tableName="pms_spu_comment">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="sku_id" remarks="sku_id" type="BIGINT"/>
+            <column name="spu_id" remarks="spu_id" type="BIGINT"/>
+            <column name="spu_name" remarks="商品名字" type="VARCHAR(255)"/>
+            <column name="member_nick_name" remarks="会员昵称" type="VARCHAR(255)"/>
+            <column name="star" remarks="星级" type="BIT(1)"/>
+            <column name="member_ip" remarks="会员ip" type="VARCHAR(64)"/>
+            <column name="create_time" remarks="创建时间" type="datetime"/>
+            <column name="show_status" remarks="显示状态[0-不显示，1-显示]" type="BIT(1)"/>
+            <column name="spu_attributes" remarks="购买时属性组合" type="VARCHAR(255)"/>
+            <column name="likes_count" remarks="点赞数" type="INT"/>
+            <column name="reply_count" remarks="回复数" type="INT"/>
+            <column name="resources" remarks="评论图片/视频[json数据；[{type:文件类型,url:资源路径}]]" type="VARCHAR(1000)"/>
+            <column name="content" remarks="内容" type="TEXT"/>
+            <column name="member_icon" remarks="用户头像" type="VARCHAR(255)"/>
+            <column name="comment_type" remarks="评论类型[0 - 对商品的直接评论，1 - 对评论的回复]" type="TINYINT(3)"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-13">
+        <createTable remarks="spu图片" tableName="pms_spu_images">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="spu_id" remarks="spu_id" type="BIGINT"/>
+            <column name="img_name" remarks="图片名" type="VARCHAR(200)"/>
+            <column name="img_url" remarks="图片地址" type="VARCHAR(255)"/>
+            <column name="img_sort" remarks="顺序" type="INT"/>
+            <column name="default_img" remarks="是否默认图" type="TINYINT(3)"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-14">
+        <createTable remarks="spu信息" tableName="pms_spu_info">
+            <column autoIncrement="true" name="id" remarks="商品id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="spu_name" remarks="商品名称" type="VARCHAR(200)"/>
+            <column name="spu_description" remarks="商品描述" type="VARCHAR(1000)"/>
+            <column name="catalog_id" remarks="所属分类id" type="BIGINT"/>
+            <column name="brand_id" remarks="品牌id" type="BIGINT"/>
+            <column name="weight" type="DECIMAL(18, 4)"/>
+            <column name="publish_status" remarks="上架状态[0 - 下架，1 - 上架]" type="TINYINT(3)"/>
+            <column name="create_time" type="datetime"/>
+            <column name="update_time" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-15">
+        <createTable remarks="spu信息介绍" tableName="pms_spu_info_desc">
+            <column name="spu_id" remarks="商品id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="decript" remarks="商品介绍" type="LONGTEXT"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-16">
+        <createTable tableName="undo_log">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="branch_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="xid" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="context" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rollback_info" type="LONGBLOB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="log_status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="log_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="log_modified" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-17">
+        <loadData relativeToChangelogFile="true" commentLineStartsWith="#" encoding="UTF-8" file="../data/pms_attr.csv" quotchar="&quot;" separator="," tableName="pms_attr">
+            <column header="attr_id" name="attr_id" type="NUMERIC"/>
+            <column header="attr_name" name="attr_name" type="STRING"/>
+            <column header="search_type" name="search_type" type="NUMERIC"/>
+            <column header="value_type" name="value_type" type="NUMERIC"/>
+            <column header="icon" name="icon" type="STRING"/>
+            <column header="value_select" name="value_select" type="STRING"/>
+            <column header="attr_type" name="attr_type" type="NUMERIC"/>
+            <column header="enable" name="enable" type="NUMERIC"/>
+            <column header="catelog_id" name="catelog_id" type="NUMERIC"/>
+            <column header="show_desc" name="show_desc" type="NUMERIC"/>
+        </loadData>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-18">
+        <loadData relativeToChangelogFile="true" commentLineStartsWith="#" encoding="UTF-8" file="../data/pms_attr_attrgroup_relation.csv" quotchar="&quot;" separator="," tableName="pms_attr_attrgroup_relation">
+            <column header="id" name="id" type="NUMERIC"/>
+            <column header="attr_id" name="attr_id" type="NUMERIC"/>
+            <column header="attr_group_id" name="attr_group_id" type="NUMERIC"/>
+            <column header="attr_sort" name="attr_sort" type="skip"/>
+        </loadData>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-19">
+        <loadData relativeToChangelogFile="true" commentLineStartsWith="#" encoding="UTF-8" file="../data/pms_attr_group.csv" quotchar="&quot;" separator="," tableName="pms_attr_group">
+            <column header="attr_group_id" name="attr_group_id" type="NUMERIC"/>
+            <column header="attr_group_name" name="attr_group_name" type="STRING"/>
+            <column header="sort" name="sort" type="NUMERIC"/>
+            <column header="descript" name="descript" type="STRING"/>
+            <column header="icon" name="icon" type="STRING"/>
+            <column header="catelog_id" name="catelog_id" type="NUMERIC"/>
+        </loadData>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-20">
+        <loadData relativeToChangelogFile="true" commentLineStartsWith="#" encoding="UTF-8" file="../data/pms_brand.csv" quotchar="&quot;" separator="," tableName="pms_brand">
+            <column header="brand_id" name="brand_id" type="NUMERIC"/>
+            <column header="name" name="name" type="STRING"/>
+            <column header="logo" name="logo" type="skip"/>
+            <column header="descript" name="descript" type="STRING"/>
+            <column header="show_status" name="show_status" type="NUMERIC"/>
+            <column header="first_letter" name="first_letter" type="STRING"/>
+            <column header="sort" name="sort" type="NUMERIC"/>
+        </loadData>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-21">
+        <loadData relativeToChangelogFile="true" commentLineStartsWith="#" encoding="UTF-8" file="../data/pms_category.csv" quotchar="&quot;" separator="," tableName="pms_category">
+            <column header="cat_id" name="cat_id" type="NUMERIC"/>
+            <column header="name" name="name" type="STRING"/>
+            <column header="parent_cid" name="parent_cid" type="NUMERIC"/>
+            <column header="cat_level" name="cat_level" type="NUMERIC"/>
+            <column header="show_status" name="show_status" type="NUMERIC"/>
+            <column header="sort" name="sort" type="NUMERIC"/>
+            <column header="icon" name="icon" type="STRING"/>
+            <column header="product_unit" name="product_unit" type="skip"/>
+            <column header="product_count" name="product_count" type="NUMERIC"/>
+        </loadData>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-22">
+        <loadData relativeToChangelogFile="true" commentLineStartsWith="#" encoding="UTF-8" file="../data/pms_category_brand_relation.csv" quotchar="&quot;" separator="," tableName="pms_category_brand_relation">
+            <column header="id" name="id" type="NUMERIC"/>
+            <column header="brand_id" name="brand_id" type="NUMERIC"/>
+            <column header="catelog_id" name="catelog_id" type="NUMERIC"/>
+            <column header="brand_name" name="brand_name" type="STRING"/>
+            <column header="catelog_name" name="catelog_name" type="STRING"/>
+        </loadData>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-23">
+        <loadData relativeToChangelogFile="true" commentLineStartsWith="#" encoding="UTF-8" file="../data/pms_product_attr_value.csv" quotchar="&quot;" separator="," tableName="pms_product_attr_value">
+            <column header="id" name="id" type="NUMERIC"/>
+            <column header="spu_id" name="spu_id" type="NUMERIC"/>
+            <column header="attr_id" name="attr_id" type="NUMERIC"/>
+            <column header="attr_name" name="attr_name" type="STRING"/>
+            <column header="attr_value" name="attr_value" type="STRING"/>
+            <column header="attr_sort" name="attr_sort" type="skip"/>
+            <column header="quick_show" name="quick_show" type="NUMERIC"/>
+        </loadData>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-24">
+        <loadData relativeToChangelogFile="true" commentLineStartsWith="#" encoding="UTF-8" file="../data/pms_sku_images.csv" quotchar="&quot;" separator="," tableName="pms_sku_images">
+            <column header="id" name="id" type="NUMERIC"/>
+            <column header="sku_id" name="sku_id" type="NUMERIC"/>
+            <column header="img_url" name="img_url" type="STRING"/>
+            <column header="img_sort" name="img_sort" type="skip"/>
+            <column header="default_img" name="default_img" type="NUMERIC"/>
+        </loadData>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-25">
+        <loadData relativeToChangelogFile="true" commentLineStartsWith="#" encoding="UTF-8" file="../data/pms_sku_info.csv" quotchar="&quot;" separator="," tableName="pms_sku_info">
+            <column header="sku_id" name="sku_id" type="NUMERIC"/>
+            <column header="spu_id" name="spu_id" type="NUMERIC"/>
+            <column header="sku_name" name="sku_name" type="STRING"/>
+            <column header="sku_desc" name="sku_desc" type="skip"/>
+            <column header="catalog_id" name="catalog_id" type="NUMERIC"/>
+            <column header="brand_id" name="brand_id" type="NUMERIC"/>
+            <column header="sku_default_img" name="sku_default_img" type="STRING"/>
+            <column header="sku_title" name="sku_title" type="STRING"/>
+            <column header="sku_subtitle" name="sku_subtitle" type="STRING"/>
+            <column header="price" name="price" type="NUMERIC"/>
+            <column header="sale_count" name="sale_count" type="NUMERIC"/>
+        </loadData>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-26">
+        <loadData relativeToChangelogFile="true" commentLineStartsWith="#" encoding="UTF-8" file="../data/pms_sku_sale_attr_value.csv" quotchar="&quot;" separator="," tableName="pms_sku_sale_attr_value">
+            <column header="id" name="id" type="NUMERIC"/>
+            <column header="sku_id" name="sku_id" type="NUMERIC"/>
+            <column header="attr_id" name="attr_id" type="NUMERIC"/>
+            <column header="attr_name" name="attr_name" type="STRING"/>
+            <column header="attr_value" name="attr_value" type="STRING"/>
+            <column header="attr_sort" name="attr_sort" type="skip"/>
+        </loadData>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-27">
+        <loadData relativeToChangelogFile="true" commentLineStartsWith="#" encoding="UTF-8" file="../data/pms_spu_images.csv" quotchar="&quot;" separator="," tableName="pms_spu_images">
+            <column header="id" name="id" type="NUMERIC"/>
+            <column header="spu_id" name="spu_id" type="NUMERIC"/>
+            <column header="img_name" name="img_name" type="skip"/>
+            <column header="img_url" name="img_url" type="skip"/>
+            <column header="img_sort" name="img_sort" type="skip"/>
+            <column header="default_img" name="default_img" type="skip"/>
+        </loadData>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-28">
+        <loadData relativeToChangelogFile="true" commentLineStartsWith="#" encoding="UTF-8" file="../data/pms_spu_info.csv" quotchar="&quot;" separator="," tableName="pms_spu_info">
+            <column header="id" name="id" type="NUMERIC"/>
+            <column header="spu_name" name="spu_name" type="STRING"/>
+            <column header="spu_description" name="spu_description" type="STRING"/>
+            <column header="catalog_id" name="catalog_id" type="NUMERIC"/>
+            <column header="brand_id" name="brand_id" type="NUMERIC"/>
+            <column header="weight" name="weight" type="NUMERIC"/>
+            <column header="publish_status" name="publish_status" type="NUMERIC"/>
+            <column header="create_time" name="create_time" type="DATE"/>
+            <column header="update_time" name="update_time" type="DATE"/>
+        </loadData>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-29">
+        <loadData relativeToChangelogFile="true" commentLineStartsWith="#" encoding="UTF-8" file="../data/pms_spu_info_desc.csv" quotchar="&quot;" separator="," tableName="pms_spu_info_desc">
+            <column header="spu_id" name="spu_id" type="NUMERIC"/>
+            <column header="decript" name="decript" type="STRING"/>
+        </loadData>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-30">
+        <addUniqueConstraint columnNames="xid, branch_id" constraintName="ux_undo_log" tableName="undo_log"/>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474638461-31">
+        <createIndex indexName="parent_cid" tableName="pms_category">
+            <column name="parent_cid"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

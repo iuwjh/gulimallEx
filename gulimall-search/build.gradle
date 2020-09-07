@@ -1,7 +1,7 @@
 
 
 dependencies {
-    implementation project(':gulimall-common')
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client:7.8.0'
@@ -9,6 +9,3 @@ dependencies {
 
 
 description = 'gulimall-search'
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}

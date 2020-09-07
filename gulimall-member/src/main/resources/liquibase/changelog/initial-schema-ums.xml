@@ -1,0 +1,228 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+    <changeSet context="load-data" author="iuwjh" id="1599474651869-1">
+        <createTable remarks="成长值变化历史记录" tableName="ums_growth_change_history">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="member_id" remarks="member_id" type="BIGINT"/>
+            <column name="create_time" remarks="create_time" type="datetime"/>
+            <column name="change_count" remarks="改变的值（正负计数）" type="INT"/>
+            <column name="note" remarks="备注" type="VARCHAR(0)"/>
+            <column name="source_type" remarks="积分来源[0-购物，1-管理员修改]" type="TINYINT(3)"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474651869-2">
+        <createTable remarks="积分变化历史记录" tableName="ums_integration_change_history">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="member_id" remarks="member_id" type="BIGINT"/>
+            <column name="create_time" remarks="create_time" type="datetime"/>
+            <column name="change_count" remarks="变化的值" type="INT"/>
+            <column name="note" remarks="备注" type="VARCHAR(255)"/>
+            <column name="source_tyoe" remarks="来源[0-&gt;购物；1-&gt;管理员修改;2-&gt;活动]" type="TINYINT(3)"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474651869-3">
+        <createTable remarks="会员" tableName="ums_member">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="level_id" remarks="会员等级id" type="BIGINT"/>
+            <column name="username" remarks="用户名" type="CHAR(64)"/>
+            <column name="password" remarks="密码" type="VARCHAR(64)"/>
+            <column name="nickname" remarks="昵称" type="VARCHAR(64)"/>
+            <column name="mobile" remarks="手机号码" type="VARCHAR(20)"/>
+            <column name="email" remarks="邮箱" type="VARCHAR(64)"/>
+            <column name="header" remarks="头像" type="VARCHAR(500)"/>
+            <column name="gender" remarks="性别" type="TINYINT(3)"/>
+            <column name="birth" remarks="生日" type="date"/>
+            <column name="city" remarks="所在城市" type="VARCHAR(500)"/>
+            <column name="job" remarks="职业" type="VARCHAR(255)"/>
+            <column name="sign" remarks="个性签名" type="VARCHAR(255)"/>
+            <column name="source_type" remarks="用户来源" type="TINYINT(3)"/>
+            <column name="integration" remarks="积分" type="INT"/>
+            <column name="growth" remarks="成长值" type="INT"/>
+            <column name="status" remarks="启用状态" type="TINYINT(3)"/>
+            <column name="create_time" remarks="注册时间" type="datetime"/>
+            <column name="social_uid" remarks="社交用户唯一id" type="VARCHAR(255)"/>
+            <column name="access_token" remarks="访问令牌" type="VARCHAR(255)"/>
+            <column name="expires_in" remarks="访问令牌期限" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474651869-4">
+        <createTable remarks="会员收藏的商品" tableName="ums_member_collect_spu">
+            <column name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="member_id" remarks="会员id" type="BIGINT"/>
+            <column name="spu_id" remarks="spu_id" type="BIGINT"/>
+            <column name="spu_name" remarks="spu_name" type="VARCHAR(500)"/>
+            <column name="spu_img" remarks="spu_img" type="VARCHAR(500)"/>
+            <column name="create_time" remarks="create_time" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474651869-5">
+        <createTable remarks="会员收藏的专题活动" tableName="ums_member_collect_subject">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="subject_id" remarks="subject_id" type="BIGINT"/>
+            <column name="subject_name" remarks="subject_name" type="VARCHAR(255)"/>
+            <column name="subject_img" remarks="subject_img" type="VARCHAR(500)"/>
+            <column name="subject_urll" remarks="活动url" type="VARCHAR(500)"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474651869-6">
+        <createTable remarks="会员等级" tableName="ums_member_level">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" remarks="等级名称" type="VARCHAR(100)"/>
+            <column name="growth_point" remarks="等级需要的成长值" type="INT"/>
+            <column name="default_status" remarks="是否为默认等级[0-&gt;不是；1-&gt;是]" type="TINYINT(3)"/>
+            <column name="free_freight_point" remarks="免运费标准" type="DECIMAL(18, 4)"/>
+            <column name="comment_growth_point" remarks="每次评价获取的成长值" type="INT"/>
+            <column name="priviledge_free_freight" remarks="是否有免邮特权" type="TINYINT(3)"/>
+            <column name="priviledge_member_price" remarks="是否有会员价格特权" type="TINYINT(3)"/>
+            <column name="priviledge_birthday" remarks="是否有生日特权" type="TINYINT(3)"/>
+            <column name="note" remarks="备注" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474651869-7">
+        <createTable remarks="会员登录记录" tableName="ums_member_login_log">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="member_id" remarks="member_id" type="BIGINT"/>
+            <column name="create_time" remarks="创建时间" type="datetime"/>
+            <column name="ip" remarks="ip" type="VARCHAR(64)"/>
+            <column name="city" remarks="city" type="VARCHAR(64)"/>
+            <column name="login_type" remarks="登录类型[1-web，2-app]" type="BIT(1)"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474651869-8">
+        <createTable remarks="会员收货地址" tableName="ums_member_receive_address">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="member_id" remarks="member_id" type="BIGINT"/>
+            <column name="name" remarks="收货人姓名" type="VARCHAR(255)"/>
+            <column name="phone" remarks="电话" type="VARCHAR(64)"/>
+            <column name="post_code" remarks="邮政编码" type="VARCHAR(64)"/>
+            <column name="province" remarks="省份/直辖市" type="VARCHAR(100)"/>
+            <column name="city" remarks="城市" type="VARCHAR(100)"/>
+            <column name="region" remarks="区" type="VARCHAR(100)"/>
+            <column name="detail_address" remarks="详细地址(街道)" type="VARCHAR(255)"/>
+            <column name="areacode" remarks="省市区代码" type="VARCHAR(15)"/>
+            <column name="default_status" remarks="是否默认" type="BIT(1)"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474651869-9">
+        <createTable remarks="会员统计信息" tableName="ums_member_statistics_info">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="member_id" remarks="会员id" type="BIGINT"/>
+            <column name="consume_amount" remarks="累计消费金额" type="DECIMAL(18, 4)"/>
+            <column name="coupon_amount" remarks="累计优惠金额" type="DECIMAL(18, 4)"/>
+            <column name="order_count" remarks="订单数量" type="INT"/>
+            <column name="coupon_count" remarks="优惠券数量" type="INT"/>
+            <column name="comment_count" remarks="评价数" type="INT"/>
+            <column name="return_order_count" remarks="退货数量" type="INT"/>
+            <column name="login_count" remarks="登录次数" type="INT"/>
+            <column name="attend_count" remarks="关注数量" type="INT"/>
+            <column name="fans_count" remarks="粉丝数量" type="INT"/>
+            <column name="collect_product_count" remarks="收藏的商品数量" type="INT"/>
+            <column name="collect_subject_count" remarks="收藏的专题活动数量" type="INT"/>
+            <column name="collect_comment_count" remarks="收藏的评论数量" type="INT"/>
+            <column name="invite_friend_count" remarks="邀请的朋友数量" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474651869-10">
+        <createTable tableName="undo_log">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="branch_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="xid" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="context" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rollback_info" type="LONGBLOB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="log_status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="log_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="log_modified" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474651869-11">
+        <loadData relativeToChangelogFile="true" commentLineStartsWith="#" encoding="UTF-8" file="../data/ums_member.csv" quotchar="&quot;" separator="," tableName="ums_member">
+            <column header="id" name="id" type="NUMERIC"/>
+            <column header="level_id" name="level_id" type="NUMERIC"/>
+            <column header="username" name="username" type="STRING"/>
+            <column header="password" name="password" type="STRING"/>
+            <column header="nickname" name="nickname" type="STRING"/>
+            <column header="mobile" name="mobile" type="STRING"/>
+            <column header="email" name="email" type="skip"/>
+            <column header="header" name="header" type="skip"/>
+            <column header="gender" name="gender" type="NUMERIC"/>
+            <column header="birth" name="birth" type="skip"/>
+            <column header="city" name="city" type="skip"/>
+            <column header="job" name="job" type="skip"/>
+            <column header="sign" name="sign" type="skip"/>
+            <column header="source_type" name="source_type" type="skip"/>
+            <column header="integration" name="integration" type="skip"/>
+            <column header="growth" name="growth" type="skip"/>
+            <column header="status" name="status" type="skip"/>
+            <column header="create_time" name="create_time" type="skip"/>
+            <column header="social_uid" name="social_uid" type="STRING"/>
+            <column header="access_token" name="access_token" type="STRING"/>
+            <column header="expires_in" name="expires_in" type="STRING"/>
+        </loadData>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474651869-12">
+        <loadData relativeToChangelogFile="true" commentLineStartsWith="#" encoding="UTF-8" file="../data/ums_member_level.csv" quotchar="&quot;" separator="," tableName="ums_member_level">
+            <column header="id" name="id" type="NUMERIC"/>
+            <column header="name" name="name" type="STRING"/>
+            <column header="growth_point" name="growth_point" type="NUMERIC"/>
+            <column header="default_status" name="default_status" type="NUMERIC"/>
+            <column header="free_freight_point" name="free_freight_point" type="NUMERIC"/>
+            <column header="comment_growth_point" name="comment_growth_point" type="NUMERIC"/>
+            <column header="priviledge_free_freight" name="priviledge_free_freight" type="NUMERIC"/>
+            <column header="priviledge_member_price" name="priviledge_member_price" type="NUMERIC"/>
+            <column header="priviledge_birthday" name="priviledge_birthday" type="NUMERIC"/>
+            <column header="note" name="note" type="STRING"/>
+        </loadData>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474651869-13">
+        <loadData relativeToChangelogFile="true" commentLineStartsWith="#" encoding="UTF-8" file="../data/ums_member_receive_address.csv" quotchar="&quot;" separator="," tableName="ums_member_receive_address">
+            <column header="id" name="id" type="NUMERIC"/>
+            <column header="member_id" name="member_id" type="NUMERIC"/>
+            <column header="name" name="name" type="STRING"/>
+            <column header="phone" name="phone" type="STRING"/>
+            <column header="post_code" name="post_code" type="STRING"/>
+            <column header="province" name="province" type="STRING"/>
+            <column header="city" name="city" type="STRING"/>
+            <column header="region" name="region" type="STRING"/>
+            <column header="detail_address" name="detail_address" type="STRING"/>
+            <column header="areacode" name="areacode" type="STRING"/>
+            <column header="default_status" name="default_status" type="BOOLEAN"/>
+        </loadData>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474651869-14">
+        <addUniqueConstraint columnNames="xid, branch_id" constraintName="ux_undo_log" tableName="undo_log"/>
+    </changeSet>
+</databaseChangeLog>
