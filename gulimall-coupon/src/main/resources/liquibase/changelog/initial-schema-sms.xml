@@ -1,0 +1,259 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+    <changeSet context="load-data" author="iuwjh" id="1599474646074-1">
+        <createTable remarks="优惠券信息" tableName="sms_coupon">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="coupon_type" remarks="优惠卷类型[0-&gt;全场赠券；1-&gt;会员赠券；2-&gt;购物赠券；3-&gt;注册赠券]" type="BIT(1)"/>
+            <column name="coupon_img" remarks="优惠券图片" type="VARCHAR(2000)"/>
+            <column name="coupon_name" remarks="优惠卷名字" type="VARCHAR(100)"/>
+            <column name="num" remarks="数量" type="INT"/>
+            <column name="amount" remarks="金额" type="DECIMAL(18, 4)"/>
+            <column name="per_limit" remarks="每人限领张数" type="INT"/>
+            <column name="min_point" remarks="使用门槛" type="DECIMAL(18, 4)"/>
+            <column name="start_time" remarks="开始时间" type="datetime"/>
+            <column name="end_time" remarks="结束时间" type="datetime"/>
+            <column name="use_type" remarks="使用类型[0-&gt;全场通用；1-&gt;指定分类；2-&gt;指定商品]" type="BIT(1)"/>
+            <column name="note" remarks="备注" type="VARCHAR(200)"/>
+            <column name="publish_count" remarks="发行数量" type="INT"/>
+            <column name="use_count" remarks="已使用数量" type="INT"/>
+            <column name="receive_count" remarks="领取数量" type="INT"/>
+            <column name="enable_start_time" remarks="可以领取的开始日期" type="datetime"/>
+            <column name="enable_end_time" remarks="可以领取的结束日期" type="datetime"/>
+            <column name="code" remarks="优惠码" type="VARCHAR(64)"/>
+            <column name="member_level" remarks="可以领取的会员等级[0-&gt;不限等级，其他-对应等级]" type="BIT(1)"/>
+            <column name="publish" remarks="发布状态[0-未发布，1-已发布]" type="BIT(1)"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474646074-2">
+        <createTable remarks="优惠券领取历史记录" tableName="sms_coupon_history">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="coupon_id" remarks="优惠券id" type="BIGINT"/>
+            <column name="member_id" remarks="会员id" type="BIGINT"/>
+            <column name="member_nick_name" remarks="会员名字" type="VARCHAR(64)"/>
+            <column name="get_type" remarks="获取方式[0-&gt;后台赠送；1-&gt;主动领取]" type="BIT(1)"/>
+            <column name="create_time" remarks="创建时间" type="datetime"/>
+            <column name="use_type" remarks="使用状态[0-&gt;未使用；1-&gt;已使用；2-&gt;已过期]" type="BIT(1)"/>
+            <column name="use_time" remarks="使用时间" type="datetime"/>
+            <column name="order_id" remarks="订单id" type="BIGINT"/>
+            <column name="order_sn" remarks="订单号" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474646074-3">
+        <createTable remarks="优惠券分类关联" tableName="sms_coupon_spu_category_relation">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="coupon_id" remarks="优惠券id" type="BIGINT"/>
+            <column name="category_id" remarks="产品分类id" type="BIGINT"/>
+            <column name="category_name" remarks="产品分类名称" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474646074-4">
+        <createTable remarks="优惠券与产品关联" tableName="sms_coupon_spu_relation">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="coupon_id" remarks="优惠券id" type="BIGINT"/>
+            <column name="spu_id" remarks="spu_id" type="BIGINT"/>
+            <column name="spu_name" remarks="spu_name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474646074-5">
+        <createTable remarks="首页轮播广告" tableName="sms_home_adv">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" remarks="名字" type="VARCHAR(100)"/>
+            <column name="pic" remarks="图片地址" type="VARCHAR(500)"/>
+            <column name="start_time" remarks="开始时间" type="datetime"/>
+            <column name="end_time" remarks="结束时间" type="datetime"/>
+            <column name="status" remarks="状态" type="BIT(1)"/>
+            <column name="click_count" remarks="点击数" type="INT"/>
+            <column name="url" remarks="广告详情连接地址" type="VARCHAR(500)"/>
+            <column name="note" remarks="备注" type="VARCHAR(500)"/>
+            <column name="sort" remarks="排序" type="INT"/>
+            <column name="publisher_id" remarks="发布者" type="BIGINT"/>
+            <column name="auth_id" remarks="审核者" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474646074-6">
+        <createTable remarks="首页专题表【jd首页下面很多专题，每个专题链接新的页面，展示专题商品信息】" tableName="sms_home_subject">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" remarks="专题名字" type="VARCHAR(200)"/>
+            <column name="title" remarks="专题标题" type="VARCHAR(255)"/>
+            <column name="sub_title" remarks="专题副标题" type="VARCHAR(255)"/>
+            <column name="status" remarks="显示状态" type="BIT(1)"/>
+            <column name="url" remarks="详情连接" type="VARCHAR(500)"/>
+            <column name="sort" remarks="排序" type="INT"/>
+            <column name="img" remarks="专题图片地址" type="VARCHAR(500)"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474646074-7">
+        <createTable remarks="专题商品" tableName="sms_home_subject_spu">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" remarks="专题名字" type="VARCHAR(200)"/>
+            <column name="subject_id" remarks="专题id" type="BIGINT"/>
+            <column name="spu_id" remarks="spu_id" type="BIGINT"/>
+            <column name="sort" remarks="排序" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474646074-8">
+        <createTable remarks="商品会员价格" tableName="sms_member_price">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="sku_id" remarks="sku_id" type="BIGINT"/>
+            <column name="member_level_id" remarks="会员等级id" type="BIGINT"/>
+            <column name="member_level_name" remarks="会员等级名" type="VARCHAR(100)"/>
+            <column name="member_price" remarks="会员对应价格" type="DECIMAL(18, 4)"/>
+            <column name="add_other" remarks="可否叠加其他优惠[0-不可叠加优惠，1-可叠加]" type="BIT(1)"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474646074-9">
+        <createTable remarks="秒杀活动" tableName="sms_seckill_promotion">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="title" remarks="活动标题" type="VARCHAR(255)"/>
+            <column name="start_time" remarks="开始日期" type="datetime"/>
+            <column name="end_time" remarks="结束日期" type="datetime"/>
+            <column name="status" remarks="上下线状态" type="TINYINT(3)"/>
+            <column name="create_time" remarks="创建时间" type="datetime"/>
+            <column name="user_id" remarks="创建人" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474646074-10">
+        <createTable remarks="秒杀活动场次" tableName="sms_seckill_session">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" remarks="场次名称" type="VARCHAR(200)"/>
+            <column name="start_time" remarks="每日开始时间" type="datetime"/>
+            <column name="end_time" remarks="每日结束时间" type="datetime"/>
+            <column name="status" remarks="启用状态" type="BIT(1)"/>
+            <column name="create_time" remarks="创建时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474646074-11">
+        <createTable remarks="秒杀商品通知订阅" tableName="sms_seckill_sku_notice">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="member_id" remarks="member_id" type="BIGINT"/>
+            <column name="sku_id" remarks="sku_id" type="BIGINT"/>
+            <column name="session_id" remarks="活动场次id" type="BIGINT"/>
+            <column name="subcribe_time" remarks="订阅时间" type="datetime"/>
+            <column name="send_time" remarks="发送时间" type="datetime"/>
+            <column name="notice_type" remarks="通知方式[0-短信，1-邮件]" type="BIT(1)"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474646074-12">
+        <createTable remarks="秒杀活动商品关联" tableName="sms_seckill_sku_relation">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="promotion_id" remarks="活动id" type="BIGINT"/>
+            <column name="promotion_session_id" remarks="活动场次id" type="BIGINT"/>
+            <column name="sku_id" remarks="商品id" type="BIGINT"/>
+            <column name="seckill_price" remarks="秒杀价格" type="DECIMAL(10)"/>
+            <column name="seckill_count" remarks="秒杀总量" type="INT"/>
+            <column name="seckill_limit" remarks="每人限购数量" type="INT"/>
+            <column name="seckill_sort" remarks="排序" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474646074-13">
+        <createTable remarks="商品满减信息" tableName="sms_sku_full_reduction">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="sku_id" remarks="spu_id" type="BIGINT"/>
+            <column name="full_price" remarks="满多少" type="DECIMAL(18, 4)"/>
+            <column name="reduce_price" remarks="减多少" type="DECIMAL(18, 4)"/>
+            <column name="add_other" remarks="是否参与其他优惠" type="BIT(1)"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474646074-14">
+        <createTable remarks="商品阶梯价格" tableName="sms_sku_ladder">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="sku_id" remarks="spu_id" type="BIGINT"/>
+            <column name="full_count" remarks="满几件" type="INT"/>
+            <column name="discount" remarks="打几折" type="DECIMAL(4, 2)"/>
+            <column name="price" remarks="折后价" type="DECIMAL(18, 4)"/>
+            <column name="add_other" remarks="是否叠加其他优惠[0-不可叠加，1-可叠加]" type="BIT(1)"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474646074-15">
+        <createTable remarks="商品spu积分设置" tableName="sms_spu_bounds">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="spu_id" type="BIGINT"/>
+            <column name="grow_bounds" remarks="成长积分" type="DECIMAL(18, 4)"/>
+            <column name="buy_bounds" remarks="购物积分" type="DECIMAL(18, 4)"/>
+            <column name="work" remarks="优惠生效情况[1111（四个状态位，从右到左）;0 - 无优惠，成长积分是否赠送;1 - 无优惠，购物积分是否赠送;2 - 有优惠，成长积分是否赠送;3 - 有优惠，购物积分是否赠送【状态位0：不赠送，1：赠送】]" type="BIT(1)"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474646074-16">
+        <createTable tableName="undo_log">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="branch_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="xid" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="context" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rollback_info" type="LONGBLOB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="log_status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="log_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="log_modified" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474646074-17">
+        <loadData relativeToChangelogFile="true" commentLineStartsWith="#" encoding="UTF-8" file="../data/sms_seckill_session.csv" quotchar="&quot;" separator="," tableName="sms_seckill_session">
+            <column header="id" name="id" type="NUMERIC"/>
+            <column header="name" name="name" type="STRING"/>
+            <column header="start_time" name="start_time" type="DATE"/>
+            <column header="end_time" name="end_time" type="DATE"/>
+            <column header="status" name="status" type="BOOLEAN"/>
+            <column header="create_time" name="create_time" type="DATE"/>
+        </loadData>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474646074-18">
+        <loadData relativeToChangelogFile="true" commentLineStartsWith="#" encoding="UTF-8" file="../data/sms_seckill_sku_relation.csv" quotchar="&quot;" separator="," tableName="sms_seckill_sku_relation">
+            <column header="id" name="id" type="NUMERIC"/>
+            <column header="promotion_id" name="promotion_id" type="skip"/>
+            <column header="promotion_session_id" name="promotion_session_id" type="NUMERIC"/>
+            <column header="sku_id" name="sku_id" type="NUMERIC"/>
+            <column header="seckill_price" name="seckill_price" type="NUMERIC"/>
+            <column header="seckill_count" name="seckill_count" type="NUMERIC"/>
+            <column header="seckill_limit" name="seckill_limit" type="NUMERIC"/>
+            <column header="seckill_sort" name="seckill_sort" type="NUMERIC"/>
+        </loadData>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474646074-19">
+        <addUniqueConstraint columnNames="xid, branch_id" constraintName="ux_undo_log" tableName="undo_log"/>
+    </changeSet>
+</databaseChangeLog>

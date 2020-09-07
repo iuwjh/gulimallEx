@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    implementation project(':gulimall-common')
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'com.alibaba.cloud:spring-cloud-starter-alicloud-oss:2.2.0.RELEASE'
@@ -27,6 +27,3 @@ dependencies {
 
 
 description = 'gulimall-third-party'
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}

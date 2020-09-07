@@ -1,0 +1,299 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+    <changeSet context="load-data" author="iuwjh" id="1599474632476-1">
+        <createTable remarks="订单" tableName="oms_order">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="member_id" remarks="member_id" type="BIGINT"/>
+            <column name="order_sn" remarks="订单号" type="CHAR(64)">
+                <constraints unique="true"/>
+            </column>
+            <column name="coupon_id" remarks="使用的优惠券" type="BIGINT"/>
+            <column name="create_time" remarks="create_time" type="datetime"/>
+            <column name="member_username" remarks="用户名" type="VARCHAR(200)"/>
+            <column name="total_amount" remarks="订单总额" type="DECIMAL(18, 4)"/>
+            <column name="pay_amount" remarks="应付总额" type="DECIMAL(18, 4)"/>
+            <column name="freight_amount" remarks="运费金额" type="DECIMAL(18, 4)"/>
+            <column name="promotion_amount" remarks="促销优化金额（促销价、满减、阶梯价）" type="DECIMAL(18, 4)"/>
+            <column name="integration_amount" remarks="积分抵扣金额" type="DECIMAL(18, 4)"/>
+            <column name="coupon_amount" remarks="优惠券抵扣金额" type="DECIMAL(18, 4)"/>
+            <column name="discount_amount" remarks="后台调整订单使用的折扣金额" type="DECIMAL(18, 4)"/>
+            <column name="pay_type" remarks="支付方式【1-&gt;支付宝；2-&gt;微信；3-&gt;银联； 4-&gt;货到付款；】" type="TINYINT(3)"/>
+            <column name="source_type" remarks="订单来源[0-&gt;PC订单；1-&gt;app订单]" type="TINYINT(3)"/>
+            <column name="status" remarks="订单状态【0-&gt;待付款；1-&gt;待发货；2-&gt;已发货；3-&gt;已完成；4-&gt;已关闭；5-&gt;无效订单】" type="TINYINT(3)"/>
+            <column name="delivery_company" remarks="物流公司(配送方式)" type="VARCHAR(64)"/>
+            <column name="delivery_sn" remarks="物流单号" type="VARCHAR(64)"/>
+            <column name="auto_confirm_day" remarks="自动确认时间（天）" type="INT"/>
+            <column name="integration" remarks="可以获得的积分" type="INT"/>
+            <column name="growth" remarks="可以获得的成长值" type="INT"/>
+            <column name="bill_type" remarks="发票类型[0-&gt;不开发票；1-&gt;电子发票；2-&gt;纸质发票]" type="TINYINT(3)"/>
+            <column name="bill_header" remarks="发票抬头" type="VARCHAR(255)"/>
+            <column name="bill_content" remarks="发票内容" type="VARCHAR(255)"/>
+            <column name="bill_receiver_phone" remarks="收票人电话" type="VARCHAR(32)"/>
+            <column name="bill_receiver_email" remarks="收票人邮箱" type="VARCHAR(64)"/>
+            <column name="receiver_name" remarks="收货人姓名" type="VARCHAR(100)"/>
+            <column name="receiver_phone" remarks="收货人电话" type="VARCHAR(100)"/>
+            <column name="receiver_post_code" remarks="收货人邮编" type="VARCHAR(100)"/>
+            <column name="receiver_province" remarks="省份/直辖市" type="VARCHAR(100)"/>
+            <column name="receiver_city" remarks="城市" type="VARCHAR(100)"/>
+            <column name="receiver_region" remarks="区" type="VARCHAR(100)"/>
+            <column name="receiver_detail_address" remarks="详细地址" type="VARCHAR(200)"/>
+            <column name="note" remarks="订单备注" type="VARCHAR(500)"/>
+            <column name="confirm_status" remarks="确认收货状态[0-&gt;未确认；1-&gt;已确认]" type="TINYINT(3)"/>
+            <column name="delete_status" remarks="删除状态【0-&gt;未删除；1-&gt;已删除】" type="TINYINT(3)"/>
+            <column name="use_integration" remarks="下单时使用的积分" type="INT"/>
+            <column name="payment_time" remarks="支付时间" type="datetime"/>
+            <column name="delivery_time" remarks="发货时间" type="datetime"/>
+            <column name="receive_time" remarks="确认收货时间" type="datetime"/>
+            <column name="comment_time" remarks="评价时间" type="datetime"/>
+            <column name="modify_time" remarks="修改时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474632476-2">
+        <createTable remarks="订单项信息" tableName="oms_order_item">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="order_id" remarks="order_id" type="BIGINT"/>
+            <column name="order_sn" remarks="order_sn" type="CHAR(64)"/>
+            <column name="spu_id" remarks="spu_id" type="BIGINT"/>
+            <column name="spu_name" remarks="spu_name" type="VARCHAR(255)"/>
+            <column name="spu_pic" remarks="spu_pic" type="VARCHAR(500)"/>
+            <column name="spu_brand" remarks="品牌" type="VARCHAR(200)"/>
+            <column name="category_id" remarks="商品分类id" type="BIGINT"/>
+            <column name="sku_id" remarks="商品sku编号" type="BIGINT"/>
+            <column name="sku_name" remarks="商品sku名字" type="VARCHAR(255)"/>
+            <column name="sku_pic" remarks="商品sku图片" type="VARCHAR(500)"/>
+            <column name="sku_price" remarks="商品sku价格" type="DECIMAL(18, 4)"/>
+            <column name="sku_quantity" remarks="商品购买的数量" type="INT"/>
+            <column name="sku_attrs_vals" remarks="商品销售属性组合（JSON）" type="VARCHAR(500)"/>
+            <column name="promotion_amount" remarks="商品促销分解金额" type="DECIMAL(18, 4)"/>
+            <column name="coupon_amount" remarks="优惠券优惠分解金额" type="DECIMAL(18, 4)"/>
+            <column name="integration_amount" remarks="积分优惠分解金额" type="DECIMAL(18, 4)"/>
+            <column name="real_amount" remarks="该商品经过优惠后的分解金额" type="DECIMAL(18, 4)"/>
+            <column name="gift_integration" remarks="赠送积分" type="INT"/>
+            <column name="gift_growth" remarks="赠送成长值" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474632476-3">
+        <createTable remarks="订单操作历史记录" tableName="oms_order_operate_history">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="order_id" remarks="订单id" type="BIGINT"/>
+            <column name="operate_man" remarks="操作人[用户；系统；后台管理员]" type="VARCHAR(100)"/>
+            <column name="create_time" remarks="操作时间" type="datetime"/>
+            <column name="order_status" remarks="订单状态【0-&gt;待付款；1-&gt;待发货；2-&gt;已发货；3-&gt;已完成；4-&gt;已关闭；5-&gt;无效订单】" type="TINYINT(3)"/>
+            <column name="note" remarks="备注" type="VARCHAR(500)"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474632476-4">
+        <createTable remarks="订单退货申请" tableName="oms_order_return_apply">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="order_id" remarks="order_id" type="BIGINT"/>
+            <column name="sku_id" remarks="退货商品id" type="BIGINT"/>
+            <column name="order_sn" remarks="订单编号" type="CHAR(32)"/>
+            <column name="create_time" remarks="申请时间" type="datetime"/>
+            <column name="member_username" remarks="会员用户名" type="VARCHAR(64)"/>
+            <column name="return_amount" remarks="退款金额" type="DECIMAL(18, 4)"/>
+            <column name="return_name" remarks="退货人姓名" type="VARCHAR(100)"/>
+            <column name="return_phone" remarks="退货人电话" type="VARCHAR(20)"/>
+            <column name="status" remarks="申请状态[0-&gt;待处理；1-&gt;退货中；2-&gt;已完成；3-&gt;已拒绝]" type="BIT(1)"/>
+            <column name="handle_time" remarks="处理时间" type="datetime"/>
+            <column name="sku_img" remarks="商品图片" type="VARCHAR(500)"/>
+            <column name="sku_name" remarks="商品名称" type="VARCHAR(200)"/>
+            <column name="sku_brand" remarks="商品品牌" type="VARCHAR(200)"/>
+            <column name="sku_attrs_vals" remarks="商品销售属性(JSON)" type="VARCHAR(500)"/>
+            <column name="sku_count" remarks="退货数量" type="INT"/>
+            <column name="sku_price" remarks="商品单价" type="DECIMAL(18, 4)"/>
+            <column name="sku_real_price" remarks="商品实际支付单价" type="DECIMAL(18, 4)"/>
+            <column name="reason" remarks="原因" type="VARCHAR(200)"/>
+            <column name="description述" remarks="描述" type="VARCHAR(500)"/>
+            <column name="desc_pics" remarks="凭证图片，以逗号隔开" type="VARCHAR(2000)"/>
+            <column name="handle_note" remarks="处理备注" type="VARCHAR(500)"/>
+            <column name="handle_man" remarks="处理人员" type="VARCHAR(200)"/>
+            <column name="receive_man" remarks="收货人" type="VARCHAR(100)"/>
+            <column name="receive_time" remarks="收货时间" type="datetime"/>
+            <column name="receive_note" remarks="收货备注" type="VARCHAR(500)"/>
+            <column name="receive_phone" remarks="收货电话" type="VARCHAR(20)"/>
+            <column name="company_address" remarks="公司收货地址" type="VARCHAR(500)"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474632476-5">
+        <createTable remarks="退货原因" tableName="oms_order_return_reason">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" remarks="退货原因名" type="VARCHAR(200)"/>
+            <column name="sort" remarks="排序" type="INT"/>
+            <column name="status" remarks="启用状态" type="BIT(1)"/>
+            <column name="create_time" remarks="create_time" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474632476-6">
+        <createTable remarks="订单配置信息" tableName="oms_order_setting">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="flash_order_overtime" remarks="秒杀订单超时关闭时间(分)" type="INT"/>
+            <column name="normal_order_overtime" remarks="正常订单超时时间(分)" type="INT"/>
+            <column name="confirm_overtime" remarks="发货后自动确认收货时间（天）" type="INT"/>
+            <column name="finish_overtime" remarks="自动完成交易时间，不能申请退货（天）" type="INT"/>
+            <column name="comment_overtime" remarks="订单完成后自动好评时间（天）" type="INT"/>
+            <column name="member_level" remarks="会员等级【0-不限会员等级，全部通用；其他-对应的其他会员等级】" type="TINYINT(3)"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474632476-7">
+        <createTable remarks="支付信息表" tableName="oms_payment_info">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="order_sn" remarks="订单号（对外业务号）" type="CHAR(64)">
+                <constraints unique="true"/>
+            </column>
+            <column name="order_id" remarks="订单id" type="BIGINT"/>
+            <column name="alipay_trade_no" remarks="支付宝交易流水号" type="VARCHAR(50)">
+                <constraints unique="true"/>
+            </column>
+            <column name="total_amount" remarks="支付总金额" type="DECIMAL(18, 4)"/>
+            <column name="subject" remarks="交易内容" type="VARCHAR(200)"/>
+            <column name="payment_status" remarks="支付状态" type="VARCHAR(20)"/>
+            <column name="create_time" remarks="创建时间" type="datetime"/>
+            <column name="confirm_time" remarks="确认时间" type="datetime"/>
+            <column name="callback_content" remarks="回调内容" type="VARCHAR(4000)"/>
+            <column name="callback_time" remarks="回调时间" type="datetime"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474632476-8">
+        <createTable remarks="退款信息" tableName="oms_refund_info">
+            <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="order_return_id" remarks="退款的订单" type="BIGINT"/>
+            <column name="refund" remarks="退款金额" type="DECIMAL(18, 4)"/>
+            <column name="refund_sn" remarks="退款交易流水号" type="VARCHAR(64)"/>
+            <column name="refund_status" remarks="退款状态" type="BIT(1)"/>
+            <column name="refund_channel" remarks="退款渠道[1-支付宝，2-微信，3-银联，4-汇款]" type="TINYINT(3)"/>
+            <column name="refund_content" type="VARCHAR(5000)"/>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474632476-9">
+        <createTable tableName="undo_log">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="branch_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="xid" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="context" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rollback_info" type="LONGBLOB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="log_status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="log_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="log_modified" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474632476-10">
+        <loadData relativeToChangelogFile="true" commentLineStartsWith="#" encoding="UTF-8" file="../data/oms_order.csv" quotchar="&quot;" separator="," tableName="oms_order">
+            <column header="id" name="id" type="NUMERIC"/>
+            <column header="member_id" name="member_id" type="NUMERIC"/>
+            <column header="order_sn" name="order_sn" type="STRING"/>
+            <column header="coupon_id" name="coupon_id" type="skip"/>
+            <column header="create_time" name="create_time" type="skip"/>
+            <column header="member_username" name="member_username" type="skip"/>
+            <column header="total_amount" name="total_amount" type="NUMERIC"/>
+            <column header="pay_amount" name="pay_amount" type="NUMERIC"/>
+            <column header="freight_amount" name="freight_amount" type="NUMERIC"/>
+            <column header="promotion_amount" name="promotion_amount" type="NUMERIC"/>
+            <column header="integration_amount" name="integration_amount" type="NUMERIC"/>
+            <column header="coupon_amount" name="coupon_amount" type="NUMERIC"/>
+            <column header="discount_amount" name="discount_amount" type="skip"/>
+            <column header="pay_type" name="pay_type" type="skip"/>
+            <column header="source_type" name="source_type" type="skip"/>
+            <column header="status" name="status" type="NUMERIC"/>
+            <column header="delivery_company" name="delivery_company" type="skip"/>
+            <column header="delivery_sn" name="delivery_sn" type="skip"/>
+            <column header="auto_confirm_day" name="auto_confirm_day" type="NUMERIC"/>
+            <column header="integration" name="integration" type="NUMERIC"/>
+            <column header="growth" name="growth" type="NUMERIC"/>
+            <column header="bill_type" name="bill_type" type="skip"/>
+            <column header="bill_header" name="bill_header" type="skip"/>
+            <column header="bill_content" name="bill_content" type="skip"/>
+            <column header="bill_receiver_phone" name="bill_receiver_phone" type="skip"/>
+            <column header="bill_receiver_email" name="bill_receiver_email" type="skip"/>
+            <column header="receiver_name" name="receiver_name" type="STRING"/>
+            <column header="receiver_phone" name="receiver_phone" type="STRING"/>
+            <column header="receiver_post_code" name="receiver_post_code" type="STRING"/>
+            <column header="receiver_province" name="receiver_province" type="STRING"/>
+            <column header="receiver_city" name="receiver_city" type="STRING"/>
+            <column header="receiver_region" name="receiver_region" type="STRING"/>
+            <column header="receiver_detail_address" name="receiver_detail_address" type="STRING"/>
+            <column header="note" name="note" type="skip"/>
+            <column header="confirm_status" name="confirm_status" type="skip"/>
+            <column header="delete_status" name="delete_status" type="NUMERIC"/>
+            <column header="use_integration" name="use_integration" type="skip"/>
+            <column header="payment_time" name="payment_time" type="skip"/>
+            <column header="delivery_time" name="delivery_time" type="skip"/>
+            <column header="receive_time" name="receive_time" type="skip"/>
+            <column header="comment_time" name="comment_time" type="skip"/>
+            <column header="modify_time" name="modify_time" type="DATE"/>
+        </loadData>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474632476-11">
+        <loadData relativeToChangelogFile="true" commentLineStartsWith="#" encoding="UTF-8" file="../data/oms_order_item.csv" quotchar="&quot;" separator="," tableName="oms_order_item">
+            <column header="id" name="id" type="NUMERIC"/>
+            <column header="order_id" name="order_id" type="skip"/>
+            <column header="order_sn" name="order_sn" type="STRING"/>
+            <column header="spu_id" name="spu_id" type="NUMERIC"/>
+            <column header="spu_name" name="spu_name" type="STRING"/>
+            <column header="spu_pic" name="spu_pic" type="skip"/>
+            <column header="spu_brand" name="spu_brand" type="STRING"/>
+            <column header="category_id" name="category_id" type="NUMERIC"/>
+            <column header="sku_id" name="sku_id" type="NUMERIC"/>
+            <column header="sku_name" name="sku_name" type="STRING"/>
+            <column header="sku_pic" name="sku_pic" type="STRING"/>
+            <column header="sku_price" name="sku_price" type="NUMERIC"/>
+            <column header="sku_quantity" name="sku_quantity" type="NUMERIC"/>
+            <column header="sku_attrs_vals" name="sku_attrs_vals" type="STRING"/>
+            <column header="promotion_amount" name="promotion_amount" type="NUMERIC"/>
+            <column header="coupon_amount" name="coupon_amount" type="NUMERIC"/>
+            <column header="integration_amount" name="integration_amount" type="NUMERIC"/>
+            <column header="real_amount" name="real_amount" type="NUMERIC"/>
+            <column header="gift_integration" name="gift_integration" type="NUMERIC"/>
+            <column header="gift_growth" name="gift_growth" type="NUMERIC"/>
+        </loadData>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474632476-12">
+        <loadData relativeToChangelogFile="true" commentLineStartsWith="#" encoding="UTF-8" file="../data/oms_payment_info.csv" quotchar="&quot;" separator="," tableName="oms_payment_info">
+            <column header="id" name="id" type="NUMERIC"/>
+            <column header="order_sn" name="order_sn" type="STRING"/>
+            <column header="order_id" name="order_id" type="skip"/>
+            <column header="alipay_trade_no" name="alipay_trade_no" type="STRING"/>
+            <column header="total_amount" name="total_amount" type="skip"/>
+            <column header="subject" name="subject" type="skip"/>
+            <column header="payment_status" name="payment_status" type="STRING"/>
+            <column header="create_time" name="create_time" type="skip"/>
+            <column header="confirm_time" name="confirm_time" type="skip"/>
+            <column header="callback_content" name="callback_content" type="skip"/>
+            <column header="callback_time" name="callback_time" type="DATE"/>
+        </loadData>
+    </changeSet>
+    <changeSet context="load-data" author="iuwjh" id="1599474632476-13">
+        <addUniqueConstraint columnNames="xid, branch_id" constraintName="ux_undo_log" tableName="undo_log"/>
+    </changeSet>
+</databaseChangeLog>

@@ -1,4 +1,4 @@
-
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 //dependencies {
 //    implementation 'org.springframework.boot:spring-boot-starter-actuator'
@@ -24,6 +24,3 @@
 
 description = 'gulimall-common'
 
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}

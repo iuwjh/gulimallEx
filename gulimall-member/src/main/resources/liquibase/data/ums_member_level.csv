@@ -1,0 +1,4 @@
+"id","name","growth_point","default_status","free_freight_point","comment_growth_point","priviledge_free_freight","priviledge_member_price","priviledge_birthday","note"
+"1","普通会员","0","1","299.0000","10","0","0","1","初级会员"
+"2","铜牌会员","3000","0","279.0000","30","0","1","1","铜牌会员"
+"3","银牌会员","5000","0","229.0000","50","0","1","1","银牌会员"
