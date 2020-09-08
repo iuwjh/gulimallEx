@@ -5,6 +5,7 @@ import org.springframework.boot.gradle.plugin.SpringBootPlugin
  */
 plugins {
     id 'java'
+    id 'java-test-fixtures'
     id 'maven-publish'
     id 'idea'
     id "io.freefair.lombok" version "${lombok_plugin_version}" apply false
@@ -36,6 +37,10 @@ allprojects {
         mavenCentral()
     }
 
+    wrapper {
+        gradleVersion = "6.5"
+    }
+
 }
 
 subprojects {
@@ -51,14 +56,13 @@ subprojects {
     apply plugin: 'org.springframework.boot'
 
     if (project.name == 'gulimall-common') {
+
+        apply plugin: 'java-test-fixtures'
+
         bootJar {
             enabled = false
         }
         jar {
-            enabled = true
-        }
-    } else {
-        bootJar {
             enabled = true
         }
     }
@@ -70,8 +74,12 @@ subprojects {
         implementation platform("com.alibaba.cloud:spring-cloud-alibaba-dependencies:${spring_cloud_alibaba_version}")
 
         if (project.name != 'gulimall-common') {
-            implementation project(':gulimall-common')
-            testImplementation project(':gulimall-common')
+            implementation(project(':gulimall-common'))
+            testImplementation(testFixtures(project(':gulimall-common')))
+        } else {
+            testFixturesImplementation platform(SpringBootPlugin.BOM_COORDINATES)
+            testFixturesImplementation 'org.springframework.boot:spring-boot-starter-test'
+            testFixturesImplementation "it.ozimov:embedded-redis:${embedded_redis_version}"
         }
 
         // Spring boot
@@ -97,9 +105,9 @@ subprojects {
         implementation 'mysql:mysql-connector-java:8.0.17'
         implementation "com.h2database:h2"
         testImplementation "com.h2database:h2"
-        implementation "org.liquibase:liquibase-core"
 
         // Liquibase 数据库版本管理
+        implementation "org.liquibase:liquibase-core"
         liquibaseRuntime "org.liquibase:liquibase-core"
         liquibaseRuntime sourceSets.main.compileClasspath
         liquibaseRuntime "mysql:mysql-connector-java"
@@ -114,6 +122,7 @@ subprojects {
         implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
         compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
 
+        testImplementation "it.ozimov:embedded-redis:${embedded_redis_version}"
     }
 
     ext {
@@ -164,6 +173,3 @@ subprojects {
     }
 }
 
-wrapper {
-    gradleVersion = "6.5"
-}
