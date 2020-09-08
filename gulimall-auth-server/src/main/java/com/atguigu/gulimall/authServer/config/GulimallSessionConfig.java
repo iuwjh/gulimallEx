@@ -1,4 +1,4 @@
-package com.atguigu.gulimall.auth.config;
+package com.atguigu.gulimall.authServer.config;
 
 import com.alibaba.fastjson.support.spring.GenericFastJsonRedisSerializer;
 import org.springframework.context.annotation.Bean;

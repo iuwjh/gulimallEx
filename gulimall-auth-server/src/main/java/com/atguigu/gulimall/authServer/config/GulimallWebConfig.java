@@ -1,4 +1,4 @@
-package com.atguigu.gulimall.auth.config;
+package com.atguigu.gulimall.authServer.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;

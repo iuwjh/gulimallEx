@@ -1,9 +1,9 @@
-package com.atguigu.gulimall.auth.feign;
+package com.atguigu.gulimall.authServer.feign;
 
 import com.atguigu.common.utils.R;
-import com.atguigu.gulimall.auth.vo.SocialUser;
-import com.atguigu.gulimall.auth.vo.UserLoginVo;
-import com.atguigu.gulimall.auth.vo.UserRegistVo;
+import com.atguigu.gulimall.authServer.vo.SocialUser;
+import com.atguigu.gulimall.authServer.vo.UserLoginVo;
+import com.atguigu.gulimall.authServer.vo.UserRegistVo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
