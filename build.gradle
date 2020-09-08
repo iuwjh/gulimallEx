@@ -67,6 +67,15 @@ subprojects {
         }
     }
 
+    if (project.name.startsWith("gulimall-")) {
+        springBoot {
+            def pkgNameParts = project.name.split('-', 2)
+            def pkgName = "com.atguigu.${pkgNameParts[0]}.${pkgNameParts[1].split('-').collect { it.capitalize() }.join("").uncapitalize()}"
+            def appName = "${project.name.split("-").collect { it.capitalize() }.join("")}Application"
+            mainClassName = "${pkgName}.${appName}"
+        }
+    }
+
     dependencies {
         // 导入依赖BOM文件
         implementation platform(SpringBootPlugin.BOM_COORDINATES)
@@ -101,8 +110,9 @@ subprojects {
         implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-sentinel'
         implementation 'com.alibaba.csp:sentinel-spring-webmvc-adapter'
 
-        // SQL Database 数据库驱动
-        implementation 'mysql:mysql-connector-java:8.0.17'
+        // SQL Database 数据库
+        implementation "com.baomidou:mybatis-plus-boot-starter:${mybatis_plus_version}"
+        implementation "mysql:mysql-connector-java:${mysql_driver_version}"
         implementation "com.h2database:h2"
         testImplementation "com.h2database:h2"
 
@@ -113,16 +123,18 @@ subprojects {
         liquibaseRuntime "mysql:mysql-connector-java"
         liquibaseRuntime "com.h2database:h2"
 
-        implementation 'com.baomidou:mybatis-plus-boot-starter:3.2.0'
-        implementation 'redis.clients:jedis:3.1.0'
-        //implementation 'org.projectlombok:lombok:1.18.8'
+        // Redis
+        implementation 'redis.clients:jedis'
+        testImplementation "it.ozimov:embedded-redis:${embedded_redis_version}"
+
+        implementation 'javax.validation:validation-api'
+        implementation 'org.hibernate.validator:hibernate-validator'
+
+        compileOnly 'javax.servlet:javax.servlet-api'
+
         implementation 'org.apache.httpcomponents:fluent-hc:4.5.12'
         implementation 'commons-lang:commons-lang:2.6'
-        implementation 'javax.validation:validation-api:2.0.1.Final'
-        implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
-        compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
 
-        testImplementation "it.ozimov:embedded-redis:${embedded_redis_version}"
     }
 
     ext {
@@ -173,3 +185,9 @@ subprojects {
     }
 }
 
+task listSubprojects() {
+    subprojects.each { println(it.name) }
+}
+task listApps() {
+    subprojects.each { println(it.springBoot.mainClassName) }
+}

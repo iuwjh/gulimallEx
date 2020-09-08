@@ -1,20 +1,19 @@
-package com.atguigu.gulimall.auth.controller;
+package com.atguigu.gulimall.authServer.controller;
 
 import com.alibaba.fastjson.TypeReference;
 import com.atguigu.common.constant.AuthServerConstant;
 import com.atguigu.common.exception.BizCodeEnume;
 import com.atguigu.common.utils.R;
 import com.atguigu.common.vo.MemberRespVo;
-import com.atguigu.gulimall.auth.feign.MemberFeignService;
-import com.atguigu.gulimall.auth.feign.ThirdPartyFeignService;
-import com.atguigu.gulimall.auth.vo.UserLoginVo;
-import com.atguigu.gulimall.auth.vo.UserRegistVo;
+import com.atguigu.gulimall.authServer.feign.MemberFeignService;
+import com.atguigu.gulimall.authServer.feign.ThirdPartyFeignService;
+import com.atguigu.gulimall.authServer.vo.UserLoginVo;
+import com.atguigu.gulimall.authServer.vo.UserRegistVo;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,10 +24,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 

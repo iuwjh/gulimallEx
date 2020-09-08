@@ -1,12 +1,12 @@
-package com.atguigu.gulimall.auth.controller;
+package com.atguigu.gulimall.authServer.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.atguigu.common.constant.AuthServerConstant;
 import com.atguigu.common.utils.R;
-import com.atguigu.gulimall.auth.feign.MemberFeignService;
+import com.atguigu.gulimall.authServer.feign.MemberFeignService;
 import com.atguigu.common.vo.MemberRespVo;
-import com.atguigu.gulimall.auth.vo.SocialUser;
+import com.atguigu.gulimall.authServer.vo.SocialUser;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;

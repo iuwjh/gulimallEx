@@ -1,4 +1,4 @@
-package com.atguigu.gulimall.auth;
+package com.atguigu.gulimall.authServer;
 
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;

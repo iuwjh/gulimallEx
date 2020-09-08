@@ -1,4 +1,4 @@
-package com.atguigu.gulimall.auth.feign;
+package com.atguigu.gulimall.authServer.feign;
 
 import com.atguigu.common.utils.R;
 import org.springframework.cloud.openfeign.FeignClient;
