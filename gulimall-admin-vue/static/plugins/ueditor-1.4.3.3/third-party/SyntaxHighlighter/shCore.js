@@ -359,7 +359,7 @@ if (XRegExp) {
             result = nativ.replace.call(this + "", search, function () {
                 if (captureNames) {
                     // Change the `arguments[0]` string primitive to a String object which can store properties
-                    arguments[0] = new String(arguments[0]);
+                    arguments[0] = String(arguments[0]);
                     // Store named backreferences on `arguments[0]`
                     for (var i = 0; i < captureNames.length; i++) {
                         if (captureNames[i])
@@ -801,7 +801,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
                 function defaultGetHtml(highlighter, name)
                 {
                     return sh.toolbar.getButtonHtml(highlighter, name, sh.config.strings[name]);
-                };
+                }
 
                 for (var i = 0; i < list.length; i++)
                     html += (items[list[i]].getHtml || defaultGetHtml)(highlighter, list[i]);
@@ -843,7 +843,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
                         ;
 
                     return match ? match[1] : null;
-                };
+                }
 
                 var highlighter = getHighlighterById(findParentElement(target, '.syntaxhighlighter').id),
                     commandName = getValue('command')
@@ -1036,7 +1036,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
     function hasClass(target, className)
     {
         return target.className.indexOf(className) != -1;
-    };
+    }
 
     /**
      * Adds CSS class name to the target DOM element.
@@ -1047,7 +1047,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
     {
         if (!hasClass(target, className))
             target.className += ' ' + className;
-    };
+    }
 
     /**
      * Removes CSS class name from the target DOM element.
@@ -1057,7 +1057,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
     function removeClass(target, className)
     {
         target.className = target.className.replace(className, '');
-    };
+    }
 
     /**
      * Converts the source to array object. Mostly used for function arguments and
@@ -1073,7 +1073,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
             result.push(source[i]);
 
         return result;
-    };
+    }
 
     /**
      * Splits block of text into lines.
@@ -1094,7 +1094,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
     {
         var prefix = 'highlighter_';
         return id.indexOf(prefix) == 0 ? id : prefix + id;
-    };
+    }
 
     /**
      * Finds Highlighter instance by ID.
@@ -1104,7 +1104,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
     function getHighlighterById(id)
     {
         return sh.vars.highlighters[getHighlighterId(id)];
-    };
+    }
 
     /**
      * Finds highlighter's DIV container.
@@ -1114,7 +1114,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
     function getHighlighterDivById(id)
     {
         return document.getElementById(getHighlighterId(id));
-    };
+    }
 
     /**
      * Stores highlighter so that getHighlighterById() can do its thing. Each
@@ -1124,7 +1124,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
     function storeHighlighter(highlighter)
     {
         sh.vars.highlighters[getHighlighterId(highlighter.id)] = highlighter;
-    };
+    }
 
     /**
      * Looks for a child or parent node which has specified classname.
@@ -1158,7 +1158,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
             found = findElement(nodes[i], search, reverse);
 
         return found;
-    };
+    }
 
     /**
      * Looks for a parent node which has specified classname.
@@ -1170,7 +1170,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
     function findParentElement(target, className)
     {
         return findElement(target, className, true);
-    };
+    }
 
     /**
      * Finds an index of element in the array.
@@ -1188,7 +1188,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
                 return i;
 
         return -1;
-    };
+    }
 
     /**
      * Generates a unique element ID.
@@ -1196,7 +1196,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
     function guid(prefix)
     {
         return (prefix || '') + Math.round(Math.random() * 1000000).toString();
-    };
+    }
 
     /**
      * Merges two objects. Values from obj2 override values in obj1.
@@ -1216,7 +1216,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
             result[name] = obj2[name];
 
         return result;
-    };
+    }
 
     /**
      * Attempts to convert string to boolean.
@@ -1227,7 +1227,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
     {
         var result = { "true" : true, "false" : false }[value];
         return result == null ? value : result;
-    };
+    }
 
     /**
      * Opens up a centered popup window.
@@ -1254,7 +1254,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
         var win = window.open(url, name, options);
         win.focus();
         return win;
-    };
+    }
 
     /**
      * Adds event handler to the target object.
@@ -1278,7 +1278,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
             }
 
             func.call(scope || window, e);
-        };
+        }
 
         if (obj.attachEvent)
         {
@@ -1288,7 +1288,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
         {
             obj.addEventListener(type, handler, false);
         }
-    };
+    }
 
     /**
      * Displays an alert.
@@ -1297,7 +1297,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
     function alert(str)
     {
         window.alert(sh.config.strings.alert + str);
-    };
+    }
 
     /**
      * Finds a brush by its alias.
@@ -1342,7 +1342,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
             alert(sh.config.strings.noBrush + alias);
 
         return result;
-    };
+    }
 
     /**
      * Executes a callback on each line and replaces each line with result from the callback.
@@ -1358,7 +1358,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
 
         // include \r to enable copy-paste on windows (ie8) without getting everything on one line
         return lines.join('\r\n');
-    };
+    }
 
     /**
      * This is a special trim which only removes first and last empty lines
@@ -1370,7 +1370,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
     function trimFirstAndLastLines(str)
     {
         return str.replace(/^[ ]*[\n]+|[\n]*[ ]*$/g, '');
-    };
+    }
 
     /**
      * Parses key/value pairs into hash object.
@@ -1422,7 +1422,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
         }
 
         return result;
-    };
+    }
 
     /**
      * Wraps each line of the string into <code/> tag with given style applied to it.
@@ -1472,7 +1472,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
             });
 
         return str;
-    };
+    }
 
     /**
      * Pads number with zeros until it's length is the same as given length.
@@ -1489,7 +1489,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
             result = '0' + result;
 
         return result;
-    };
+    }
 
     /**
      * Replaces tabs with spaces.
@@ -1506,7 +1506,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
             tab += ' ';
 
         return code.replace(/\t/g, tab);
-    };
+    }
 
     /**
      * Replaces tabs with smart spaces.
@@ -1535,7 +1535,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
                 + spaces.substr(0, count)
                 + line.substr(pos + 1, line.length) // pos + 1 will get rid of the tab
                 ;
-        };
+        }
 
         // Go through all the lines and do the 'smart tabs' magic.
         code = eachLine(code, function(line)
@@ -1558,7 +1558,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
         });
 
         return code;
-    };
+    }
 
     /**
      * Performs various string fixes based on configuration.
@@ -1574,7 +1574,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
             str = str.replace(br, '');
 
         return str;
-    };
+    }
 
     /**
      * Removes all white space at the begining and end of a string.
@@ -1585,7 +1585,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
     function trim(str)
     {
         return str.replace(/^\s+|\s+$/g, '');
-    };
+    }
 
     /**
      * Unindents a block of text by the lowest common indent amount.
@@ -1595,7 +1595,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
     function unindent(str)
     {
         var lines = splitLines(fixInputString(str)),
-            indents = new Array(),
+            indents = [],
             regex = /^\s*/,
             min = 1000
             ;
@@ -1624,7 +1624,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
                 lines[i] = lines[i].substr(min);
 
         return lines.join('\n');
-    };
+    }
 
     /**
      * Callback method for Array.sort() which sorts matches by
@@ -1651,7 +1651,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
         }
 
         return 0;
-    };
+    }
 
     /**
      * Executes given regular expression on provided code and returns all
@@ -1666,7 +1666,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
         function defaultAdd(match, regexInfo)
         {
             return match[0];
-        };
+        }
 
         var index = 0,
             match = null,
@@ -1685,7 +1685,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
         }
 
         return matches;
-    };
+    }
 
     /**
      * Turns all URLs in the code into <a/> tags.
@@ -1714,7 +1714,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
 
             return '<a href="' + m + '">' + m + '</a>' + suffix;
         });
-    };
+    }
 
     /**
      * Finds all <SCRIPT TYPE="syntaxhighlighter" /> elementss.
@@ -1731,7 +1731,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
                 result.push(tags[i]);
 
         return result;
-    };
+    }
 
     /**
      * Strips <![CDATA[]]> from <SCRIPT /> content because it should be used
@@ -1765,7 +1765,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
         }
 
         return changed ? copy : original;
-    };
+    }
 
 
     /**
@@ -1817,7 +1817,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
             textarea.parentNode.removeChild(textarea);
             removeClass(highlighterDiv, 'source');
         });
-    };
+    }
 
     /**
      * Match object.
@@ -1999,7 +1999,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
                     var itemJ = matches[j];
 
                     if (itemJ === null)
-                        continue;
+
                     else if (itemJ.index > itemIEndPos)
                         break;
                     else if (itemJ.index == itemI.index && itemJ.length > itemI.length)
@@ -2121,7 +2121,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
                     indent = /^(&nbsp;|\s)+/.exec(line),
                     spaces = null,
                     lineNumber = lineNumbers ? lineNumbers[i] : firstLine + i;
-                ;
+
 
                 if (indent != null)
                 {
@@ -2170,7 +2170,7 @@ if (typeof(SyntaxHighlighter) == 'undefined') var SyntaxHighlighter = function()
             {
                 var result = match ? (match.brushName || brushName) : brushName;
                 return result ? result + ' ' : '';
-            };
+            }
 
             // Finally, go through the final list of matches and pull the all
             // together adding everything in between that isn't a match.
@@ -2413,7 +2413,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
         ];
 
         this.forHtmlScript(SyntaxHighlighter.regexLib.scriptScriptTags);
-    };
+    }
 
     Brush.prototype	= new SyntaxHighlighter.Highlighter();
     Brush.aliases	= ['actionscript3', 'as3'];
@@ -2473,7 +2473,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
             { regex: new RegExp(this.getKeywords(keywords), 'gm'), css: 'keyword' },
             { regex: new RegExp(this.getKeywords(ordinals), 'gm'), css: 'keyword' }
         ];
-    };
+    }
 
     Brush.prototype = new SyntaxHighlighter.Highlighter();
     Brush.aliases = ['applescript'];
@@ -2535,58 +2535,58 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 	{
 		// Contributed by Jen
 		// http://www.jensbits.com/2009/05/14/coldfusion-brush-for-syntaxhighlighter-plus
-	
-		var funcs	=	'Abs ACos AddSOAPRequestHeader AddSOAPResponseHeader AjaxLink AjaxOnLoad ArrayAppend ArrayAvg ArrayClear ArrayDeleteAt ' + 
-						'ArrayInsertAt ArrayIsDefined ArrayIsEmpty ArrayLen ArrayMax ArrayMin ArraySet ArraySort ArraySum ArraySwap ArrayToList ' + 
-						'Asc ASin Atn BinaryDecode BinaryEncode BitAnd BitMaskClear BitMaskRead BitMaskSet BitNot BitOr BitSHLN BitSHRN BitXor ' + 
-						'Ceiling CharsetDecode CharsetEncode Chr CJustify Compare CompareNoCase Cos CreateDate CreateDateTime CreateObject ' + 
-						'CreateODBCDate CreateODBCDateTime CreateODBCTime CreateTime CreateTimeSpan CreateUUID DateAdd DateCompare DateConvert ' + 
-						'DateDiff DateFormat DatePart Day DayOfWeek DayOfWeekAsString DayOfYear DaysInMonth DaysInYear DE DecimalFormat DecrementValue ' + 
-						'Decrypt DecryptBinary DeleteClientVariable DeserializeJSON DirectoryExists DollarFormat DotNetToCFType Duplicate Encrypt ' + 
-						'EncryptBinary Evaluate Exp ExpandPath FileClose FileCopy FileDelete FileExists FileIsEOF FileMove FileOpen FileRead ' + 
-						'FileReadBinary FileReadLine FileSetAccessMode FileSetAttribute FileSetLastModified FileWrite Find FindNoCase FindOneOf ' + 
-						'FirstDayOfMonth Fix FormatBaseN GenerateSecretKey GetAuthUser GetBaseTagData GetBaseTagList GetBaseTemplatePath ' + 
-						'GetClientVariablesList GetComponentMetaData GetContextRoot GetCurrentTemplatePath GetDirectoryFromPath GetEncoding ' + 
-						'GetException GetFileFromPath GetFileInfo GetFunctionList GetGatewayHelper GetHttpRequestData GetHttpTimeString ' + 
-						'GetK2ServerDocCount GetK2ServerDocCountLimit GetLocale GetLocaleDisplayName GetLocalHostIP GetMetaData GetMetricData ' + 
-						'GetPageContext GetPrinterInfo GetProfileSections GetProfileString GetReadableImageFormats GetSOAPRequest GetSOAPRequestHeader ' + 
-						'GetSOAPResponse GetSOAPResponseHeader GetTempDirectory GetTempFile GetTemplatePath GetTickCount GetTimeZoneInfo GetToken ' + 
-						'GetUserRoles GetWriteableImageFormats Hash Hour HTMLCodeFormat HTMLEditFormat IIf ImageAddBorder ImageBlur ImageClearRect ' + 
-						'ImageCopy ImageCrop ImageDrawArc ImageDrawBeveledRect ImageDrawCubicCurve ImageDrawLine ImageDrawLines ImageDrawOval ' + 
-						'ImageDrawPoint ImageDrawQuadraticCurve ImageDrawRect ImageDrawRoundRect ImageDrawText ImageFlip ImageGetBlob ImageGetBufferedImage ' + 
-						'ImageGetEXIFTag ImageGetHeight ImageGetIPTCTag ImageGetWidth ImageGrayscale ImageInfo ImageNegative ImageNew ImageOverlay ImagePaste ' + 
-						'ImageRead ImageReadBase64 ImageResize ImageRotate ImageRotateDrawingAxis ImageScaleToFit ImageSetAntialiasing ImageSetBackgroundColor ' + 
-						'ImageSetDrawingColor ImageSetDrawingStroke ImageSetDrawingTransparency ImageSharpen ImageShear ImageShearDrawingAxis ImageTranslate ' + 
-						'ImageTranslateDrawingAxis ImageWrite ImageWriteBase64 ImageXORDrawingMode IncrementValue InputBaseN Insert Int IsArray IsBinary ' + 
-						'IsBoolean IsCustomFunction IsDate IsDDX IsDebugMode IsDefined IsImage IsImageFile IsInstanceOf IsJSON IsLeapYear IsLocalHost ' + 
-						'IsNumeric IsNumericDate IsObject IsPDFFile IsPDFObject IsQuery IsSimpleValue IsSOAPRequest IsStruct IsUserInAnyRole IsUserInRole ' + 
-						'IsUserLoggedIn IsValid IsWDDX IsXML IsXmlAttribute IsXmlDoc IsXmlElem IsXmlNode IsXmlRoot JavaCast JSStringFormat LCase Left Len ' + 
-						'ListAppend ListChangeDelims ListContains ListContainsNoCase ListDeleteAt ListFind ListFindNoCase ListFirst ListGetAt ListInsertAt ' + 
-						'ListLast ListLen ListPrepend ListQualify ListRest ListSetAt ListSort ListToArray ListValueCount ListValueCountNoCase LJustify Log ' + 
-						'Log10 LSCurrencyFormat LSDateFormat LSEuroCurrencyFormat LSIsCurrency LSIsDate LSIsNumeric LSNumberFormat LSParseCurrency LSParseDateTime ' + 
-						'LSParseEuroCurrency LSParseNumber LSTimeFormat LTrim Max Mid Min Minute Month MonthAsString Now NumberFormat ParagraphFormat ParseDateTime ' + 
-						'Pi PrecisionEvaluate PreserveSingleQuotes Quarter QueryAddColumn QueryAddRow QueryConvertForGrid QueryNew QuerySetCell QuotedValueList Rand ' + 
-						'Randomize RandRange REFind REFindNoCase ReleaseComObject REMatch REMatchNoCase RemoveChars RepeatString Replace ReplaceList ReplaceNoCase ' + 
-						'REReplace REReplaceNoCase Reverse Right RJustify Round RTrim Second SendGatewayMessage SerializeJSON SetEncoding SetLocale SetProfileString ' + 
-						'SetVariable Sgn Sin Sleep SpanExcluding SpanIncluding Sqr StripCR StructAppend StructClear StructCopy StructCount StructDelete StructFind ' + 
-						'StructFindKey StructFindValue StructGet StructInsert StructIsEmpty StructKeyArray StructKeyExists StructKeyList StructKeyList StructNew ' + 
-						'StructSort StructUpdate Tan TimeFormat ToBase64 ToBinary ToScript ToString Trim UCase URLDecode URLEncodedFormat URLSessionFormat Val ' + 
-						'ValueList VerifyClient Week Wrap Wrap WriteOutput XmlChildPos XmlElemNew XmlFormat XmlGetNodeType XmlNew XmlParse XmlSearch XmlTransform ' + 
+
+		var funcs	=	'Abs ACos AddSOAPRequestHeader AddSOAPResponseHeader AjaxLink AjaxOnLoad ArrayAppend ArrayAvg ArrayClear ArrayDeleteAt ' +
+						'ArrayInsertAt ArrayIsDefined ArrayIsEmpty ArrayLen ArrayMax ArrayMin ArraySet ArraySort ArraySum ArraySwap ArrayToList ' +
+						'Asc ASin Atn BinaryDecode BinaryEncode BitAnd BitMaskClear BitMaskRead BitMaskSet BitNot BitOr BitSHLN BitSHRN BitXor ' +
+						'Ceiling CharsetDecode CharsetEncode Chr CJustify Compare CompareNoCase Cos CreateDate CreateDateTime CreateObject ' +
+						'CreateODBCDate CreateODBCDateTime CreateODBCTime CreateTime CreateTimeSpan CreateUUID DateAdd DateCompare DateConvert ' +
+						'DateDiff DateFormat DatePart Day DayOfWeek DayOfWeekAsString DayOfYear DaysInMonth DaysInYear DE DecimalFormat DecrementValue ' +
+						'Decrypt DecryptBinary DeleteClientVariable DeserializeJSON DirectoryExists DollarFormat DotNetToCFType Duplicate Encrypt ' +
+						'EncryptBinary Evaluate Exp ExpandPath FileClose FileCopy FileDelete FileExists FileIsEOF FileMove FileOpen FileRead ' +
+						'FileReadBinary FileReadLine FileSetAccessMode FileSetAttribute FileSetLastModified FileWrite Find FindNoCase FindOneOf ' +
+						'FirstDayOfMonth Fix FormatBaseN GenerateSecretKey GetAuthUser GetBaseTagData GetBaseTagList GetBaseTemplatePath ' +
+						'GetClientVariablesList GetComponentMetaData GetContextRoot GetCurrentTemplatePath GetDirectoryFromPath GetEncoding ' +
+						'GetException GetFileFromPath GetFileInfo GetFunctionList GetGatewayHelper GetHttpRequestData GetHttpTimeString ' +
+						'GetK2ServerDocCount GetK2ServerDocCountLimit GetLocale GetLocaleDisplayName GetLocalHostIP GetMetaData GetMetricData ' +
+						'GetPageContext GetPrinterInfo GetProfileSections GetProfileString GetReadableImageFormats GetSOAPRequest GetSOAPRequestHeader ' +
+						'GetSOAPResponse GetSOAPResponseHeader GetTempDirectory GetTempFile GetTemplatePath GetTickCount GetTimeZoneInfo GetToken ' +
+						'GetUserRoles GetWriteableImageFormats Hash Hour HTMLCodeFormat HTMLEditFormat IIf ImageAddBorder ImageBlur ImageClearRect ' +
+						'ImageCopy ImageCrop ImageDrawArc ImageDrawBeveledRect ImageDrawCubicCurve ImageDrawLine ImageDrawLines ImageDrawOval ' +
+						'ImageDrawPoint ImageDrawQuadraticCurve ImageDrawRect ImageDrawRoundRect ImageDrawText ImageFlip ImageGetBlob ImageGetBufferedImage ' +
+						'ImageGetEXIFTag ImageGetHeight ImageGetIPTCTag ImageGetWidth ImageGrayscale ImageInfo ImageNegative ImageNew ImageOverlay ImagePaste ' +
+						'ImageRead ImageReadBase64 ImageResize ImageRotate ImageRotateDrawingAxis ImageScaleToFit ImageSetAntialiasing ImageSetBackgroundColor ' +
+						'ImageSetDrawingColor ImageSetDrawingStroke ImageSetDrawingTransparency ImageSharpen ImageShear ImageShearDrawingAxis ImageTranslate ' +
+						'ImageTranslateDrawingAxis ImageWrite ImageWriteBase64 ImageXORDrawingMode IncrementValue InputBaseN Insert Int IsArray IsBinary ' +
+						'IsBoolean IsCustomFunction IsDate IsDDX IsDebugMode IsDefined IsImage IsImageFile IsInstanceOf IsJSON IsLeapYear IsLocalHost ' +
+						'IsNumeric IsNumericDate IsObject IsPDFFile IsPDFObject IsQuery IsSimpleValue IsSOAPRequest IsStruct IsUserInAnyRole IsUserInRole ' +
+						'IsUserLoggedIn IsValid IsWDDX IsXML IsXmlAttribute IsXmlDoc IsXmlElem IsXmlNode IsXmlRoot JavaCast JSStringFormat LCase Left Len ' +
+						'ListAppend ListChangeDelims ListContains ListContainsNoCase ListDeleteAt ListFind ListFindNoCase ListFirst ListGetAt ListInsertAt ' +
+						'ListLast ListLen ListPrepend ListQualify ListRest ListSetAt ListSort ListToArray ListValueCount ListValueCountNoCase LJustify Log ' +
+						'Log10 LSCurrencyFormat LSDateFormat LSEuroCurrencyFormat LSIsCurrency LSIsDate LSIsNumeric LSNumberFormat LSParseCurrency LSParseDateTime ' +
+						'LSParseEuroCurrency LSParseNumber LSTimeFormat LTrim Max Mid Min Minute Month MonthAsString Now NumberFormat ParagraphFormat ParseDateTime ' +
+						'Pi PrecisionEvaluate PreserveSingleQuotes Quarter QueryAddColumn QueryAddRow QueryConvertForGrid QueryNew QuerySetCell QuotedValueList Rand ' +
+						'Randomize RandRange REFind REFindNoCase ReleaseComObject REMatch REMatchNoCase RemoveChars RepeatString Replace ReplaceList ReplaceNoCase ' +
+						'REReplace REReplaceNoCase Reverse Right RJustify Round RTrim Second SendGatewayMessage SerializeJSON SetEncoding SetLocale SetProfileString ' +
+						'SetVariable Sgn Sin Sleep SpanExcluding SpanIncluding Sqr StripCR StructAppend StructClear StructCopy StructCount StructDelete StructFind ' +
+						'StructFindKey StructFindValue StructGet StructInsert StructIsEmpty StructKeyArray StructKeyExists StructKeyList StructKeyList StructNew ' +
+						'StructSort StructUpdate Tan TimeFormat ToBase64 ToBinary ToScript ToString Trim UCase URLDecode URLEncodedFormat URLSessionFormat Val ' +
+						'ValueList VerifyClient Week Wrap Wrap WriteOutput XmlChildPos XmlElemNew XmlFormat XmlGetNodeType XmlNew XmlParse XmlSearch XmlTransform ' +
 						'XmlValidate Year YesNoFormat';
 
-		var keywords =	'cfabort cfajaximport cfajaxproxy cfapplet cfapplication cfargument cfassociate cfbreak cfcache cfcalendar ' + 
-						'cfcase cfcatch cfchart cfchartdata cfchartseries cfcol cfcollection cfcomponent cfcontent cfcookie cfdbinfo ' + 
-						'cfdefaultcase cfdirectory cfdiv cfdocument cfdocumentitem cfdocumentsection cfdump cfelse cfelseif cferror ' + 
-						'cfexchangecalendar cfexchangeconnection cfexchangecontact cfexchangefilter cfexchangemail cfexchangetask ' + 
-						'cfexecute cfexit cffeed cffile cfflush cfform cfformgroup cfformitem cfftp cffunction cfgrid cfgridcolumn ' + 
-						'cfgridrow cfgridupdate cfheader cfhtmlhead cfhttp cfhttpparam cfif cfimage cfimport cfinclude cfindex ' + 
-						'cfinput cfinsert cfinterface cfinvoke cfinvokeargument cflayout cflayoutarea cfldap cflocation cflock cflog ' + 
-						'cflogin cfloginuser cflogout cfloop cfmail cfmailparam cfmailpart cfmenu cfmenuitem cfmodule cfNTauthenticate ' + 
-						'cfobject cfobjectcache cfoutput cfparam cfpdf cfpdfform cfpdfformparam cfpdfparam cfpdfsubform cfpod cfpop ' + 
-						'cfpresentation cfpresentationslide cfpresenter cfprint cfprocessingdirective cfprocparam cfprocresult ' + 
-						'cfproperty cfquery cfqueryparam cfregistry cfreport cfreportparam cfrethrow cfreturn cfsavecontent cfschedule ' + 
-						'cfscript cfsearch cfselect cfset cfsetting cfsilent cfslider cfsprydataset cfstoredproc cfswitch cftable ' + 
-						'cftextarea cfthread cfthrow cftimer cftooltip cftrace cftransaction cftree cftreeitem cftry cfupdate cfwddx ' + 
+		var keywords =	'cfabort cfajaximport cfajaxproxy cfapplet cfapplication cfargument cfassociate cfbreak cfcache cfcalendar ' +
+						'cfcase cfcatch cfchart cfchartdata cfchartseries cfcol cfcollection cfcomponent cfcontent cfcookie cfdbinfo ' +
+						'cfdefaultcase cfdirectory cfdiv cfdocument cfdocumentitem cfdocumentsection cfdump cfelse cfelseif cferror ' +
+						'cfexchangecalendar cfexchangeconnection cfexchangecontact cfexchangefilter cfexchangemail cfexchangetask ' +
+						'cfexecute cfexit cffeed cffile cfflush cfform cfformgroup cfformitem cfftp cffunction cfgrid cfgridcolumn ' +
+						'cfgridrow cfgridupdate cfheader cfhtmlhead cfhttp cfhttpparam cfif cfimage cfimport cfinclude cfindex ' +
+						'cfinput cfinsert cfinterface cfinvoke cfinvokeargument cflayout cflayoutarea cfldap cflocation cflock cflog ' +
+						'cflogin cfloginuser cflogout cfloop cfmail cfmailparam cfmailpart cfmenu cfmenuitem cfmodule cfNTauthenticate ' +
+						'cfobject cfobjectcache cfoutput cfparam cfpdf cfpdfform cfpdfformparam cfpdfparam cfpdfsubform cfpod cfpop ' +
+						'cfpresentation cfpresentationslide cfpresenter cfprint cfprocessingdirective cfprocparam cfprocresult ' +
+						'cfproperty cfquery cfqueryparam cfregistry cfreport cfreportparam cfrethrow cfreturn cfsavecontent cfschedule ' +
+						'cfscript cfsearch cfselect cfset cfsetting cfsilent cfslider cfsprydataset cfstoredproc cfswitch cftable ' +
+						'cftextarea cfthread cfthrow cftimer cftooltip cftrace cftransaction cftree cftreeitem cftry cfupdate cfwddx ' +
 						'cfwindow cfxml cfzip cfzipparam';
 
 		var operators =	'all and any between cross in join like not null or outer some';
@@ -2604,7 +2604,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 
 	Brush.prototype	= new SyntaxHighlighter.Highlighter();
 	Brush.aliases	= ['coldfusion','cf'];
-	
+
 	SyntaxHighlighter.brushes.ColdFusion = Brush;
 
 	// CommonJS
@@ -2618,7 +2618,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 	function Brush()
 	{
 		// Copyright 2006 Shin, YoungJin
-	
+
 		var datatypes =	'ATOM BOOL BOOLEAN BYTE CHAR COLORREF DWORD DWORDLONG DWORD_PTR ' +
 						'DWORD32 DWORD64 FLOAT HACCEL HALF_PTR HANDLE HBITMAP HBRUSH ' +
 						'HCOLORSPACE HCONV HCONVLIST HCURSOR HDC HDDEDATA HDESK HDROP HDWP ' +
@@ -2653,7 +2653,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 						'sizeof static static_cast struct switch template this ' +
 						'thread throw true false try typedef typeid typename union ' +
 						'using uuid virtual void volatile whcar_t while';
-					
+
 		var functions =	'assert isalnum isalpha iscntrl isdigit isgraph islower isprint' +
 						'ispunct isspace isupper isxdigit tolower toupper errno localeconv ' +
 						'setlocale acos asin atan atan2 ceil cos cosh exp fabs floor fmod ' +
@@ -2681,7 +2681,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 			{ regex: new RegExp(this.getKeywords(functions), 'gm'),		css: 'functions bold' },
 			{ regex: new RegExp(this.getKeywords(keywords), 'gm'),		css: 'keyword bold' }
 			];
-	};
+	}
 
 	Brush.prototype	= new SyntaxHighlighter.Highlighter();
 	Brush.aliases	= ['cpp', 'c'];
@@ -2713,7 +2713,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 				? 'color1'
 				: 'comments'
 				;
-			
+
 			return [new SyntaxHighlighter.Match(match[0], match.index, css)];
 		}
 
@@ -2728,9 +2728,9 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 			{ regex: /\bpartial(?=\s+(?:class|interface|struct)\b)/g,	css: 'keyword' },			// contextual keyword: 'partial'
 			{ regex: /\byield(?=\s+(?:return|break)\b)/g,				css: 'keyword' }			// contextual keyword: 'yield'
 			];
-		
+
 		this.forHtmlScript(SyntaxHighlighter.regexLib.aspScriptTags);
-	};
+	}
 
 	Brush.prototype	= new SyntaxHighlighter.Highlighter();
 	Brush.aliases	= ['c#', 'c-sharp', 'csharp'];
@@ -2750,12 +2750,12 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 		function getKeywordsCSS(str)
 		{
 			return '\\b([a-z_]|)' + str.replace(/ /g, '(?=:)\\b|\\b([a-z_\\*]|\\*|)') + '(?=:)\\b';
-		};
-	
+		}
+
 		function getValuesCSS(str)
 		{
 			return '\\b' + str.replace(/ /g, '(?!-)(?!:)\\b|\\b()') + '\:\\b';
-		};
+		}
 
 		var keywords =	'ascent azimuth background-attachment background-color background-image background-position ' +
 						'background-repeat background baseline bbox border-collapse border-color border-spacing border-style border-top ' +
@@ -2788,7 +2788,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 						'upper-roman url visible wait white wider w-resize x-fast x-high x-large x-loud x-low x-slow x-small x-soft xx-large xx-small yellow';
 
 		var fonts =		'[mM]onospace [tT]ahoma [vV]erdana [aA]rial [hH]elvetica [sS]ans-serif [sS]erif [cC]ourier mono sans serif';
-	
+
 		this.regexList = [
 			{ regex: SyntaxHighlighter.regexLib.multiLineCComments,		css: 'comments' },	// multiline comments
 			{ regex: SyntaxHighlighter.regexLib.doubleQuotedString,		css: 'string' },	// double quoted strings
@@ -2801,11 +2801,11 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 			{ regex: new RegExp(this.getKeywords(fonts), 'g'),			css: 'color1' }		// fonts
 			];
 
-		this.forHtmlScript({ 
-			left: /(&lt;|<)\s*style.*?(&gt;|>)/gi, 
-			right: /(&lt;|<)\/\s*style\s*(&gt;|>)/gi 
+		this.forHtmlScript({
+			left: /(&lt;|<)\s*style.*?(&gt;|>)/gi,
+			right: /(&lt;|<)\/\s*style\s*(&gt;|>)/gi
 			});
-	};
+	}
 
 	Brush.prototype	= new SyntaxHighlighter.Highlighter();
 	Brush.aliases	= ['css'];
@@ -2844,7 +2844,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 			{ regex: /\$[a-zA-Z0-9]+\b/g,								css: 'value' },			// numbers $F5D3
 			{ regex: new RegExp(this.getKeywords(keywords), 'gmi'),		css: 'keyword' }		// keyword
 			];
-	};
+	}
 
 	Brush.prototype	= new SyntaxHighlighter.Highlighter();
 	Brush.aliases	= ['delphi', 'pascal', 'pas'];
@@ -2869,7 +2869,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 			{ regex: /^\+.*$/gm,		css: 'string' },	// additions
 			{ regex: /^\-.*$/gm,		css: 'color3' }		// deletions
 			];
-	};
+	}
 
 	Brush.prototype	= new SyntaxHighlighter.Highlighter();
 	Brush.aliases	= ['diff', 'patch'];
@@ -2887,7 +2887,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 	function Brush()
 	{
 		// Contributed by Jean-Lou Dupont
-		// http://jldupont.blogspot.com/2009/06/erlang-syntax-highlighter.html  
+		// http://jldupont.blogspot.com/2009/06/erlang-syntax-highlighter.html
 
 		// According to: http://erlang.org/doc/reference_manual/introduction.html#1.5
 		var keywords = 'after and andalso band begin bnot bor bsl bsr bxor '+
@@ -2905,7 +2905,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 			{ regex: SyntaxHighlighter.regexLib.singleQuotedString,		css: 'string' },
 			{ regex: new RegExp(this.getKeywords(keywords),	'gm'),		css: 'keyword' }
 			];
-	};
+	}
 
 	Brush.prototype	= new SyntaxHighlighter.Highlighter();
 	Brush.aliases	= ['erl', 'erlang'];
@@ -2994,10 +2994,10 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 			];
 
 		this.forHtmlScript({
-			left	: /(&lt;|<)%[@!=]?/g, 
-			right	: /%(&gt;|>)/g 
+			left	: /(&lt;|<)%[@!=]?/g,
+			right	: /%(&gt;|>)/g
 		});
-	};
+	}
 
 	Brush.prototype	= new SyntaxHighlighter.Highlighter();
 	Brush.aliases	= ['java'];
@@ -3039,7 +3039,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 			{ regex: new RegExp(this.getKeywords(keywords), 'gm'),		css: 'keyword' }
 		];
 		this.forHtmlScript(SyntaxHighlighter.regexLib.aspScriptTags);
-	};
+	}
 
 	Brush.prototype	= new SyntaxHighlighter.Highlighter();
 	Brush.aliases	= ['jfx', 'javafx'];
@@ -3064,7 +3064,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 						;
 
 		var r = SyntaxHighlighter.regexLib;
-		
+
 		this.regexList = [
 			{ regex: r.multiLineDoubleQuotedString,					css: 'string' },			// double quoted strings
 			{ regex: r.multiLineSingleQuotedString,					css: 'string' },			// single quoted strings
@@ -3073,9 +3073,9 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 			{ regex: /\s*#.*/gm,									css: 'preprocessor' },		// preprocessor tags like #region and #endregion
 			{ regex: new RegExp(this.getKeywords(keywords), 'gm'),	css: 'keyword' }			// keywords
 			];
-	
+
 		this.forHtmlScript(r.scriptScriptTags);
-	};
+	}
 
 	Brush.prototype	= new SyntaxHighlighter.Highlighter();
 	Brush.aliases	= ['js', 'jscript', 'javascript'];
@@ -3093,33 +3093,33 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 	function Brush()
 	{
 		// Contributed by David Simmons-Duffin and Marty Kube
-	
-		var funcs = 
-			'abs accept alarm atan2 bind binmode chdir chmod chomp chop chown chr ' + 
-			'chroot close closedir connect cos crypt defined delete each endgrent ' + 
-			'endhostent endnetent endprotoent endpwent endservent eof exec exists ' + 
-			'exp fcntl fileno flock fork format formline getc getgrent getgrgid ' + 
-			'getgrnam gethostbyaddr gethostbyname gethostent getlogin getnetbyaddr ' + 
-			'getnetbyname getnetent getpeername getpgrp getppid getpriority ' + 
-			'getprotobyname getprotobynumber getprotoent getpwent getpwnam getpwuid ' + 
-			'getservbyname getservbyport getservent getsockname getsockopt glob ' + 
-			'gmtime grep hex index int ioctl join keys kill lc lcfirst length link ' + 
-			'listen localtime lock log lstat map mkdir msgctl msgget msgrcv msgsnd ' + 
-			'oct open opendir ord pack pipe pop pos print printf prototype push ' + 
-			'quotemeta rand read readdir readline readlink readpipe recv rename ' + 
-			'reset reverse rewinddir rindex rmdir scalar seek seekdir select semctl ' + 
-			'semget semop send setgrent sethostent setnetent setpgrp setpriority ' + 
-			'setprotoent setpwent setservent setsockopt shift shmctl shmget shmread ' + 
-			'shmwrite shutdown sin sleep socket socketpair sort splice split sprintf ' + 
-			'sqrt srand stat study substr symlink syscall sysopen sysread sysseek ' + 
-			'system syswrite tell telldir time times tr truncate uc ucfirst umask ' + 
+
+		var funcs =
+			'abs accept alarm atan2 bind binmode chdir chmod chomp chop chown chr ' +
+			'chroot close closedir connect cos crypt defined delete each endgrent ' +
+			'endhostent endnetent endprotoent endpwent endservent eof exec exists ' +
+			'exp fcntl fileno flock fork format formline getc getgrent getgrgid ' +
+			'getgrnam gethostbyaddr gethostbyname gethostent getlogin getnetbyaddr ' +
+			'getnetbyname getnetent getpeername getpgrp getppid getpriority ' +
+			'getprotobyname getprotobynumber getprotoent getpwent getpwnam getpwuid ' +
+			'getservbyname getservbyport getservent getsockname getsockopt glob ' +
+			'gmtime grep hex index int ioctl join keys kill lc lcfirst length link ' +
+			'listen localtime lock log lstat map mkdir msgctl msgget msgrcv msgsnd ' +
+			'oct open opendir ord pack pipe pop pos print printf prototype push ' +
+			'quotemeta rand read readdir readline readlink readpipe recv rename ' +
+			'reset reverse rewinddir rindex rmdir scalar seek seekdir select semctl ' +
+			'semget semop send setgrent sethostent setnetent setpgrp setpriority ' +
+			'setprotoent setpwent setservent setsockopt shift shmctl shmget shmread ' +
+			'shmwrite shutdown sin sleep socket socketpair sort splice split sprintf ' +
+			'sqrt srand stat study substr symlink syscall sysopen sysread sysseek ' +
+			'system syswrite tell telldir time times tr truncate uc ucfirst umask ' +
 			'undef unlink unpack unshift utime values vec wait waitpid warn write ' +
 			// feature
 			'say';
-    
-		var keywords =  
+
+		var keywords =
 			'bless caller continue dbmclose dbmopen die do dump else elsif eval exit ' +
-			'for foreach goto if import last local my next no our package redo ref ' + 
+			'for foreach goto if import last local my next no our package redo ref ' +
 			'require return sub tie tied unless untie until use wantarray while ' +
 			// feature
 			'given when default ' +
@@ -3127,7 +3127,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 			'try catch finally ' +
 			// Moose
 			'has extends with before after around override augment';
-    
+
 		this.regexList = [
 			{ regex: /(<<|&lt;&lt;)((\w+)|(['"])(.+?)\4)[\s\S]+?\n\3\5\n/g,	css: 'string' },	// here doc (maybe html encoded)
 			{ regex: /#.*$/gm,										css: 'comments' },
@@ -3209,7 +3209,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 						'function global goto if implements include include_once interface instanceof insteadof namespace new ' +
 						'old_function or private protected public return require require_once static switch ' +
 						'trait throw try use var while xor ';
-		
+
 		var constants	= '__FILE__ __LINE__ __METHOD__ __FUNCTION__ __CLASS__';
 
 		this.regexList = [
@@ -3224,7 +3224,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 			];
 
 		this.forHtmlScript(SyntaxHighlighter.regexLib.phpScriptTags);
-	};
+	}
 
 	Brush.prototype	= new SyntaxHighlighter.Highlighter();
 	Brush.aliases	= ['php'];
@@ -3241,7 +3241,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 
 	function Brush()
 	{
-	};
+	}
 
 	Brush.prototype	= new SyntaxHighlighter.Highlighter();
 	Brush.aliases	= ['text', 'plain'];
@@ -3271,7 +3271,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 						'creplace eq exact f file ge gt icontains ieq ige igt ile ilike ilt ' +
 						'imatch ine inotcontains inotlike inotmatch ireplace is isnot le like ' +
 						'lt match ne not notcontains notlike notmatch or regex replace wildcard';
-						
+
 		var verbs =		'write where wait use update unregister undo trace test tee take suspend ' +
 						'stop start split sort skip show set send select scroll resume restore ' +
 						'restart resolve resize reset rename remove register receive read push ' +
@@ -3287,20 +3287,20 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 			{ regex: new RegExp('^\\s*#[#\\s]*\\.('+this.getKeywords(commenthelp)+').*$', 'gim'),			css: 'preprocessor help bold' },		// comment-based help
 			{ regex: SyntaxHighlighter.regexLib.singleLinePerlComments,										css: 'comments' },						// one line comments
 			{ regex: /(&lt;|<)#[\s\S]*?#(&gt;|>)/gm,														css: 'comments here' },					// multi-line comments
-			
+
 			{ regex: new RegExp('@"\\n[\\s\\S]*?\\n"@', 'gm'),												css: 'script string here' },			// double quoted here-strings
 			{ regex: new RegExp("@'\\n[\\s\\S]*?\\n'@", 'gm'),												css: 'script string single here' },		// single quoted here-strings
 			{ regex: new RegExp('"(?:\\$\\([^\\)]*\\)|[^"]|`"|"")*[^`]"','g'),								css: 'string' },						// double quoted strings
 			{ regex: new RegExp("'(?:[^']|'')*'", 'g'),														css: 'string single' },					// single quoted strings
-			
+
 			{ regex: new RegExp('[\\$|@|@@](?:(?:global|script|private|env):)?[A-Z0-9_]+', 'gi'),			css: 'variable' },						// $variables
 			{ regex: new RegExp('(?:\\b'+verbs.replace(/ /g, '\\b|\\b')+')-[a-zA-Z_][a-zA-Z0-9_]*', 'gmi'),	css: 'functions' },						// functions and cmdlets
 			{ regex: new RegExp(this.getKeywords(keywords), 'gmi'),											css: 'keyword' },						// keywords
 			{ regex: new RegExp('-'+this.getKeywords(operators), 'gmi'),									css: 'operator value' },				// operators
 			{ regex: new RegExp('\\[[A-Z_\\[][A-Z0-9_. `,\\[\\]]*\\]', 'gi'),								css: 'constants' },						// .Net [Type]s
-			{ regex: new RegExp('\\s+-(?!'+this.getKeywords(operators)+')[a-zA-Z_][a-zA-Z0-9_]*', 'gmi'),	css: 'color1' },						// parameters	  
+			{ regex: new RegExp('\\s+-(?!'+this.getKeywords(operators)+')[a-zA-Z_][a-zA-Z0-9_]*', 'gmi'),	css: 'color1' },						// parameters
 		];
-	};
+	}
 
 	Brush.prototype	= new SyntaxHighlighter.Highlighter();
 	Brush.aliases	= ['powershell', 'ps', 'posh'];
@@ -3318,7 +3318,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 	function Brush()
 	{
 		// Contributed by Gheorghe Milas and Ahmad Sherif
-	
+
 		var keywords =  'and assert break class continue def del elif else ' +
 						'except exec finally for from global if import in is ' +
 						'lambda not or pass print raise return try yield while';
@@ -3346,9 +3346,9 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 				{ regex: new RegExp(this.getKeywords(keywords), 'gm'), 		css: 'keyword' },
 				{ regex: new RegExp(this.getKeywords(special), 'gm'), 		css: 'color1' }
 				];
-			
+
 		this.forHtmlScript(SyntaxHighlighter.regexLib.aspScriptTags);
-	};
+	}
 
 	Brush.prototype	= new SyntaxHighlighter.Highlighter();
 	Brush.aliases	= ['py', 'python'];
@@ -3366,7 +3366,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 	function Brush()
 	{
 		// Contributed by Erik Peterson.
-	
+
 		var keywords =	'alias and BEGIN begin break case class def define_method defined do each else elsif ' +
 						'END end ensure false for if in module new next nil not or raise redo rescue retry return ' +
 						'self super then throw true undef unless until when while yield';
@@ -3387,7 +3387,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 			];
 
 		this.forHtmlScript(SyntaxHighlighter.regexLib.aspScriptTags);
-	};
+	}
 
 	Brush.prototype	= new SyntaxHighlighter.Highlighter();
 	Brush.aliases	= ['ruby', 'rails', 'ror', 'rb'];
@@ -3407,12 +3407,12 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 		function getKeywordsCSS(str)
 		{
 			return '\\b([a-z_]|)' + str.replace(/ /g, '(?=:)\\b|\\b([a-z_\\*]|\\*|)') + '(?=:)\\b';
-		};
-	
+		}
+
 		function getValuesCSS(str)
 		{
 			return '\\b' + str.replace(/ /g, '(?!-)(?!:)\\b|\\b()') + '\:\\b';
-		};
+		}
 
 		var keywords =	'ascent azimuth background-attachment background-color background-image background-position ' +
 						'background-repeat background baseline bbox border-collapse border-color border-spacing border-style border-top ' +
@@ -3428,7 +3428,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 						'quotes right richness size slope src speak-header speak-numeral speak-punctuation speak speech-rate stemh stemv stress ' +
 						'table-layout text-align top text-decoration text-indent text-shadow text-transform unicode-bidi unicode-range units-per-em ' +
 						'vertical-align visibility voice-family volume white-space widows width widths word-spacing x-height z-index';
-		
+
 		var values =	'above absolute all always aqua armenian attr aural auto avoid baseline behind below bidi-override black blink block blue bold bolder '+
 						'both bottom braille capitalize caption center center-left center-right circle close-quote code collapse compact condensed '+
 						'continuous counter counters crop cross crosshair cursive dashed decimal decimal-leading-zero digits disc dotted double '+
@@ -3443,14 +3443,14 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 						'table-caption table-cell table-column table-column-group table-footer-group table-header-group table-row table-row-group teal '+
 						'text-bottom text-top thick thin top transparent tty tv ultra-condensed ultra-expanded underline upper-alpha uppercase upper-latin '+
 						'upper-roman url visible wait white wider w-resize x-fast x-high x-large x-loud x-low x-slow x-small x-soft xx-large xx-small yellow';
-		
+
 		var fonts =		'[mM]onospace [tT]ahoma [vV]erdana [aA]rial [hH]elvetica [sS]ans-serif [sS]erif [cC]ourier mono sans serif';
-		
+
 		var statements		= '!important !default';
 		var preprocessor	= '@import @extend @debug @warn @if @for @while @mixin @include';
-		
+
 		var r = SyntaxHighlighter.regexLib;
-		
+
 		this.regexList = [
 			{ regex: r.multiLineCComments,								css: 'comments' },		// multiline comments
 			{ regex: r.singleLineCComments,								css: 'comments' },		// singleline comments
@@ -3465,7 +3465,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 			{ regex: new RegExp(getValuesCSS(values), 'g'),				css: 'value' },			// values
 			{ regex: new RegExp(this.getKeywords(fonts), 'g'),			css: 'color1' }			// fonts
 			];
-	};
+	}
 
 	Brush.prototype	= new SyntaxHighlighter.Highlighter();
 	Brush.aliases	= ['sass', 'scss'];
@@ -3483,7 +3483,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 	function Brush()
 	{
 		// Contributed by Yegor Jbanov and David Bernard.
-	
+
 		var keywords =	'val sealed case def true trait implicit forSome import match object null finally super ' +
 						'override try lazy for var catch throw type extends class while with new final yield abstract ' +
 						'else do if return protected private this package false';
@@ -3549,7 +3549,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 			{ regex: new RegExp(this.getKeywords(operators), 'gmi'),			css: 'color1' },			// operators and such
 			{ regex: new RegExp(this.getKeywords(keywords), 'gmi'),				css: 'keyword' }			// keyword
 			];
-	};
+	}
 
 	Brush.prototype	= new SyntaxHighlighter.Highlighter();
 	Brush.aliases	= ['sql'];
@@ -3590,7 +3590,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 			];
 
 		this.forHtmlScript(SyntaxHighlighter.regexLib.aspScriptTags);
-	};
+	}
 
 	Brush.prototype	= new SyntaxHighlighter.Highlighter();
 	Brush.aliases	= ['vb', 'vbnet'];
@@ -3614,8 +3614,8 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 				tag = new XRegExp('(&lt;|<)[\\s\\/\\?]*(?<name>[:\\w-\\.]+)', 'xg').exec(code),
 				result = []
 				;
-		
-			if (match.attributes != null) 
+
+			if (match.attributes != null)
 			{
 				var attributes,
 					regex = new XRegExp('(?<name> [\\w:\\-\\.]+)' +
@@ -3623,7 +3623,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 										'(?<value> ".*?"|\'.*?\'|\\w+)',
 										'xg');
 
-				while ((attributes = regex.exec(code)) != null) 
+				while ((attributes = regex.exec(code)) != null)
 				{
 					result.push(new constructor(attributes.name, match.index + attributes.index, 'color1'));
 					result.push(new constructor(attributes.value, match.index + attributes.index + attributes[0].indexOf(attributes.value), 'string'));
@@ -3637,13 +3637,13 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 
 			return result;
 		}
-	
+
 		this.regexList = [
 			{ regex: new XRegExp('(\\&lt;|<)\\!\\[[\\w\\s]*?\\[(.|\\s)*?\\]\\](\\&gt;|>)', 'gm'),			css: 'color2' },	// <![ ... [ ... ]]>
 			{ regex: SyntaxHighlighter.regexLib.xmlComments,												css: 'comments' },	// <!-- ... -->
 			{ regex: new XRegExp('(&lt;|<)[\\s\\/\\?]*(\\w+)(?<attributes>.*?)[\\s\\/\\?]*(&gt;|>)', 'sg'), func: process }
 		];
-	};
+	}
 
 	Brush.prototype	= new SyntaxHighlighter.Highlighter();
 	Brush.aliases	= ['xml', 'xhtml', 'xslt', 'html'];
