@@ -8,8 +8,8 @@ public enum  OrderStatusEnum {
     CANCLED(4,"已取消"),
     SERVICING(5,"售后中"),
     SERVICED(6,"售后完成");
-    private Integer code;
-    private String msg;
+    private final Integer code;
+    private final String msg;
 
     OrderStatusEnum(Integer code, String msg) {
         this.code = code;

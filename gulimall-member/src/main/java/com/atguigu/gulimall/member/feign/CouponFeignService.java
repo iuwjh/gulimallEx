@@ -11,6 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface CouponFeignService {
 
     @RequestMapping("/coupon/coupon/member/list")
-    public R membercoupons();
+    R membercoupons();
 
 }

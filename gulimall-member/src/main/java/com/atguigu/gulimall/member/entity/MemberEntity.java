@@ -2,10 +2,11 @@ package com.atguigu.gulimall.member.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * 会员
@@ -15,6 +16,7 @@ import lombok.Data;
  * @date 2019-10-08 09:47:05
  */
 @Data
+@Accessors(chain = true)
 @TableName("ums_member")
 public class MemberEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

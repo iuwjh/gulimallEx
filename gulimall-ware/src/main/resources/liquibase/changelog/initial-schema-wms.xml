@@ -1,6 +1,8 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
-    <changeSet context="load-data" author="iuwjh" id="1599474657016-1">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+    <changeSet author="iuwjh" id="1599474657016-1">
         <createTable tableName="undo_log">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -28,7 +30,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet context="load-data" author="iuwjh" id="1599474657016-2">
+    <changeSet author="iuwjh" id="1599474657016-2">
         <createTable remarks="采购信息" tableName="wms_purchase">
             <column autoIncrement="true" name="id" remarks="采购单id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -44,7 +46,7 @@
             <column name="update_time" remarks="更新日期" type="datetime"/>
         </createTable>
     </changeSet>
-    <changeSet context="load-data" author="iuwjh" id="1599474657016-3">
+    <changeSet author="iuwjh" id="1599474657016-3">
         <createTable tableName="wms_purchase_detail">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -57,7 +59,7 @@
             <column name="status" remarks="状态[0新建，1已分配，2正在采购，3已完成，4采购失败]" type="INT"/>
         </createTable>
     </changeSet>
-    <changeSet context="load-data" author="iuwjh" id="1599474657016-4">
+    <changeSet author="iuwjh" id="1599474657016-4">
         <createTable remarks="仓库信息" tableName="wms_ware_info">
             <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -67,7 +69,7 @@
             <column name="areacode" remarks="区域编码" type="VARCHAR(20)"/>
         </createTable>
     </changeSet>
-    <changeSet context="load-data" author="iuwjh" id="1599474657016-5">
+    <changeSet author="iuwjh" id="1599474657016-5">
         <createTable remarks="库存工作单" tableName="wms_ware_order_task">
             <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -87,7 +89,7 @@
             <column name="task_comment" remarks="工作单备注" type="VARCHAR(500)"/>
         </createTable>
     </changeSet>
-    <changeSet context="load-data" author="iuwjh" id="1599474657016-6">
+    <changeSet author="iuwjh" id="1599474657016-6">
         <createTable remarks="库存工作单" tableName="wms_ware_order_task_detail">
             <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -100,7 +102,7 @@
             <column name="lock_status" remarks="1-锁定 2-释放 3-扣减" type="INT"/>
         </createTable>
     </changeSet>
-    <changeSet context="load-data" author="iuwjh" id="1599474657016-7">
+    <changeSet author="iuwjh" id="1599474657016-7">
         <createTable remarks="商品库存" tableName="wms_ware_sku">
             <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -184,7 +186,7 @@
             <column header="stock_locked" name="stock_locked" type="NUMERIC"/>
         </loadData>
     </changeSet>
-    <changeSet context="load-data" author="iuwjh" id="1599474657016-14">
+    <changeSet author="iuwjh" id="1599474657016-14">
         <addUniqueConstraint columnNames="xid, branch_id" constraintName="ux_undo_log" tableName="undo_log"/>
     </changeSet>
 </databaseChangeLog>

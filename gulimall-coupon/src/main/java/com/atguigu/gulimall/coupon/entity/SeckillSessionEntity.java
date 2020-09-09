@@ -3,12 +3,12 @@ package com.atguigu.gulimall.coupon.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-
-import lombok.Data;
 
 /**
  * 秒杀活动场次
@@ -18,6 +18,7 @@ import lombok.Data;
  * @date 2019-10-08 09:36:40
  */
 @Data
+@Accessors(chain = true)
 @TableName("sms_seckill_session")
 public class SeckillSessionEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

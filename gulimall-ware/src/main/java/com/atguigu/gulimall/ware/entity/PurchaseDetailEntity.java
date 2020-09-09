@@ -2,26 +2,27 @@ package com.atguigu.gulimall.ware.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-
-import java.math.BigDecimal;
-import java.io.Serializable;
-import java.util.Date;
 import lombok.Data;
+import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
- * 
- * 
+ *
+ *
  * @author leifengyang
  * @email leifengyang@gmail.com
  * @date 2019-11-17 13:50:10
  */
 @Data
+@Accessors(chain = true)
 @TableName("wms_purchase_detail")
 public class PurchaseDetailEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 
+	 *
 	 */
 	@TableId
 	private Long id;

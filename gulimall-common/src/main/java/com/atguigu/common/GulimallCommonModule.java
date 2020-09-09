@@ -1,9 +1,12 @@
 package com.atguigu.common;
 
+import com.atguigu.common.config.GulimallProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;
 import org.springframework.stereotype.Component;
 
 @Configuration
+@EnableConfigurationProperties(GulimallProperties.class)
 @ComponentScan(excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = ".*\\.optional\\..*"))
 @PropertySource("classpath:base.properties")
 public class GulimallCommonModule {

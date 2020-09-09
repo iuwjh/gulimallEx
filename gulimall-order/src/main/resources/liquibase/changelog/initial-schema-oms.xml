@@ -1,6 +1,8 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
-    <changeSet context="load-data" author="iuwjh" id="1599474632476-1">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+    <changeSet author="iuwjh" id="1599474632476-1">
         <createTable remarks="订单" tableName="oms_order">
             <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -50,7 +52,7 @@
             <column name="modify_time" remarks="修改时间" type="datetime"/>
         </createTable>
     </changeSet>
-    <changeSet context="load-data" author="iuwjh" id="1599474632476-2">
+    <changeSet author="iuwjh" id="1599474632476-2">
         <createTable remarks="订单项信息" tableName="oms_order_item">
             <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -76,7 +78,7 @@
             <column name="gift_growth" remarks="赠送成长值" type="INT"/>
         </createTable>
     </changeSet>
-    <changeSet context="load-data" author="iuwjh" id="1599474632476-3">
+    <changeSet author="iuwjh" id="1599474632476-3">
         <createTable remarks="订单操作历史记录" tableName="oms_order_operate_history">
             <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -88,7 +90,7 @@
             <column name="note" remarks="备注" type="VARCHAR(500)"/>
         </createTable>
     </changeSet>
-    <changeSet context="load-data" author="iuwjh" id="1599474632476-4">
+    <changeSet author="iuwjh" id="1599474632476-4">
         <createTable remarks="订单退货申请" tableName="oms_order_return_apply">
             <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -122,7 +124,7 @@
             <column name="company_address" remarks="公司收货地址" type="VARCHAR(500)"/>
         </createTable>
     </changeSet>
-    <changeSet context="load-data" author="iuwjh" id="1599474632476-5">
+    <changeSet author="iuwjh" id="1599474632476-5">
         <createTable remarks="退货原因" tableName="oms_order_return_reason">
             <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -133,7 +135,7 @@
             <column name="create_time" remarks="create_time" type="datetime"/>
         </createTable>
     </changeSet>
-    <changeSet context="load-data" author="iuwjh" id="1599474632476-6">
+    <changeSet author="iuwjh" id="1599474632476-6">
         <createTable remarks="订单配置信息" tableName="oms_order_setting">
             <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -146,7 +148,7 @@
             <column name="member_level" remarks="会员等级【0-不限会员等级，全部通用；其他-对应的其他会员等级】" type="TINYINT(3)"/>
         </createTable>
     </changeSet>
-    <changeSet context="load-data" author="iuwjh" id="1599474632476-7">
+    <changeSet author="iuwjh" id="1599474632476-7">
         <createTable remarks="支付信息表" tableName="oms_payment_info">
             <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -167,7 +169,7 @@
             <column name="callback_time" remarks="回调时间" type="datetime"/>
         </createTable>
     </changeSet>
-    <changeSet context="load-data" author="iuwjh" id="1599474632476-8">
+    <changeSet author="iuwjh" id="1599474632476-8">
         <createTable remarks="退款信息" tableName="oms_refund_info">
             <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -180,7 +182,7 @@
             <column name="refund_content" type="VARCHAR(5000)"/>
         </createTable>
     </changeSet>
-    <changeSet context="load-data" author="iuwjh" id="1599474632476-9">
+    <changeSet author="iuwjh" id="1599474632476-9">
         <createTable tableName="undo_log">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -293,7 +295,7 @@
             <column header="callback_time" name="callback_time" type="DATE"/>
         </loadData>
     </changeSet>
-    <changeSet context="load-data" author="iuwjh" id="1599474632476-13">
+    <changeSet author="iuwjh" id="1599474632476-13">
         <addUniqueConstraint columnNames="xid, branch_id" constraintName="ux_undo_log" tableName="undo_log"/>
     </changeSet>
 </databaseChangeLog>

@@ -1,6 +1,8 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
-    <changeSet context="load-data" author="iuwjh" id="1599474651869-1">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+    <changeSet author="iuwjh" id="1599474651869-1">
         <createTable remarks="成长值变化历史记录" tableName="ums_growth_change_history">
             <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -12,7 +14,7 @@
             <column name="source_type" remarks="积分来源[0-购物，1-管理员修改]" type="TINYINT(3)"/>
         </createTable>
     </changeSet>
-    <changeSet context="load-data" author="iuwjh" id="1599474651869-2">
+    <changeSet author="iuwjh" id="1599474651869-2">
         <createTable remarks="积分变化历史记录" tableName="ums_integration_change_history">
             <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -24,7 +26,7 @@
             <column name="source_tyoe" remarks="来源[0-&gt;购物；1-&gt;管理员修改;2-&gt;活动]" type="TINYINT(3)"/>
         </createTable>
     </changeSet>
-    <changeSet context="load-data" author="iuwjh" id="1599474651869-3">
+    <changeSet author="iuwjh" id="1599474651869-3">
         <createTable remarks="会员" tableName="ums_member">
             <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -51,7 +53,7 @@
             <column name="expires_in" remarks="访问令牌期限" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet context="load-data" author="iuwjh" id="1599474651869-4">
+    <changeSet author="iuwjh" id="1599474651869-4">
         <createTable remarks="会员收藏的商品" tableName="ums_member_collect_spu">
             <column name="id" remarks="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -63,7 +65,7 @@
             <column name="create_time" remarks="create_time" type="datetime"/>
         </createTable>
     </changeSet>
-    <changeSet context="load-data" author="iuwjh" id="1599474651869-5">
+    <changeSet author="iuwjh" id="1599474651869-5">
         <createTable remarks="会员收藏的专题活动" tableName="ums_member_collect_subject">
             <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -74,7 +76,7 @@
             <column name="subject_urll" remarks="活动url" type="VARCHAR(500)"/>
         </createTable>
     </changeSet>
-    <changeSet context="load-data" author="iuwjh" id="1599474651869-6">
+    <changeSet author="iuwjh" id="1599474651869-6">
         <createTable remarks="会员等级" tableName="ums_member_level">
             <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -90,7 +92,7 @@
             <column name="note" remarks="备注" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet context="load-data" author="iuwjh" id="1599474651869-7">
+    <changeSet author="iuwjh" id="1599474651869-7">
         <createTable remarks="会员登录记录" tableName="ums_member_login_log">
             <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -102,7 +104,7 @@
             <column name="login_type" remarks="登录类型[1-web，2-app]" type="BIT(1)"/>
         </createTable>
     </changeSet>
-    <changeSet context="load-data" author="iuwjh" id="1599474651869-8">
+    <changeSet author="iuwjh" id="1599474651869-8">
         <createTable remarks="会员收货地址" tableName="ums_member_receive_address">
             <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -119,7 +121,7 @@
             <column name="default_status" remarks="是否默认" type="BIT(1)"/>
         </createTable>
     </changeSet>
-    <changeSet context="load-data" author="iuwjh" id="1599474651869-9">
+    <changeSet author="iuwjh" id="1599474651869-9">
         <createTable remarks="会员统计信息" tableName="ums_member_statistics_info">
             <column autoIncrement="true" name="id" remarks="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -140,7 +142,7 @@
             <column name="invite_friend_count" remarks="邀请的朋友数量" type="INT"/>
         </createTable>
     </changeSet>
-    <changeSet context="load-data" author="iuwjh" id="1599474651869-10">
+    <changeSet author="iuwjh" id="1599474651869-10">
         <createTable tableName="undo_log">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -222,7 +224,7 @@
             <column header="default_status" name="default_status" type="BOOLEAN"/>
         </loadData>
     </changeSet>
-    <changeSet context="load-data" author="iuwjh" id="1599474651869-14">
+    <changeSet author="iuwjh" id="1599474651869-14">
         <addUniqueConstraint columnNames="xid, branch_id" constraintName="ux_undo_log" tableName="undo_log"/>
     </changeSet>
 </databaseChangeLog>

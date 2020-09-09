@@ -2,20 +2,21 @@ package com.atguigu.gulimall.order.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-
-import java.math.BigDecimal;
-import java.io.Serializable;
-import java.util.Date;
 import lombok.Data;
+import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * 退款信息
- * 
+ *
  * @author leifengyang
  * @email leifengyang@gmail.com
  * @date 2019-10-08 09:56:16
  */
 @Data
+@Accessors(chain = true)
 @TableName("oms_refund_info")
 public class RefundInfoEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -46,7 +47,7 @@ public class RefundInfoEntity implements Serializable {
 	 */
 	private Integer refundChannel;
 	/**
-	 * 
+	 *
 	 */
 	private String refundContent;
 
