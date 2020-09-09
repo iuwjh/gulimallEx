@@ -2,19 +2,20 @@ package com.atguigu.gulimall.coupon.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.util.Date;
-import lombok.Data;
 
 /**
  * 优惠券分类关联
- * 
+ *
  * @author leifengyang
  * @email leifengyang@gmail.com
  * @date 2019-10-08 09:36:40
  */
 @Data
+@Accessors(chain = true)
 @TableName("sms_coupon_spu_category_relation")
 public class CouponSpuCategoryRelationEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

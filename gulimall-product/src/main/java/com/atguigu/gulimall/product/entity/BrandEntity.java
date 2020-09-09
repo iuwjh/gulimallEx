@@ -6,22 +6,22 @@ import com.atguigu.common.valid.UpdateGroup;
 import com.atguigu.common.valid.UpdateStatusGroup;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-
-import java.io.Serializable;
-
 import lombok.Data;
+import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.URL;
 
 import javax.validation.constraints.*;
+import java.io.Serializable;
 
 /**
  * 品牌
- * 
+ *
  * @author leifengyang
  * @email leifengyang@gmail.com
  * @date 2019-10-01 21:08:49
  */
 @Data
+@Accessors(chain = true)
 @TableName("pms_brand")
 public class BrandEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

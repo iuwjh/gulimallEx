@@ -2,19 +2,20 @@ package com.atguigu.gulimall.product.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.util.Date;
-import lombok.Data;
 
 /**
  * spu图片
- * 
+ *
  * @author leifengyang
  * @email leifengyang@gmail.com
  * @date 2019-10-01 21:08:49
  */
 @Data
+@Accessors(chain = true)
 @TableName("pms_spu_images")
 public class SpuImagesEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

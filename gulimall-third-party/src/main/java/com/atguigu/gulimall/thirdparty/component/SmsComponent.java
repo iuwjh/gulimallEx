@@ -12,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -77,7 +78,7 @@ public class SmsComponent {
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
         String line = null;
         while ((line = br.readLine()) != null) {
-            line = new String(line.getBytes(), "utf-8");
+            line = new String(line.getBytes(), StandardCharsets.UTF_8);
             sb.append(line);
         }
         br.close();

@@ -2,19 +2,20 @@ package com.atguigu.gulimall.product.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.util.Date;
-import lombok.Data;
 
 /**
  * sku销售属性&值
- * 
+ *
  * @author leifengyang
  * @email leifengyang@gmail.com
  * @date 2019-10-01 21:08:49
  */
 @Data
+@Accessors(chain = true)
 @TableName("pms_sku_sale_attr_value")
 public class SkuSaleAttrValueEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

@@ -7,6 +7,7 @@ plugins {
     id 'java'
     id 'java-test-fixtures'
     id 'maven-publish'
+    id 'project-report'
     id 'idea'
     id "io.freefair.lombok" version "${lombok_plugin_version}" apply false
     id "org.liquibase.gradle" version "${liquibase_plugin_version}" apply false
@@ -44,16 +45,17 @@ allprojects {
 }
 
 subprojects {
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-    assert System.properties["java.specification.version"] == "1.8" || "11" || "12" || "13" || "14"
-
     apply plugin: 'java'
     apply plugin: 'maven-publish'
+    apply plugin: 'project-report'
     apply plugin: 'idea'
     apply plugin: 'io.freefair.lombok'
     apply plugin: "org.liquibase.gradle"
     apply plugin: 'org.springframework.boot'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    assert System.properties["java.specification.version"] == "1.8" || "11" || "12" || "13" || "14"
 
     if (project.name == 'gulimall-common') {
 
@@ -78,7 +80,7 @@ subprojects {
 
     dependencies {
         // 导入依赖BOM文件
-        implementation platform(SpringBootPlugin.BOM_COORDINATES)
+        implementation (platform(SpringBootPlugin.BOM_COORDINATES))
         implementation platform("org.springframework.cloud:spring-cloud-dependencies:${spring_cloud_version}")
         implementation platform("com.alibaba.cloud:spring-cloud-alibaba-dependencies:${spring_cloud_alibaba_version}")
 
@@ -95,7 +97,10 @@ subprojects {
         implementation 'org.springframework.boot:spring-boot-starter-actuator'
         implementation 'org.springframework.boot:spring-boot-configuration-processor'
         implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation('org.springframework.boot:spring-boot-starter-test') {
+            exclude group: 'org.junit.vintage'
+        }
+        //testImplementation 'org.junit.jupiter:junit-jupiter'
 
         // Spring cloud
         implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
@@ -134,6 +139,7 @@ subprojects {
 
         implementation 'org.apache.httpcomponents:fluent-hc:4.5.12'
         implementation 'commons-lang:commons-lang:2.6'
+        testImplementation 'org.assertj:assertj-core'
 
     }
 
@@ -178,6 +184,10 @@ subprojects {
                 from(components.java)
             }
         }
+    }
+
+    test {
+        useJUnitPlatform()
     }
 
     tasks.withType(JavaCompile) {

@@ -42,7 +42,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -213,7 +212,7 @@ public class MallSearchServiceImpl implements MallSearchService {
             long attrId = bucket.getKeyAsNumber().longValue();
             String attrName = ((ParsedStringTerms) bucket.getAggregations().get("attr_name_agg")).getBuckets().get(0).getKeyAsString();
             List<String> attrValues = ((ParsedStringTerms) bucket.getAggregations().get("attr_value_agg")).getBuckets().stream().map(item -> {
-                String keyAsString = ((Terms.Bucket) item).getKeyAsString();
+                String keyAsString = item.getKeyAsString();
                 return keyAsString;
             }).collect(Collectors.toList());
 

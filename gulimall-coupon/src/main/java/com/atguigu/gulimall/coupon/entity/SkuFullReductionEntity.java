@@ -2,20 +2,21 @@ package com.atguigu.gulimall.coupon.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-
-import java.math.BigDecimal;
-import java.io.Serializable;
-import java.util.Date;
 import lombok.Data;
+import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * 商品满减信息
- * 
+ *
  * @author leifengyang
  * @email leifengyang@gmail.com
  * @date 2019-10-08 09:36:40
  */
 @Data
+@Accessors(chain = true)
 @TableName("sms_sku_full_reduction")
 public class SkuFullReductionEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
