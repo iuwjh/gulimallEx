@@ -52,7 +52,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  *
  *
  */
-@EnableDiscoveryClient
 @SpringBootApplication(scanBasePackageClasses = {GulimallCouponApplication.class, GulimallCommonModule.class})
 public class GulimallCouponApplication {
 

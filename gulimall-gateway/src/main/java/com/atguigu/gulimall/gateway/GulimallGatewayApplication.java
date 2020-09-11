@@ -19,7 +19,6 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
  * 2、编写网关配置文件
  */
 
-@EnableDiscoveryClient
 @SpringBootApplication(scanBasePackageClasses = {GulimallGatewayApplication.class, GulimallCommonModule.class},exclude = {DataSourceAutoConfiguration.class})
 public class GulimallGatewayApplication {
 
