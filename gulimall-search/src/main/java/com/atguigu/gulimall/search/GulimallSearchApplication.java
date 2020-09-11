@@ -8,8 +8,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
-@EnableFeignClients(basePackages = "com.atguigu.gulimall.search.feign")
-@EnableDiscoveryClient
 @SpringBootApplication(scanBasePackageClasses = {GulimallSearchApplication.class, GulimallCommonModule.class}, exclude = DataSourceAutoConfiguration.class)
 public class GulimallSearchApplication {
 

@@ -10,8 +10,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @EnableAspectJAutoProxy(exposeProxy = true)
-@EnableFeignClients
-@EnableDiscoveryClient
 @SpringBootApplication(scanBasePackageClasses = {GulimallOrderApplication.class, GulimallCommonModule.class})
 public class GulimallOrderApplication {
 

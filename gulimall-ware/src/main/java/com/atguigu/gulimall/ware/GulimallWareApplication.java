@@ -8,8 +8,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 
 
-@EnableFeignClients
-@EnableDiscoveryClient
 @SpringBootApplication(scanBasePackageClasses = {GulimallWareApplication.class, GulimallCommonModule.class})
 public class GulimallWareApplication {
 
