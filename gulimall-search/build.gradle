@@ -7,7 +7,7 @@ dependencies {
         }
         implementation "org.springframework.boot:spring-boot-starter-undertow"
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client:7.8.0'
+    implementation "org.elasticsearch.client:elasticsearch-rest-high-level-client:${elasticsearch_version}"
 }
 
 
