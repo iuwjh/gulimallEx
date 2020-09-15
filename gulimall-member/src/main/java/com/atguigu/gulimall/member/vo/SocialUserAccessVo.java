@@ -1,9 +1,11 @@
 package com.atguigu.gulimall.member.vo;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 @Data
-public class SocialUser {
+@Accessors(chain = true)
+public class SocialUserAccessVo {
     private String accessToken;
     private String uid;
     private String isRealName;

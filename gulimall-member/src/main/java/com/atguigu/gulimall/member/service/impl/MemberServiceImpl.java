@@ -1,66 +1,66 @@
 package com.atguigu.gulimall.member.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.atguigu.gulimall.member.controller.vo.MemberRegisVo;
+import com.atguigu.common.utils.PageUtils;
+import com.atguigu.common.utils.Query;
+import com.atguigu.gulimall.member.controller.vo.MemberRegistVo;
+import com.atguigu.gulimall.member.dao.MemberDao;
 import com.atguigu.gulimall.member.dao.MemberLevelDao;
+import com.atguigu.gulimall.member.entity.MemberEntity;
 import com.atguigu.gulimall.member.entity.MemberLevelEntity;
+import com.atguigu.gulimall.member.exception.PasswordFormatException;
 import com.atguigu.gulimall.member.exception.PhoneExistException;
 import com.atguigu.gulimall.member.exception.UsernameExistException;
+import com.atguigu.gulimall.member.remote.SocialUserService;
+import com.atguigu.gulimall.member.remote.vo.SocialUserVo;
+import com.atguigu.gulimall.member.service.MemberService;
 import com.atguigu.gulimall.member.vo.MemberLoginVo;
-import com.atguigu.gulimall.member.vo.SocialUser;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.fluent.Request;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
+import com.atguigu.gulimall.member.vo.SocialUserAccessVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.atguigu.common.utils.PageUtils;
-import com.atguigu.common.utils.Query;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
-import com.atguigu.gulimall.member.dao.MemberDao;
-import com.atguigu.gulimall.member.entity.MemberEntity;
-import com.atguigu.gulimall.member.service.MemberService;
+import java.net.URISyntaxException;
+import java.util.Map;
 
 
 @Service("memberService")
+@RequiredArgsConstructor
 public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> implements MemberService {
-    @Autowired
-    MemberLevelDao memberLevelDao;
+    private final MemberDao memberDao;
 
-    @Autowired
-    MemberDao memberDao;
+    private final MemberLevelDao memberLevelDao;
+
+    private final SocialUserService socialUserService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<MemberEntity> page = this.page(
-                new Query<MemberEntity>().getPage(params),
-                new QueryWrapper<MemberEntity>()
+            new Query<MemberEntity>().getPage(params),
+            new QueryWrapper<MemberEntity>()
         );
 
         return new PageUtils(page);
     }
 
     @Override
-    public void regist(MemberRegisVo vo) throws PhoneExistException, UsernameExistException {
+    public void regist(MemberRegistVo vo) throws PhoneExistException, UsernameExistException {
         MemberEntity memberEntity = new MemberEntity();
 
         MemberLevelEntity levelEntity = memberLevelDao.getDefaultLevel();
         memberEntity.setLevelId(levelEntity.getId());
 
-        checkPhoneUnique(vo.getPhone());
-        checkUsernameUnique(vo.getUserName());
+        if (!checkPasswordFormat(vo.getPassword())) {
+            throw new PasswordFormatException();
+        }
+        if (!memberDao.checkPhoneUnique(vo.getPhone())) {
+            throw new PhoneExistException();
+        }
+        if (!memberDao.checkUsernameUnique(vo.getUserName())) {
+            throw new UsernameExistException();
+        }
 
         memberEntity.setMobile(vo.getPhone());
         memberEntity.setUsername(vo.getUserName());
@@ -74,20 +74,8 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
         memberDao.insert(memberEntity);
     }
 
-    @Override
-    public void checkPhoneUnique(String phone) throws PhoneExistException {
-        Integer count = memberDao.selectCount(new QueryWrapper<MemberEntity>().eq("mobile", phone));
-        if (count > 0) {
-            throw new PhoneExistException();
-        }
-    }
-
-    @Override
-    public void checkUsernameUnique(String username) throws UsernameExistException {
-        Integer count = memberDao.selectCount(new QueryWrapper<MemberEntity>().eq("username", username));
-        if (count > 0) {
-            throw new UsernameExistException();
-        }
+    private boolean checkPasswordFormat(String password) {
+        return password.length() >= 6;
     }
 
     @Override
@@ -95,8 +83,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
         String loginAcct = vo.getLoginAcct();
         String password = vo.getPassword();
 
-        MemberEntity entity = baseMapper.selectOne(new QueryWrapper<MemberEntity>().eq("username", loginAcct)
-                .or().eq("mobile", loginAcct));
+        MemberEntity entity = memberDao.findByLoginAcct(loginAcct);
         if (entity == null) {
             return null;
         } else {
@@ -113,49 +100,39 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
     }
 
     @Override
-    public MemberEntity login(SocialUser socialUser) {
-        String uid = socialUser.getUid();
-        MemberEntity memberEntity = baseMapper.selectOne(new QueryWrapper<MemberEntity>().eq("social_uid", uid));
+    public MemberEntity loginSocial(SocialUserAccessVo socialUserAccessVo) {
+        String uid = socialUserAccessVo.getUid();
+        MemberEntity memberEntity = memberDao.findBySocialUid(uid);
         if (memberEntity != null) {
             MemberEntity update = new MemberEntity();
             update.setId(memberEntity.getId());
-            update.setAccessToken(socialUser.getAccessToken());
-            update.setExpiresIn(socialUser.getExpiresIn());
+            update.setAccessToken(socialUserAccessVo.getAccessToken());
+            update.setExpiresIn(socialUserAccessVo.getExpiresIn());
 
             memberDao.updateById(update);
 
-            memberEntity.setAccessToken(socialUser.getAccessToken());
-            memberEntity.setExpiresIn(socialUser.getExpiresIn());
+            memberEntity.setAccessToken(socialUserAccessVo.getAccessToken());
+            memberEntity.setExpiresIn(socialUserAccessVo.getExpiresIn());
 
             return memberEntity;
         } else {
             MemberEntity regist = new MemberEntity();
 
             try {
-                List<BasicNameValuePair> nameValuePairs = Arrays.asList(
-                        new BasicNameValuePair("access_token", socialUser.getAccessToken()),
-                        new BasicNameValuePair("uid", socialUser.getUid())
-                );
-                String queryStr = URLEncodedUtils.format(nameValuePairs, "UTF-8");
-
-                HttpResponse response = Request.Get("https://api.weibo.com/2/users/show.json?" + queryStr).execute().returnResponse();
-                if (response.getStatusLine().getStatusCode() == 200) {
-                    String json = EntityUtils.toString(response.getEntity());
-                    JSONObject jsonObject = JSON.parseObject(json);
-
-                    String name = jsonObject.getString("name");
-                    String gender = jsonObject.getString("gender");
-
-                    regist.setNickname(name);
-                    regist.setGender("m".equals(gender) ? 1 : 0);
-
+                SocialUserVo userVo = socialUserService.weiboRegist(socialUserAccessVo);
+                if (userVo == null) {
+                    return null;
                 }
-            } catch (Exception e) {
+                regist.setNickname(userVo.getNickname());
+                regist.setGender("m".equals(userVo.getGender()) ? 1 : 0);
+            } catch (URISyntaxException e) {
                 e.printStackTrace();
+                return null;
             }
-            regist.setSocialUid(socialUser.getUid());
-            regist.setAccessToken(socialUser.getAccessToken());
-            regist.setExpiresIn(socialUser.getExpiresIn());
+
+            regist.setSocialUid(socialUserAccessVo.getUid());
+            regist.setAccessToken(socialUserAccessVo.getAccessToken());
+            regist.setExpiresIn(socialUserAccessVo.getExpiresIn());
 
             memberDao.insert(regist);
             return regist;

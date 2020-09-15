@@ -4,13 +4,13 @@ import java.util.Arrays;
 import java.util.Map;
 
 import com.atguigu.common.exception.BizCodeEnume;
-import com.atguigu.gulimall.member.controller.vo.MemberRegisVo;
+import com.atguigu.gulimall.member.controller.vo.MemberRegistVo;
 import com.atguigu.gulimall.member.exception.PhoneExistException;
 import com.atguigu.gulimall.member.exception.UsernameExistException;
 import com.atguigu.gulimall.member.feign.CouponFeignService;
 import com.atguigu.gulimall.member.vo.MemberLoginVo;
-import com.atguigu.gulimall.member.vo.SocialUser;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.atguigu.gulimall.member.vo.SocialUserAccessVo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import com.atguigu.gulimall.member.entity.MemberEntity;
@@ -28,15 +28,14 @@ import com.atguigu.common.utils.R;
  */
 @RestController
 @RequestMapping("member/member")
+@RequiredArgsConstructor
 public class MemberController {
-    @Autowired
-    private MemberService memberService;
+    private final MemberService memberService;
 
-    @Autowired
-    CouponFeignService couponFeignService;
+    private final CouponFeignService couponFeignService;
 
     @RequestMapping("/coupons")
-    public R test() {
+    public R coupons() {
         MemberEntity memberEntity = new MemberEntity();
         memberEntity.setNickname("张三");
 
@@ -45,8 +44,8 @@ public class MemberController {
     }
 
     @PostMapping("/oauth2/login")
-    public R oauthLogin(@RequestBody SocialUser socialUser){
-        MemberEntity entity = memberService.login(socialUser);
+    public R oauthLogin(@RequestBody SocialUserAccessVo socialUserAccessVo){
+        MemberEntity entity = memberService.loginSocial(socialUserAccessVo);
         if(entity!=null){
             return R.ok().setData(entity);
         }else {
@@ -65,7 +64,7 @@ public class MemberController {
     }
 
     @PostMapping("/regist")
-    public R regist(@RequestBody MemberRegisVo vo) {
+    public R regist(@RequestBody MemberRegistVo vo) {
         try {
             memberService.regist(vo);
         } catch (PhoneExistException e) {

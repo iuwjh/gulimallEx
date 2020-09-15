@@ -40,10 +40,8 @@ public class GulimallCommonModule {
     static class ProfileTest {}
 
     @Configuration
-    @PropertySources({
-        @PropertySource("classpath:test-base.properties"),
-        @PropertySource("classpath:test-with-data.properties")
-    })
+    @PropertySource("classpath:test-base.properties")
+    @PropertySource("classpath:test-with-data.properties")
     @Profile("testWithData")
     static class ProfileTestWithData {}
 
