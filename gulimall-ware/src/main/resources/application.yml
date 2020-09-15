@@ -21,8 +21,3 @@ mybatis-plus:
     db-config:
       id-type: auto
 
-#seata:
-#  config:
-#    type: nacos
-#    nacos:
-#      server-addr: localhost:8848
