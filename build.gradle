@@ -36,10 +36,11 @@ allprojects {
         mavenCentral()
     }
 
-    wrapper {
-        gradleVersion = "6.5"
+    configurations.all {
+        resolutionStrategy {
+            force "com.alibaba:fastjson:${fastjson_version}"
+        }
     }
-
 }
 
 subprojects {
@@ -90,7 +91,7 @@ subprojects {
             testFixturesImplementation platform(SpringBootPlugin.BOM_COORDINATES)
             testFixturesImplementation 'org.springframework.boot:spring-boot-starter-test'
             testFixturesImplementation 'com.fasterxml.jackson.core:jackson-databind'
-            testFixturesImplementation "com.alibaba:fastjson:${alibaba_fastjson_version}"
+            testFixturesImplementation "com.alibaba:fastjson:${fastjson_version}"
             testFixturesCompileOnly 'javax.servlet:javax.servlet-api'
             testFixturesImplementation "it.ozimov:embedded-redis:${embedded_redis_version}"
         }
@@ -102,20 +103,14 @@ subprojects {
             exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
         }
 
-        // Spring Security
-        implementation 'org.springframework.boot:spring-boot-starter-security'
-        implementation 'org.springframework.security:spring-security-test'
-        implementation "io.jsonwebtoken:jjwt-api:${jsonwebtoken_version}"
-        runtimeOnly "io.jsonwebtoken:jjwt-impl:${jsonwebtoken_version}",
-            // Uncomment the next line if you want to use RSASSA-PSS (PS256, PS384, PS512) algorithms:
-            //'org.bouncycastle:bcprov-jdk15on:1.60',
-            "io.jsonwebtoken:jjwt-jackson:${jsonwebtoken_version}" // or 'io.jsonwebtoken:jjwt-gson:0.11.2' for gson
-
-        // Spring Mvc Web
-        implementation ("org.springframework.boot:spring-boot-starter-web") {
-            exclude module: "spring-boot-starter-tomcat"
-        }
-        implementation "org.springframework.boot:spring-boot-starter-undertow"
+        //// Spring Security
+        //implementation 'org.springframework.boot:spring-boot-starter-security'
+        //implementation 'org.springframework.security:spring-security-test'
+        //implementation "io.jsonwebtoken:jjwt-api:${jsonwebtoken_version}"
+        //runtimeOnly "io.jsonwebtoken:jjwt-impl:${jsonwebtoken_version}",
+        //    // Uncomment the next line if you want to use RSASSA-PSS (PS256, PS384, PS512) algorithms:
+        //    //'org.bouncycastle:bcprov-jdk15on:1.60',
+        //    "io.jsonwebtoken:jjwt-jackson:${jsonwebtoken_version}" // or 'io.jsonwebtoken:jjwt-gson:0.11.2' for gson
 
         // Spring cloud
         implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
@@ -144,7 +139,7 @@ subprojects {
         liquibaseRuntime "com.h2database:h2"
 
         // Redis
-        implementation ('org.springframework.boot:spring-boot-starter-data-redis') {
+        implementation('org.springframework.boot:spring-boot-starter-data-redis') {
             exclude group: 'io.lettuce', module: 'lettuce-core'
         }
         implementation 'redis.clients:jedis'
@@ -159,7 +154,6 @@ subprojects {
         implementation 'commons-lang:commons-lang:2.6'
         testImplementation 'org.assertj:assertj-core'
         testImplementation 'com.baomidou:mybatis-plus-boot-starter-test:3.4.0'
-        //testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:2.1.3'
 
         implementation 'org.javers:javers-core:5.11.2'
 
@@ -215,6 +209,12 @@ subprojects {
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
     }
+}
+
+
+
+wrapper {
+    gradleVersion = "6.5"
 }
 
 task listSubprojects() {
