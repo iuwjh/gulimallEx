@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class MyThreadConfig {
     @Bean
     // @ConditionalOnMissingBean
-    public ThreadPoolExecutor threadPoolExecutor(GulimallProperties config) {
+    public ThreadPoolExecutor threadPoolExecutor(GulimallProps config) {
         return new ThreadPoolExecutor(
                 config.getThreadPool().getCoreSize(),
                 config.getThreadPool().getMaxSize(),
