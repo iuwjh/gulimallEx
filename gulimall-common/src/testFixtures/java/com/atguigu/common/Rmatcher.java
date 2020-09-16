@@ -11,6 +11,7 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
+import java.util.Collection;
 import java.util.function.Function;
 
 public class Rmatcher {
@@ -31,6 +32,22 @@ public class Rmatcher {
             R r = objectMapper.readValue(json, R.class);
             Assertions.assertThat(objectMapper.writeValueAsString(r.getData(typeRef))).isNotBlank()
                 .isEqualTo(objectMapper.writeValueAsString(val));
+        };
+    }
+
+    public <T> ResultMatcher equalValue(T val, Class<T> cls) {
+        return mvcResult -> {
+            String json = mvcResult.getResponse().getContentAsString();
+            Object r = objectMapper.readValue(json, cls);
+            Assertions.assertThat(r).isNotNull().isEqualTo(val);
+        };
+    }
+
+    public ResultMatcher hasSize(int size, Class<? extends Collection> cls) {
+        return mvcResult -> {
+            String json = mvcResult.getResponse().getContentAsString();
+            final Collection collection = objectMapper.readValue(json, cls);
+            Assertions.assertThat(collection).hasSize(size);
         };
     }
 
