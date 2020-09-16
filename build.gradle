@@ -195,6 +195,10 @@ subprojects {
         runList = project.ext.runList
     }
 
+    jib {
+        allowInsecureRegistries true
+    }
+
     publishing {
         publications {
             maven(MavenPublication) {
