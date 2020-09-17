@@ -1,6 +1,8 @@
 package com.atguigu.gulimall.member.controller;
 
 import com.alibaba.fastjson.TypeReference;
+import com.atguigu.common.CommonTestHelper;
+import com.atguigu.common.ControllerTestConfig;
 import com.atguigu.common.utils.PageUtils;
 import com.atguigu.common.utils.R;
 import com.atguigu.gulimall.member.controller.vo.MemberRegistVo;
@@ -19,7 +21,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.util.LinkedMultiValueMap;
 
 import java.util.*;
 
@@ -28,7 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @WebMvcTest(controllers = MemberController.class,
-    includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = GulimallMemberControllerTestConfig.class)
+    includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = ControllerTestConfig.class)
 )
 class MemberControllerTest {
 
@@ -53,7 +54,7 @@ class MemberControllerTest {
             .thenReturn(R.ok().put("coupons", coupons));
 
         mockMvc.perform(get(BASE_URL + "/coupons"))
-            .andExpect(Rm().hasKeyAndJsonValue("coupons", coupons));
+            .andExpect(Rm().RHasAttr("coupons", coupons));
     }
 
     @Test
@@ -66,7 +67,7 @@ class MemberControllerTest {
         mockMvc.perform(post(BASE_URL + "/oauth2/login")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(accessVo)))
-            .andExpect(Rm().hasJsonData(expected, new TypeReference<MemberEntity>() {}));
+            .andExpect(Rm().RDataEquals(expected, new TypeReference<MemberEntity>() {}));
     }
 
     @Test
@@ -79,7 +80,7 @@ class MemberControllerTest {
         mockMvc.perform(post(BASE_URL + "/login")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(loginVo)))
-            .andExpect(Rm().hasJsonData(expected, new TypeReference<MemberEntity>() {}));
+            .andExpect(Rm().RDataEquals(expected, new TypeReference<MemberEntity>() {}));
     }
 
     @Test
@@ -89,7 +90,7 @@ class MemberControllerTest {
         mockMvc.perform(post(BASE_URL + "/regist")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(registVo)))
-            .andExpect(Rm().hasStatus(200));
+            .andExpect(Rm().statusEquals(200));
     }
 
     @Test
@@ -100,14 +101,10 @@ class MemberControllerTest {
         Mockito.when(memberService.queryPage(params))
             .thenReturn(page);
 
-        final LinkedMultiValueMap<String, String> reqParams = new LinkedMultiValueMap<>();
-        for (Map.Entry<String, Object> e : params.entrySet()) {
-            reqParams.add(e.getKey(), e.getValue().toString());
-        }
         mockMvc.perform(post(BASE_URL + "/list")
-            .contentType(MediaType.MULTIPART_FORM_DATA)
-            .params(reqParams))
-            .andExpect(Rm().hasKeyAndJsonValue("page", page));
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .params(CommonTestHelper.mapToMultiValueMap(params)))
+            .andExpect(Rm().RHasAttr("page", page));
     }
 
     @Test
@@ -118,7 +115,7 @@ class MemberControllerTest {
             .thenReturn(expected);
 
         mockMvc.perform(get(BASE_URL + "/info/{id}", id))
-            .andExpect(Rm().hasKeyAndJsonValue("member", expected));
+            .andExpect(Rm().RHasAttr("member", expected));
     }
 
     @Test
@@ -130,7 +127,7 @@ class MemberControllerTest {
         mockMvc.perform(post(BASE_URL + "/save")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(entity)))
-            .andExpect(Rm().hasStatus(200));
+            .andExpect(Rm().statusEquals(200));
     }
 
     @Test
@@ -142,7 +139,7 @@ class MemberControllerTest {
         mockMvc.perform(post(BASE_URL + "/update")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(entity)))
-            .andExpect(Rm().hasStatus(200));
+            .andExpect(Rm().statusEquals(200));
     }
 
     @Test
@@ -155,6 +152,6 @@ class MemberControllerTest {
         mockMvc.perform(post(BASE_URL + "/delete")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(ids)))
-            .andExpect(Rm().hasStatus(200));
+            .andExpect(Rm().statusEquals(200));
     }
 }

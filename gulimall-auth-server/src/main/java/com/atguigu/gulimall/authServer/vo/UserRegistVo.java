@@ -1,12 +1,14 @@
 package com.atguigu.gulimall.authServer.vo;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
 @Data
+@Accessors(chain = true)
 public class UserRegistVo {
     @NotEmpty(message = "用户名必须填写")
     @Length(min = 6,max = 18,message = "用户名必须是6-18位字符")

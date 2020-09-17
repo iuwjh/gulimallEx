@@ -27,8 +27,8 @@ public class SmsController {
     private String appcode;
 
     @GetMapping("/sendcode")
-    public R smsMock(@RequestParam("phone") String phone, @RequestParam("code") String code,
-                     HttpServletRequest request, HttpServletResponse response) {
+    public R smsToConsole(@RequestParam("phone") String phone, @RequestParam("code") String code,
+                          HttpServletRequest request, HttpServletResponse response) {
         // String[] split = Optional.ofNullable(request.getHeader("Authorization")).orElse("").split("\\s");
         // if (split.length != 2 || !split[1].equals(appcode)) {
         //     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

@@ -7,13 +7,16 @@ import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.SystemPropertyUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public class CommonTestHelper {
+public final class CommonTestHelper {
     private CommonTestHelper() {
     }
 
@@ -34,5 +37,13 @@ public class CommonTestHelper {
             }
         }
         return candidates;
+    }
+
+    public static MultiValueMap<String, String> mapToMultiValueMap(Map<?, ?> map) {
+        LinkedMultiValueMap<String, String> result = new LinkedMultiValueMap<>();
+        for (Map.Entry<?, ?> entry : map.entrySet()) {
+            result.add(entry.getKey().toString(), entry.getValue().toString());
+        }
+        return result;
     }
 }
