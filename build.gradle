@@ -9,6 +9,7 @@ plugins {
     id 'org.springframework.boot' version "${spring_boot_version}" apply false
     id 'com.google.cloud.tools.jib' version "${jib_plugin_version}" apply false
     id 'nebula.lint' version "16.9.1" apply false
+    id "me.champeau.gradle.jmh" version "0.5.1" apply false
 }
 
 allprojects {
@@ -96,6 +97,7 @@ subprojects {
         } else {
             testFixturesImplementation platform(SpringBootPlugin.BOM_COORDINATES)
             testFixturesImplementation 'org.springframework.boot:spring-boot-starter-test'
+            testFixturesImplementation 'org.springframework:spring-webmvc'
             testFixturesImplementation 'com.fasterxml.jackson.core:jackson-databind'
             testFixturesImplementation "com.alibaba:fastjson:${fastjson_version}"
             testFixturesCompileOnly 'javax.servlet:javax.servlet-api'

@@ -1,5 +1,6 @@
 package com.atguigu.gulimall.member.controller;
 
+import com.atguigu.common.ControllerTestConfig;
 import com.atguigu.common.config.GulimallProps;
 import com.atguigu.gulimall.member.config.MemberWebConfig;
 import com.atguigu.gulimall.member.entity.MemberReceiveAddressEntity;
@@ -26,7 +27,7 @@ import static com.atguigu.common.Rmatcher.Rm;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @WebMvcTest(controllers = MemberReceiveAddressController.class,
-    includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = GulimallMemberControllerTestConfig.class)
+    includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = ControllerTestConfig.class)
 )
 public class MemberReceiveAddressControllerTest {
 
