@@ -6,15 +6,15 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.SystemPropertyUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public final class CommonTestHelper {
     private CommonTestHelper() {
@@ -45,5 +45,9 @@ public final class CommonTestHelper {
             result.add(entry.getKey().toString(), entry.getValue().toString());
         }
         return result;
+    }
+
+    public static void clearRedis(RedisTemplate<String, ?> redisTemplate) {
+        redisTemplate.delete(Optional.ofNullable(redisTemplate.keys("*")).orElse(Collections.emptySet()));
     }
 }

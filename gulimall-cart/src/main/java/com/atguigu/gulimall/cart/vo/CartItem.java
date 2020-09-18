@@ -6,11 +6,13 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Data
+@Accessors(chain = true)
 public class CartItem {
     private Long skuId;
     private Boolean check = true;

@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -58,6 +60,18 @@ public class Rmatcher {
         return mvcResult -> {
             assertThat(mvcResult.getResponse().getRedirectedUrl())
                 .isNotNull().isEqualTo(url);
+        };
+    }
+
+    public ResultMatcher redirectedToWithQueryParams(String url, MultiValueMap<String, String> queryParams) {
+        return mvcResult -> {
+            final String redirectedUrl = mvcResult.getResponse().getRedirectedUrl();
+            assertThat(redirectedUrl).isNotNull().isNotBlank();
+            final int i = redirectedUrl.indexOf("?");
+            assertThat(i).isGreaterThan(0);
+            assertThat(redirectedUrl.substring(0, i)).isNotEmpty().isEqualTo(url);
+            assertThat(UriComponentsBuilder.fromUriString(redirectedUrl).build().getQueryParams())
+                .isNotNull().isEqualTo(queryParams);
         };
     }
 
