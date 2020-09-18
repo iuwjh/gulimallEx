@@ -61,26 +61,34 @@ public class Rmatcher {
         };
     }
 
-    public <T> ResultMatcher flashMapKeyExist(String key) {
+    public <T> ResultMatcher flashmapKeyExist(String key) {
         return mvcResult -> {
             assertThat((Map<String, Object>) mvcResult.getFlashMap()).containsKey(key);
         };
     }
 
-    public <T> ResultMatcher flashMapKeyNotExist(String key) {
+    public <T> ResultMatcher flashmapKeyNotExist(String key) {
         return mvcResult -> {
             assertThat((Map<String, Object>) mvcResult.getFlashMap()).doesNotContainKey(key);
         };
     }
 
-    public <T> ResultMatcher flashMapHasAttr(String key, T val) {
+    public <T> ResultMatcher flashmapSize(int size) {
         return mvcResult -> {
-            assertThat(objectMapper.writeValueAsString(mvcResult.getFlashMap().get(key))).isNotBlank()
+            assertThat((Map<String, Object>) mvcResult.getFlashMap()).hasSize(size);
+        };
+    }
+
+    public <T> ResultMatcher flashmapHasAttr(String key, T val) {
+        return mvcResult -> {
+            final Map<String, Object> flashMap = mvcResult.getFlashMap();
+            assertThat(flashMap).containsKey(key);
+            assertThat(objectMapper.writeValueAsString(flashMap.get(key))).isNotBlank()
                 .isEqualTo(objectMapper.writeValueAsString(val));
         };
     }
 
-    public <T> ResultMatcher flashMapSize(String key, int size) {
+    public <T> ResultMatcher flashmapMapSize(String key, int size) {
         return mvcResult -> {
             final Object o = mvcResult.getFlashMap().get(key);
             assertThat(o).isNotNull().isInstanceOf(Map.class);
@@ -88,7 +96,7 @@ public class Rmatcher {
         };
     }
 
-    public <T> ResultMatcher flashCollSize(String key, int size) {
+    public <T> ResultMatcher flashmapCollSize(String key, int size) {
         return mvcResult -> {
             final Object o = mvcResult.getFlashMap().get(key);
             assertThat(o).isNotNull().isInstanceOf(Collection.class);
@@ -98,7 +106,6 @@ public class Rmatcher {
 
     private R mvcResultToR(MvcResult mvcResult) throws IOException {
         return objectMapper.readValue(mvcResult.getResponse().getContentAsString(), R.class);
-
     }
 
     public static Rmatcher Rm() {

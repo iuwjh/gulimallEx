@@ -102,6 +102,7 @@ subprojects {
             testFixturesImplementation "com.alibaba:fastjson:${fastjson_version}"
             testFixturesCompileOnly 'javax.servlet:javax.servlet-api'
             testFixturesImplementation "it.ozimov:embedded-redis:${embedded_redis_version}"
+            testFixturesImplementation('org.springframework.boot:spring-boot-starter-data-redis')
         }
 
         // Spring boot
@@ -147,7 +148,6 @@ subprojects {
         implementation('org.springframework.boot:spring-boot-starter-data-redis') {
             exclude group: 'io.lettuce', module: 'lettuce-core'
         }
-        //implementation 'redis.clients:jedis'
         testImplementation "it.ozimov:embedded-redis:${embedded_redis_version}"
 
         implementation 'javax.validation:validation-api'

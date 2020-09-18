@@ -1,26 +1,18 @@
 package com.atguigu.gulimall.authServer.service;
 
-import com.alibaba.fastjson.TypeReference;
-import com.atguigu.common.constant.AuthServerConstant;
 import com.atguigu.common.utils.R;
-import com.atguigu.gulimall.authServer.exception.TooManySmsCodeRequestException;
+import com.atguigu.gulimall.authServer.dao.SmsCodeRedisDao;
+import com.atguigu.gulimall.authServer.exception.SmsCodeTooManyRequestException;
 import com.atguigu.gulimall.authServer.feign.MemberFeignService;
 import com.atguigu.gulimall.authServer.feign.ThirdPartyFeignService;
+import com.atguigu.gulimall.authServer.vo.SmsCodeVo;
 import com.atguigu.gulimall.authServer.vo.UserLoginVo;
 import com.atguigu.gulimall.authServer.vo.UserRegistVo;
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.validation.Valid;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.time.Instant;
 
 @Service
 @AllArgsConstructor
@@ -28,33 +20,29 @@ public class LoginService {
 
     private final ThirdPartyFeignService thirdPartyFeignService;
 
-    private final StringRedisTemplate stringRedisTemplate;
-
     private final MemberFeignService memberFeignService;
 
-    public static final long SMS_REQUEST_INTERVAL_MS = Duration.ofSeconds(60).toMillis();
+    private final SmsCodeRedisDao smsCodeRedisDao;
+
+    private static final Duration SMS_RESEND_INTERVAL = Duration.ofSeconds(60);
+
+    private static final Duration SMS_VALID_FOR = Duration.ofMinutes(10);
 
     public void sendCode(String phone) {
-        String cachedCode = stringRedisTemplate.opsForValue().get(AuthServerConstant.SMS_CODE_CACHE_PREFIX + phone);
-        if (!StringUtils.isEmpty(cachedCode)) {
-            long cachedCodeTime = Long.parseLong(cachedCode.split("_")[1]);
-            if (System.currentTimeMillis() - cachedCodeTime < SMS_REQUEST_INTERVAL_MS) {
-                throw new TooManySmsCodeRequestException();
+        final SmsCodeVo smsCodeVo = smsCodeRedisDao.getExistCode(phone);
+        if (smsCodeVo != null) {
+            if (Instant.now().isBefore(smsCodeVo.getResendAfter())) {
+                throw new SmsCodeTooManyRequestException();
             }
         }
 
-        String code = RandomStringUtils.randomNumeric(6) + "_" + System.currentTimeMillis();
-        stringRedisTemplate.opsForValue().set(AuthServerConstant.SMS_CODE_CACHE_PREFIX + phone, code, 10, TimeUnit.MINUTES);
-        thirdPartyFeignService.smsToConsole(phone, code.split("_")[0]);
+        final SmsCodeVo newCode = smsCodeRedisDao.getNewCode(phone, SMS_RESEND_INTERVAL, SMS_VALID_FOR);
+
+        thirdPartyFeignService.smsCodeToConsole(phone, newCode.getCode());
     }
 
     public boolean validateSmsCode(String phone, String code) {
-        String s = stringRedisTemplate.opsForValue().get(AuthServerConstant.SMS_CODE_CACHE_PREFIX + phone);
-        if (!StringUtils.isEmpty(s) && code.equals(s.split("_")[0])) {
-            stringRedisTemplate.delete(AuthServerConstant.SMS_CODE_CACHE_PREFIX + phone);
-            return true;
-        }
-        return false;
+        return smsCodeRedisDao.validateAndDelete(phone, code);
     }
 
     public R regist(UserRegistVo userRegistVo) {

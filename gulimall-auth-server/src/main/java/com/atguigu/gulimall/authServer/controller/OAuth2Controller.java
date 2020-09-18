@@ -6,7 +6,9 @@ import com.atguigu.common.constant.AuthServerConstant;
 import com.atguigu.common.utils.R;
 import com.atguigu.gulimall.authServer.feign.MemberFeignService;
 import com.atguigu.common.vo.MemberRespVo;
+import com.atguigu.gulimall.authServer.service.OAuth2Service;
 import com.atguigu.gulimall.authServer.vo.SocialUser;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
@@ -24,61 +26,23 @@ import java.util.Arrays;
 
 @Slf4j
 @Controller
+@AllArgsConstructor
 public class OAuth2Controller {
-    @Autowired
-    MemberFeignService memberFeignService;
+    private final OAuth2Service oAuth2Service;
 
     @GetMapping("/oauth2.0/weibo/success")
-    public String weibo(@RequestParam("code") String code, HttpSession httpSession) throws IOException {
-        // Map<String, String> paramMap = new HashMap<>();
-        // paramMap.put("client_id", "443706065");
-        // paramMap.put("client_secret", "YOURSECRET");
-        // paramMap.put("grant_type", "authorization_code");
-        // paramMap.put("redirect_uri", "http://gulimall.com/success");
-        // paramMap.put("code", "733a05b07845199fde8974a1fbbd8d73");
+    public String weibo(@RequestParam("code") String code, HttpSession httpSession) {
 
-        // String queryStr = paramMap.entrySet().stream()
-        //         .map(e -> e.getKey() + "=" + e.getValue())
-        //         .reduce("", (s, e) -> s + "&" + e);
+        R oauthLogin = oAuth2Service.weiboGetSocialUser(code);
+        if (oauthLogin.getCode() == 0) {
+            MemberRespVo data = oauthLogin.getData(new TypeReference<MemberRespVo>() {});
+            log.info("登陆成功：{}", data.toString());
 
-        // URL url = new URL("https://api.weibo.com/oauth2/access_token?" + queryStr);
-        // HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        // conn.setRequestMethod("POST");
+            httpSession.setAttribute(AuthServerConstant.LOGIN_USER, data);
 
-        String queryStr = URLEncodedUtils.format(Arrays.asList(
-                new BasicNameValuePair("client_id", "443706065"),
-                new BasicNameValuePair("client_secret", "YOURSECRET"),
-                new BasicNameValuePair("grant_type", "authorization_code"),
-                new BasicNameValuePair("redirect_uri", "http://auth.gulimall.com/oauth2.0/weibo/success"),
-                new BasicNameValuePair("code", code)
-        ), "UTF-8");
-
-        HttpResponse response = Request.Post("https://api.weibo.com/oauth2/access_token?" + queryStr).execute().returnResponse();
-
-        if (response.getStatusLine().getStatusCode() == 200) {
-            String json = EntityUtils.toString(response.getEntity());
-            SocialUser socialUser = JSON.parseObject(json, SocialUser.class);
-
-            R oauthLogin = memberFeignService.oauthLogin(socialUser);
-            if (oauthLogin.getCode() == 0) {
-                MemberRespVo data = oauthLogin.getData(new TypeReference<MemberRespVo>() {
-                });
-                log.info("登陆成功：{}", data.toString());
-
-                httpSession.setAttribute(AuthServerConstant.LOGIN_USER, data);
-
-                return "redirect:http://gulimall.com";
-            } else {
-                return "redirect:http://auth.gulimall.com/login.html";
-            }
-
+            return "redirect:http://gulimall.com";
         } else {
             return "redirect:http://auth.gulimall.com/login.html";
         }
-
-        // System.out.println(queryStr);
-        // System.out.println(code);
-
-        // return "redirect:http://gulimall.com";
     }
 }

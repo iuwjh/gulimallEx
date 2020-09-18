@@ -42,6 +42,10 @@ public class R extends HashMap<String, Object> {
         return this;
     }
 
+    public boolean isOk() {
+        return getCode() == 0;
+    }
+
     public R() {
         put("code", 0);
         put("msg", "success");
