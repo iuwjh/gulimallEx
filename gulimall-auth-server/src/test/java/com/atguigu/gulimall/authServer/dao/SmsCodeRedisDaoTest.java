@@ -1,9 +1,11 @@
 package com.atguigu.gulimall.authServer.dao;
 
+import com.atguigu.common.CommonTestHelper;
 import com.atguigu.common.EmbeddedRedisConfig;
 import com.atguigu.common.config.RedisConfig;
 import com.atguigu.gulimall.authServer.vo.SmsCodeVo;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.redis.DataRedisTest;
@@ -11,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Duration;
@@ -24,6 +27,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SmsCodeRedisDaoTest {
     @Autowired
     SmsCodeRedisDao smsCodeRedisDao;
+
+    @Autowired
+    StringRedisTemplate stringRedisTemplate;
+
+    @BeforeEach
+    void setup() {
+        CommonTestHelper.clearRedis(stringRedisTemplate);
+    }
 
     @Test
     void getNewCode() throws Exception {

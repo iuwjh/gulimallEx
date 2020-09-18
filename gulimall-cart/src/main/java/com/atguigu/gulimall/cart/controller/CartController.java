@@ -1,18 +1,9 @@
 package com.atguigu.gulimall.cart.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
-import com.atguigu.common.utils.R;
-import com.atguigu.gulimall.cart.feign.ProductFeignService;
-import com.atguigu.gulimall.cart.interceptor.CartInterceptor;
 import com.atguigu.gulimall.cart.service.CartService;
 import com.atguigu.gulimall.cart.vo.Cart;
 import com.atguigu.gulimall.cart.vo.CartItem;
-import com.atguigu.gulimall.cart.vo.SkuInfoVo;
-import com.atguigu.gulimall.cart.vo.UserInfoTo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.BoundHashOperations;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,21 +11,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.stream.Collectors;
 
 @Controller
+@AllArgsConstructor
 public class CartController {
-    @Autowired
-    CartService cartService;
+    private final CartService cartService;
 
     @ResponseBody
     @GetMapping("/currentUserCartItems")
-    public List<CartItem> currentUserCartItems(){
+    public List<CartItem> currentUserCartItems() {
         return cartService.currentUserCartItems();
     }
 

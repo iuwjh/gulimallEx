@@ -3,6 +3,7 @@ package com.atguigu.gulimall.cart.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.atguigu.common.utils.R;
+import com.atguigu.gulimall.cart.dao.CartRedisDao;
 import com.atguigu.gulimall.cart.feign.ProductFeignService;
 import com.atguigu.gulimall.cart.interceptor.CartInterceptor;
 import com.atguigu.gulimall.cart.service.CartService;
@@ -10,138 +11,117 @@ import com.atguigu.gulimall.cart.vo.Cart;
 import com.atguigu.gulimall.cart.vo.CartItem;
 import com.atguigu.gulimall.cart.vo.SkuInfoVo;
 import com.atguigu.gulimall.cart.vo.UserInfoTo;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundHashOperations;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
-    @Autowired
-    StringRedisTemplate stringRedisTemplate;
-    @Autowired
-    ProductFeignService productFeignService;
-    @Autowired
-    ThreadPoolExecutor executor;
 
-    public static final String CART_PREFIX = "gulimall:cart:";
+    private final ProductFeignService productFeignService;
+
+    private final CartRedisDao cartRedisDao;
+
+    private final ThreadPoolExecutor executor;
 
     @Override
     public CartItem addToCart(Long skuId, Integer num) throws ExecutionException, InterruptedException {
-        BoundHashOperations<String, Object, Object> cartOps = getCartOps();
+        final CartItem oldItem = cartRedisDao.getCartItem(skuId.toString());
 
-        String res = (String) cartOps.get(skuId.toString());
-        if (StringUtils.isEmpty(res)) {
-            CartItem cartItem = new CartItem();
+        if (oldItem != null) {
+            oldItem.setCount(oldItem.getCount() + num);
+            cartRedisDao.setCartItem(skuId.toString(), oldItem);
+            return oldItem;
+        } else {
+            CartItem newItem = new CartItem();
 
             CompletableFuture<Void> skuInfoFuture = CompletableFuture.runAsync(() -> {
                 R skuInfo = productFeignService.skuInfo(skuId);
                 SkuInfoVo data = skuInfo.getData("skuInfo", new TypeReference<SkuInfoVo>() {
                 });
 
-                cartItem.setSkuId(skuId);
-                cartItem.setCount(num);
-                cartItem.setCheck(true);
-                cartItem.setTitle(data.getSkuTitle());
-                cartItem.setImage(data.getSkuDefaultImg());
-                cartItem.setPrice(data.getPrice());
+                newItem.setSkuId(skuId);
+                newItem.setCount(num);
+                newItem.setCheck(true);
+                newItem.setTitle(data.getSkuTitle());
+                newItem.setImage(data.getSkuDefaultImg());
+                newItem.setPrice(data.getPrice());
 
             }, executor);
 
             CompletableFuture<Void> attrFuture = CompletableFuture.runAsync(() -> {
                 List<String> attrList = productFeignService.infoBySkuId(skuId).stream()
-                        .map((item) -> String.format("%s: %s", item.getAttrName(), item.getAttrValue()))
-                        .collect(Collectors.toList());
-                cartItem.setSkuAttr(attrList);
+                    .map((item) -> String.format("%s: %s", item.getAttrName(), item.getAttrValue()))
+                    .collect(Collectors.toList());
+                newItem.setSkuAttr(attrList);
             }, executor);
 
             CompletableFuture.allOf(skuInfoFuture, attrFuture).get();
-            cartOps.put(skuId.toString(), JSON.toJSONString(cartItem));
-            return cartItem;
-        } else {
-            CartItem oldItem = JSON.parseObject(res, CartItem.class);
-            oldItem.setCount(oldItem.getCount() + num);
 
-            cartOps.put(skuId.toString(), JSON.toJSONString(oldItem));
-            return oldItem;
+            cartRedisDao.setCartItem(skuId.toString(), newItem);
+            return newItem;
         }
-
-
     }
 
     @Override
     public void clearCart(String cartKey) {
-        stringRedisTemplate.delete(cartKey);
+        cartRedisDao.clear();
     }
 
     @Override
     public CartItem getCartItem(Long skuId) {
-        BoundHashOperations<String, Object, Object> cartOps = getCartOps();
-        String s = (String) cartOps.get(skuId.toString());
-
-        return JSON.parseObject(s, CartItem.class);
+        return cartRedisDao.getCartItem(skuId.toString());
     }
 
     @Override
     public Cart getCart() throws ExecutionException, InterruptedException {
-        Cart cart = new Cart();
+        final Cart cart = new Cart();
         UserInfoTo userInfoTo = CartInterceptor.userInfoThreadLocal.get();
         if (userInfoTo.getUserId() != null) {
-            String cartKey = CART_PREFIX + userInfoTo.getUserId();
-
-            String tempCartKey = CART_PREFIX + userInfoTo.getUserKey();
-            List<CartItem> tempCartItems = getCartItems(tempCartKey);
-            if (tempCartItems != null) {
-                for (CartItem tempCartItem : tempCartItems) {
+            final List<CartItem> tempItems = cartRedisDao.getTempCardItems();
+            if (tempItems != null) {
+                for (CartItem tempCartItem : tempItems) {
                     addToCart(tempCartItem.getSkuId(), tempCartItem.getCount());
                 }
-                clearCart(tempCartKey);
+                cartRedisDao.clearTemp();
             }
-
-            cart.setItems(getCartItems(cartKey));
-
+            cart.setItems(cartRedisDao.getAllItems());
         } else {
-            String cartKey = CART_PREFIX + userInfoTo.getUserKey();
-            List<CartItem> cartItems = getCartItems(cartKey);
+            List<CartItem> cartItems = cartRedisDao.getAllItems();
             cart.setItems(cartItems);
         }
-
-
         return cart;
     }
 
     @Override
     public void checkItem(Long skuId, Integer check) {
-        BoundHashOperations<String, Object, Object> cartOps = getCartOps();
-        CartItem cartItem = getCartItem(skuId);
-        cartItem.setCheck(check == 1);
-        cartOps.put(skuId.toString(), JSON.toJSONString(cartItem));
+        final CartItem cartItem1 = cartRedisDao.getCartItem(skuId.toString());
+        cartItem1.setCheck(check == 1);
+        cartRedisDao.setCartItem(skuId.toString(), cartItem1);
     }
 
     @Override
     public void changeItemCount(Long skuId, Integer num) {
-        CartItem cartItem = getCartItem(skuId);
-        cartItem.setCount(num);
-        BoundHashOperations<String, Object, Object> cartOps = getCartOps();
-        cartOps.put(skuId.toString(), JSON.toJSONString(cartItem));
+        final CartItem cartItem1 = cartRedisDao.getCartItem(skuId.toString());
+        cartItem1.setCount(num);
+        cartRedisDao.setCartItem(skuId.toString(), cartItem1);
     }
 
     @Override
     public void deleteItem(Long skuId) {
-        BoundHashOperations<String, Object, Object> cartOps = getCartOps();
-        cartOps.delete(skuId.toString());
+        cartRedisDao.remoteCartItem(skuId.toString());
     }
 
     @Override
@@ -149,40 +129,16 @@ public class CartServiceImpl implements CartService {
         UserInfoTo userInfoTo = CartInterceptor.userInfoThreadLocal.get();
         if (userInfoTo.getUserId() == null) {
             return null;
-
         } else {
-            String cartKey = CART_PREFIX + userInfoTo.getUserId();
-            return getCartItems(cartKey).stream()
-                    .filter(CartItem::getCheck)
-                    .peek((cartItem) -> {
-                        R r = productFeignService.getPrice(cartItem.getSkuId());
-                        cartItem.setPrice(r.getData(new TypeReference<BigDecimal>() {
-                        }));
-                    })
-                    .collect(Collectors.toList());
-
-        }
-
-    }
-
-    private List<CartItem> getCartItems(String cartKey) {
-        BoundHashOperations<String, Object, Object> hashOps = stringRedisTemplate.boundHashOps(cartKey);
-        return Optional.ofNullable(hashOps.values())
-                .orElse(Collections.emptyList())
-                .stream()
-                .map((e) -> JSON.parseObject((String) e, CartItem.class))
+            return cartRedisDao.getAllItems().stream()
+                .filter(CartItem::getCheck)
+                .peek((cartItem) -> {
+                    R r = productFeignService.getPrice(cartItem.getSkuId());
+                    cartItem.setPrice(r.getData(new TypeReference<BigDecimal>() {}));
+                })
                 .collect(Collectors.toList());
-    }
-
-    private BoundHashOperations<String, Object, Object> getCartOps() {
-        UserInfoTo userInfoTo = CartInterceptor.userInfoThreadLocal.get();
-        String cartKey;
-        if (userInfoTo.getUserId() != null) {
-            cartKey = CART_PREFIX + userInfoTo.getUserId();
-        } else {
-            cartKey = CART_PREFIX + userInfoTo.getUserKey();
         }
-        return stringRedisTemplate.boundHashOps(cartKey);
+
     }
 
 }
