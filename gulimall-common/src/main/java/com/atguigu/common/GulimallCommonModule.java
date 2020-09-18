@@ -45,4 +45,8 @@ public class GulimallCommonModule {
     @Profile("testWithData")
     static class ProfileTestWithData {}
 
+    @Configuration
+    @PropertySource("classpath:test-without-sql.properties")
+    @Profile("testWithoutSQL")
+    static class ProfileTestWithoutSQL {}
 }

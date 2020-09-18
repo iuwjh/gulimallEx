@@ -1,10 +1,12 @@
 package com.atguigu.common.vo;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.Date;
 @Data
+@Accessors(chain = true)
 public class MemberRespVo implements Serializable {
 
 	/**
