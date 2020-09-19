@@ -1,9 +1,10 @@
 /**
-  * Copyright 2019 bejson.com 
+  * Copyright 2019 bejson.com
   */
 package com.atguigu.common.to;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
  * @website http://www.bejson.com/java2pojo/
  */
 @Data
+@Accessors(chain = true)
 public class MemberPrice {
 
     private Long id;

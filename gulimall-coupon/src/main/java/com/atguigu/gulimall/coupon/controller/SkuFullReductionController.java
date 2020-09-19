@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import com.atguigu.common.to.SkuReductionTo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,9 +24,10 @@ import com.atguigu.common.utils.R;
  */
 @RestController
 @RequestMapping("coupon/skufullreduction")
+@RequiredArgsConstructor
 public class SkuFullReductionController {
-    @Autowired
-    private SkuFullReductionService skuFullReductionService;
+
+    private final SkuFullReductionService skuFullReductionService;
 
 
     @PostMapping("/saveinfo")
