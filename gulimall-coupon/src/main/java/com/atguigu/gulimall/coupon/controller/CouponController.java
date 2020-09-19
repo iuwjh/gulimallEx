@@ -3,6 +3,7 @@ package com.atguigu.gulimall.coupon.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -29,9 +30,10 @@ import com.atguigu.common.utils.R;
 @RefreshScope
 @RestController
 @RequestMapping("coupon/coupon")
+@RequiredArgsConstructor
 public class CouponController {
-    @Autowired
-    private CouponService couponService;
+
+    private final CouponService couponService;
 
 
     @Value("${coupon.user.name}")
@@ -45,7 +47,7 @@ public class CouponController {
         return R.ok().put("name",name).put("age",age);
     }
 
-    @RequestMapping("/member/list")
+    @RequestMapping(value = "/member/list", produces = "application/json;charset=UTF-8")
     public R membercoupons(){
         CouponEntity couponEntity = new CouponEntity();
         couponEntity.setCouponName("满100减10");

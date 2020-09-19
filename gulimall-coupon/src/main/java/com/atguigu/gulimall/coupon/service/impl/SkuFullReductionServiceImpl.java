@@ -6,6 +6,7 @@ import com.atguigu.gulimall.coupon.entity.MemberPriceEntity;
 import com.atguigu.gulimall.coupon.entity.SkuLadderEntity;
 import com.atguigu.gulimall.coupon.service.MemberPriceService;
 import com.atguigu.gulimall.coupon.service.SkuLadderService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,15 +28,14 @@ import com.atguigu.gulimall.coupon.service.SkuFullReductionService;
 
 
 @Service("skuFullReductionService")
+@RequiredArgsConstructor
 public class SkuFullReductionServiceImpl extends ServiceImpl<SkuFullReductionDao, SkuFullReductionEntity> implements SkuFullReductionService {
 
-    @Autowired
-    SkuLadderService skuLadderService;
+    private final SkuLadderService skuLadderService;
 
-    @Autowired
-    MemberPriceService memberPriceService;
+    private final MemberPriceService memberPriceService;
 
-
+    private final SkuFullReductionDao skuFullReductionDao;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -51,12 +51,12 @@ public class SkuFullReductionServiceImpl extends ServiceImpl<SkuFullReductionDao
     public void saveSkuReduction(SkuReductionTo reductionTo) {
         //1、// //5.4）、sku的优惠、满减等信息；gulimall_sms->sms_sku_ladder\sms_sku_full_reduction\sms_member_price
         //sms_sku_ladder
-        SkuLadderEntity skuLadderEntity = new SkuLadderEntity();
-        skuLadderEntity.setSkuId(reductionTo.getSkuId());
-        skuLadderEntity.setFullCount(reductionTo.getFullCount());
-        skuLadderEntity.setDiscount(reductionTo.getDiscount());
-        skuLadderEntity.setAddOther(reductionTo.getCountStatus());
         if(reductionTo.getFullCount() > 0){
+            SkuLadderEntity skuLadderEntity = new SkuLadderEntity();
+            skuLadderEntity.setSkuId(reductionTo.getSkuId());
+            skuLadderEntity.setFullCount(reductionTo.getFullCount());
+            skuLadderEntity.setDiscount(reductionTo.getDiscount());
+            skuLadderEntity.setAddOther(reductionTo.getCountStatus());
             skuLadderService.save(skuLadderEntity);
         }
 
@@ -67,7 +67,7 @@ public class SkuFullReductionServiceImpl extends ServiceImpl<SkuFullReductionDao
         SkuFullReductionEntity reductionEntity = new SkuFullReductionEntity();
         BeanUtils.copyProperties(reductionTo,reductionEntity);
         if(reductionEntity.getFullPrice().compareTo(new BigDecimal("0"))==1){
-            this.save(reductionEntity);
+            skuFullReductionDao.insert(reductionEntity);
         }
 
 
@@ -82,9 +82,8 @@ public class SkuFullReductionServiceImpl extends ServiceImpl<SkuFullReductionDao
             priceEntity.setMemberPrice(item.getPrice());
             priceEntity.setAddOther(1);
             return priceEntity;
-        }).filter(item->{
-            return item.getMemberPrice().compareTo(new BigDecimal("0")) == 1;
-        }).collect(Collectors.toList());
+        }).filter(item-> item.getMemberPrice().compareTo(new BigDecimal("0")) == 1)
+          .collect(Collectors.toList());
 
         memberPriceService.saveBatch(collect);
     }
