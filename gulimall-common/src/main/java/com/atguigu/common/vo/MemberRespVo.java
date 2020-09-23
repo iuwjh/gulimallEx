@@ -10,7 +10,7 @@ import java.util.Date;
 public class MemberRespVo implements Serializable {
 
 	/**
-	 * id
+	 * Member id
 	 */
 	private Long id;
 	/**

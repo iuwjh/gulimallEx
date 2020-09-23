@@ -42,7 +42,9 @@ public final class CommonTestHelper {
     public static MultiValueMap<String, String> mapToMultiValueMap(Map<?, ?> map) {
         LinkedMultiValueMap<String, String> result = new LinkedMultiValueMap<>();
         for (Map.Entry<?, ?> entry : map.entrySet()) {
-            result.add(entry.getKey().toString(), entry.getValue().toString());
+            if (entry.getValue() != null) {
+                result.add(entry.getKey().toString(), entry.getValue().toString());
+            }
         }
         return result;
     }

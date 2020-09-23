@@ -22,6 +22,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class Rmatcher {
     private final ObjectMapper objectMapper = new ObjectMapper().configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 
+    /**
+     * {@link R}对象中是否存在指定键值对
+     * 实现采用JSON字符串序列化
+     *
+     * @param key
+     * @param val
+     * @param <T>
+     * @return
+     */
     public <T> ResultMatcher RHasAttr(String key, T val) {
         return mvcResult -> {
             assertThat(objectMapper.writeValueAsString(mvcResultToR(mvcResult).get(key))).isNotBlank()
@@ -29,6 +38,15 @@ public class Rmatcher {
         };
     }
 
+    /**
+     * {@link R#getData(TypeReference)}中是否存在指定对象
+     * 实现采用JSON字符串序列化
+     *
+     * @param val
+     * @param typeRef
+     * @param <T>
+     * @return
+     */
     public <T> ResultMatcher RDataEquals(T val, TypeReference<T> typeRef) {
         return mvcResult -> {
             assertThat(objectMapper.writeValueAsString(mvcResultToR(mvcResult).getData(typeRef))).isNotBlank()
@@ -39,12 +57,16 @@ public class Rmatcher {
     public <T> ResultMatcher contentEquals(T val, Class<T> cls) {
         return mvcResult -> {
             String json = mvcResult.getResponse().getContentAsString();
-            Object r = objectMapper.readValue(json, cls);
-            assertThat(r).isNotNull().isEqualTo(val);
+            if (!cls.equals(String.class)) {
+                Object r = objectMapper.readValue(json, cls);
+                assertThat(r).isNotNull().isEqualTo(val);
+            } else {
+                assertThat(json).isNotNull().isEqualTo((String) val);
+            }
         };
     }
 
-    public ResultMatcher hasSize(int size, Class<? extends Collection> cls) {
+    public ResultMatcher contentAsCollHasSize(int size, Class<? extends Collection> cls) {
         return mvcResult -> {
             String json = mvcResult.getResponse().getContentAsString();
             final Collection<?> collection = objectMapper.readValue(json, cls);
@@ -87,9 +109,23 @@ public class Rmatcher {
         };
     }
 
+    /**
+     * 断言flashmap本身大小
+     *
+     * @param size
+     * @param <T>
+     * @return
+     */
     public <T> ResultMatcher flashmapSize(int size) {
         return mvcResult -> {
             assertThat((Map<String, Object>) mvcResult.getFlashMap()).hasSize(size);
+        };
+    }
+
+    public ResultMatcher flashmapHasKey(String key) {
+        return mvcResult -> {
+            final Map<String, Object> flashMap = mvcResult.getFlashMap();
+            assertThat(flashMap).containsKey(key);
         };
     }
 
@@ -102,6 +138,14 @@ public class Rmatcher {
         };
     }
 
+    /**
+     * 断言flashmap对应key的对象是Map，并且Map大小为指定值
+     *
+     * @param key
+     * @param size
+     * @param <T>
+     * @return
+     */
     public <T> ResultMatcher flashmapMapSize(String key, int size) {
         return mvcResult -> {
             final Object o = mvcResult.getFlashMap().get(key);
@@ -110,6 +154,14 @@ public class Rmatcher {
         };
     }
 
+    /**
+     * 断言flashmap对应key的对象是Collection。并且Collection大小为指定值
+     *
+     * @param key
+     * @param size
+     * @param <T>
+     * @return
+     */
     public <T> ResultMatcher flashmapCollSize(String key, int size) {
         return mvcResult -> {
             final Object o = mvcResult.getFlashMap().get(key);

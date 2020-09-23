@@ -9,7 +9,6 @@ import com.atguigu.gulimall.cart.vo.CartItem;
 import com.atguigu.gulimall.cart.vo.SkuInfoVo;
 import com.atguigu.gulimall.cart.vo.SkuSaleAttrValueTo;
 import com.atguigu.gulimall.cart.vo.UserInfoTo;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -93,14 +92,14 @@ public class CartServiceTest {
     }
 
     @Test
-    void currentUserCartItemsNotLoggedIn() throws Exception {
+    void currentUserCartCheckedItemsNotLoggedIn() throws Exception {
         CartInterceptor.userInfoThreadLocal.set(new UserInfoTo());
 
-        assertThat(cartService.currentUserCartItems()).isNull();
+        assertThat(cartService.currentUserCartCheckedItems()).isNull();
     }
 
     @Test
-    void currentUserCartItemsLoggedIn() throws Exception {
+    void currentUserCartCheckedItemsLoggedIn() throws Exception {
         final long skuId = 3L;
         final BigDecimal price = new BigDecimal(300);
         final CartItem cartItem = new CartItem().setSkuId(skuId);
@@ -108,7 +107,7 @@ public class CartServiceTest {
         Mockito.when(cartRedisDao.getAllItems()).thenReturn(singletonList(cartItem));
         Mockito.when(productFeignService.getPrice(skuId)).thenReturn(R.ok().setData(price));
 
-        final List<CartItem> result = cartService.currentUserCartItems();
+        final List<CartItem> result = cartService.currentUserCartCheckedItems();
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getPrice()).isNotNull().isEqualTo(price);
     }

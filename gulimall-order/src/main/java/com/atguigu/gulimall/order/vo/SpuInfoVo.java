@@ -3,12 +3,14 @@ package com.atguigu.gulimall.order.vo;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
+@Accessors(chain = true)
 public class SpuInfoVo {
 
 	/**

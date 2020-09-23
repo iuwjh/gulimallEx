@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.ActiveProfiles;
 
+import javax.annotation.PostConstruct;
+
 @TestConfiguration
 @ActiveProfiles("testWithData")
 @EnableConfigurationProperties(GulimallProps.class)
@@ -22,5 +24,10 @@ public class ControllerTestConfig {
     public ObjectMapper objectMapper() {
         final ObjectMapper mapper = new ObjectMapper();
         return mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+    }
+
+    @PostConstruct
+    void initUser(){
+
     }
 }
