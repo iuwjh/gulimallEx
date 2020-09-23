@@ -9,7 +9,11 @@ import com.atguigu.common.utils.Query;
 import com.atguigu.common.utils.R;
 import com.atguigu.common.vo.MemberRespVo;
 import com.atguigu.gulimall.order.constant.OrderConstant;
+import com.atguigu.gulimall.order.constant.OrderSubmitStatus;
 import com.atguigu.gulimall.order.dao.OrderDao;
+import com.atguigu.gulimall.order.dao.OrderItemDao;
+import com.atguigu.gulimall.order.dao.OrderRedisDao;
+import com.atguigu.gulimall.order.dao.amqp.OrderRabbitSender;
 import com.atguigu.gulimall.order.entity.OrderEntity;
 import com.atguigu.gulimall.order.entity.OrderItemEntity;
 import com.atguigu.gulimall.order.entity.PaymentInfoEntity;
@@ -28,11 +32,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -41,43 +42,50 @@ import org.springframework.web.context.request.RequestContextHolder;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.time.Duration;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 
 @Service("orderService")
+@RequiredArgsConstructor
 public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> implements OrderService {
 
-    private final ThreadLocal<OrderSubmitVo> confirmVoThreadLocal = new ThreadLocal<OrderSubmitVo>();
+    private static final ThreadLocal<OrderSubmitVo> orderSubmitVoThreadLocal = new ThreadLocal<OrderSubmitVo>();
 
-    @Autowired
-    PaymentInfoService paymentInfoService;
-    @Autowired
-    OrderItemService orderItemService;
-    @Autowired
-    MemberFeignService memberFeignService;
-    @Autowired
-    CartFeignService cartFeignService;
-    @Autowired
-    ThreadPoolExecutor executor;
-    @Autowired
-    WareFeignService wareFeignService;
-    @Autowired
-    ProductFeignService productFeignService;
-    @Autowired
-    StringRedisTemplate stringRedisTemplate;
-    @Autowired
-    RabbitTemplate rabbitTemplate;
+    private final PaymentInfoService paymentInfoService;
+
+    private final OrderItemService orderItemService;
+
+    private final OrderItemDao orderItemDao;
+
+    private final MemberFeignService memberFeignService;
+
+    private final CartFeignService cartFeignService;
+
+    private final ThreadPoolExecutor executor;
+
+    private final WareFeignService wareFeignService;
+
+    private final ProductFeignService productFeignService;
+
+    private final OrderDao orderDao;
+
+    private final OrderRedisDao orderRedisDao;
+
+    private final OrderRabbitSender orderRabbitSender;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<OrderEntity> page = this.page(
-                new Query<OrderEntity>().getPage(params),
-                new QueryWrapper<OrderEntity>()
+            new Query<OrderEntity>().getPage(params),
+            new QueryWrapper<OrderEntity>()
         );
 
         return new PageUtils(page);
@@ -94,19 +102,17 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             RequestContextHolder.setRequestAttributes(requestAttributes);
             List<MemberAddressVo> address = memberFeignService.getAddress(memberRespVo.getId());
             confirmVo.setAddress(address);
-
         }, executor);
 
         CompletableFuture<Void> cartFuture = CompletableFuture.runAsync(() -> {
             RequestContextHolder.setRequestAttributes(requestAttributes);
-            List<OrderItemVo> orderItemVos = cartFeignService.currentUserCartItems();
+            List<OrderItemVo> orderItemVos = cartFeignService.currentUserCartCheckedItems();
             confirmVo.setItems(orderItemVos);
         }, executor).thenRunAsync(() -> {
             if (confirmVo.getItems() != null) {
                 List<Long> skuIds = confirmVo.getItems().stream().map(OrderItemVo::getSkuId).collect(Collectors.toList());
                 R r = wareFeignService.getSkusHasStock(skuIds);
-                List<SkuStockVo> data = r.getData(new TypeReference<List<SkuStockVo>>() {
-                });
+                List<SkuStockVo> data = r.getData(new TypeReference<List<SkuStockVo>>() {});
                 if (data != null) {
                     Map<Long, Boolean> stocks = data.stream().collect(Collectors.toMap(SkuStockVo::getSkuId, SkuStockVo::getHasStock));
                     confirmVo.setStocks(stocks);
@@ -119,7 +125,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         confirmVo.setIntegration(integration);
 
         String token = UUID.randomUUID().toString().replace("_", "");
-        stringRedisTemplate.opsForValue().set(OrderConstant.USER_ORDER_TOKEN_PREFIX + memberRespVo.getId(), token, 30, TimeUnit.MINUTES);
+        // 设置令牌，使得当前结算页信息30分钟内有效
+        orderRedisDao.setOrderToken(memberRespVo.getId(), token, Duration.ofMinutes(30));
         confirmVo.setOrderToken(token);
 
         CompletableFuture.allOf(getAddressFuture, cartFuture).get();
@@ -130,49 +137,51 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     // @GlobalTransactional
     @Transactional
     @Override
-    public SubmitOrderResponseVo submitOrder(OrderSubmitVo vo) throws NoStockException {
-        confirmVoThreadLocal.set(vo);
-        SubmitOrderResponseVo responseVo = new SubmitOrderResponseVo();
-        responseVo.setCode(0);
+    public SubmitOrderResponseVo submitOrder(OrderSubmitVo submitVo) throws NoStockException {
+        orderSubmitVoThreadLocal.set(submitVo);
+        SubmitOrderResponseVo responseVo = new SubmitOrderResponseVo().setStatus(OrderSubmitStatus.OK);
         MemberRespVo memberRespVo = LoginUserInterceptor.loginUserThreadLocal.get();
-        String delScript = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
-        String orderToken = vo.getOrderToken();
-        Long result = stringRedisTemplate.execute(new DefaultRedisScript<Long>(delScript, Long.class),
-                Collections.singletonList(OrderConstant.USER_ORDER_TOKEN_PREFIX + memberRespVo.getId()), orderToken);
-        if (result == null || result == 0L) {
-            responseVo.setCode(1);
+        String orderToken = submitVo.getOrderToken();
+        // 确认当前令牌有效后移除该令牌，以防止重复提交
+        boolean result = orderRedisDao.removeOrderTokenIfExist(OrderConstant.USER_ORDER_TOKEN_PREFIX + memberRespVo.getId(), orderToken);
+
+        if (!result) {
+            responseVo.setStatus(OrderSubmitStatus.INFO_OUTDATED);
             return responseVo;
         } else {
             OrderCreateTo order = createOrder();
             BigDecimal payAmount = order.getOrder().getPayAmount();
-            BigDecimal payPrice = vo.getPayPrice();
+            BigDecimal payPrice = submitVo.getPayPrice();
             if (payAmount.subtract(payPrice).abs().doubleValue() < 0.01) {
-                saveOrder(order);
+                // 持久化订单
+                order.getOrder().setModifyTime(new Date());
+                orderDao.insert(order.getOrder());
 
-                WareSkuLockVo lockVo = new WareSkuLockVo();
-                lockVo.setOrderSn(order.getOrder().getOrderSn());
+                // 持久化订单项信息
+                List<OrderItemEntity> orderItems = order.getOrderItems();
+                orderItemService.saveBatch(orderItems);
 
-                List<OrderItemVo> locks = order.getOrderItems().stream().map((item) -> {
-                    OrderItemVo itemVo = new OrderItemVo();
-                    itemVo.setSkuId(item.getSkuId());
-                    itemVo.setCount(item.getSkuQuantity());
-                    itemVo.setTitle(item.getSkuName());
-                    return itemVo;
-                }).collect(Collectors.toList());
-                lockVo.setLocks(locks);
+                WareSkuLockVo lockVo = new WareSkuLockVo().setOrderSn(order.getOrder().getOrderSn());
+
+                List<OrderItemVo> itemsToLock = order.getOrderItems().stream().map((item) ->
+                    new OrderItemVo()
+                        .setSkuId(item.getSkuId())
+                        .setCount(item.getSkuQuantity())
+                        .setTitle(item.getSkuName())).collect(Collectors.toList());
+                lockVo.setItemsToLock(itemsToLock);
                 R r = wareFeignService.orderLockStock(lockVo);
                 if (r.getCode() == 0) {
                     // int a = 10/0;
                     responseVo.setOrder(order.getOrder());
 
-                    rabbitTemplate.convertAndSend("order-event-exchange", "order.create.order", order.getOrder());
+                    orderRabbitSender.createOrder(order.getOrder());
                     System.out.println("MQ: 订单提交成功 " + order.getOrder());
                 } else {
-                    throw new NoStockException((String) r.get("msg"));
-                    // responseVo.setCode(3);
+                    // throw new NoStockException((String) r.get("msg"));
+                    responseVo.setStatus(OrderSubmitStatus.INSUFFICIENT_STOCK);
                 }
             } else {
-                responseVo.setCode(2);
+                responseVo.setStatus(OrderSubmitStatus.PRICE_CHANGED);
             }
         }
         return responseVo;
@@ -180,24 +189,23 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     @Override
     public OrderEntity getOrderByOrderSn(String orderSn) {
-        OrderEntity orderEntity = getOne(new QueryWrapper<OrderEntity>().eq("order_sn", orderSn));
+        OrderEntity orderEntity = orderDao.selectOne(new QueryWrapper<OrderEntity>().eq("order_sn", orderSn));
         return orderEntity;
     }
 
     @Override
     public void closeOrder(OrderEntity orderEntity) {
-        OrderEntity byId = getById(orderEntity.getId());
+        OrderEntity byId = orderDao.selectById(orderEntity.getId());
         if (byId.getStatus().equals(OrderStatusEnum.CREATE_NEW.getCode())) {
             OrderEntity update = new OrderEntity();
             update.setId(orderEntity.getId());
             update.setStatus(OrderStatusEnum.CANCLED.getCode());
-            updateById(update);
+            orderDao.updateById(update);
 
             OrderTo orderTo = new OrderTo();
             BeanUtils.copyProperties(orderEntity, orderTo);
 
-            rabbitTemplate.convertAndSend("order-event-exchange",
-                    "order.release.other", orderTo);
+            orderRabbitSender.closeOrder(orderTo);
         }
     }
 
@@ -209,7 +217,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         payVo.setTotal_amount(scaled.toString());
         payVo.setOut_trade_no(order.getOrderSn());
 
-        List<OrderItemEntity> itemEntities = orderItemService.list(new QueryWrapper<OrderItemEntity>().eq("order_sn", orderSn));
+        List<OrderItemEntity> itemEntities = orderItemDao.selectList(new QueryWrapper<OrderItemEntity>().eq("order_sn", orderSn));
         OrderItemEntity itemEntity = itemEntities.get(0);
 
         payVo.setSubject(itemEntity.getSkuName());
@@ -220,9 +228,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     @Override
     public PageUtils queryPageWithItem(Map<String, Object> params) {
         MemberRespVo memberRespVo = LoginUserInterceptor.loginUserThreadLocal.get();
-        IPage<OrderEntity> page = this.page(
-                new Query<OrderEntity>().getPage(params),
-                new QueryWrapper<OrderEntity>().eq("member_id", memberRespVo.getId()).orderByDesc("id")
+        IPage<OrderEntity> page = orderDao.selectPage(
+            new Query<OrderEntity>().getPage(params),
+            new QueryWrapper<OrderEntity>().eq("member_id", memberRespVo.getId()).orderByDesc("id")
         );
 
         List<OrderEntity> orderEntities = page.getRecords().stream().peek((order) -> {
@@ -237,7 +245,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     @Override
     public String handlePayResult(PayAsyncVo vo) {
-        PaymentInfoEntity infoEntity=new PaymentInfoEntity();
+        PaymentInfoEntity infoEntity = new PaymentInfoEntity();
 
         infoEntity.setAlipayTradeNo(vo.getTrade_no());
         infoEntity.setOrderSn(vo.getOut_trade_no());
@@ -246,9 +254,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
         paymentInfoService.save(infoEntity);
 
-        if (vo.getTrade_status().equals("TRADE_SUCCESS")||vo.getTrade_status().equals("TRADE_FINISHED")) {
+        if (vo.getTrade_status().equals("TRADE_SUCCESS") || vo.getTrade_status().equals("TRADE_FINISHED")) {
             String outTradeNo = vo.getOut_trade_no();
-            baseMapper.updateOrderStatus(outTradeNo,OrderStatusEnum.PAYED.getCode());
+            orderDao.updateOrderStatus(outTradeNo, OrderStatusEnum.PAYED.getCode());
         }
 
         return "success";
@@ -263,7 +271,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
         BigDecimal multiply = orderTo.getSeckillPrice().multiply(BigDecimal.valueOf(orderTo.getNum()));
         orderEntity.setPayAmount(multiply);
-        save(orderEntity);
+        orderDao.insert(orderEntity);
 
         OrderItemEntity orderItemEntity = new OrderItemEntity();
         orderItemEntity.setOrderSn(orderTo.getOrderSn());
@@ -276,7 +284,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     private void saveOrder(OrderCreateTo order) {
         OrderEntity orderEntity = order.getOrder();
         orderEntity.setModifyTime(new Date());
-        save(orderEntity);
+        orderDao.insert(orderEntity);
 
         List<OrderItemEntity> orderItems = order.getOrderItems();
         orderItemService.saveBatch(orderItems);
@@ -326,12 +334,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     }
 
     private List<OrderItemEntity> buildOrderItems(String orderSn) {
-        List<OrderItemVo> userCartItems = cartFeignService.currentUserCartItems();
+        List<OrderItemVo> userCartItems = cartFeignService.currentUserCartCheckedItems();
         if (userCartItems != null && userCartItems.size() > 0) {
             return userCartItems.stream()
-                    .map(this::buildOrderItem)
-                    .peek((item) -> item.setOrderSn(orderSn))
-                    .collect(Collectors.toList());
+                .map(this::buildOrderItem)
+                .peek((item) -> item.setOrderSn(orderSn))
+                .collect(Collectors.toList());
         }
         return null;
     }
@@ -341,8 +349,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
         Long skuId = item.getSkuId();
         R r = productFeignService.getSpuInfoBySkuId(skuId);
-        SpuInfoVo spuInfoVo = r.getData(new TypeReference<SpuInfoVo>() {
-        });
+        SpuInfoVo spuInfoVo = r.getData(new TypeReference<SpuInfoVo>() {});
         itemEntity.setSpuId(spuInfoVo.getId());
         itemEntity.setSpuBrand(spuInfoVo.getBrandId().toString());
         itemEntity.setSpuName(spuInfoVo.getSpuName());
@@ -363,12 +370,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         itemEntity.setCouponAmount(BigDecimal.valueOf(0));
         itemEntity.setIntegrationAmount(BigDecimal.valueOf(0));
         BigDecimal originalAmount = itemEntity.getSkuPrice()
-                .multiply(BigDecimal.valueOf(itemEntity.getSkuQuantity()));
+            .multiply(BigDecimal.valueOf(itemEntity.getSkuQuantity()));
 
 
         BigDecimal realAmount = originalAmount.subtract(itemEntity.getPromotionAmount())
-                .subtract(itemEntity.getCouponAmount())
-                .subtract(itemEntity.getIntegrationAmount());
+            .subtract(itemEntity.getCouponAmount())
+            .subtract(itemEntity.getIntegrationAmount());
         itemEntity.setRealAmount(realAmount);
 
         return itemEntity;
@@ -380,11 +387,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         orderEntity.setOrderSn(orderSn);
         orderEntity.setMemberId(memberRespVo.getId());
 
-        OrderSubmitVo orderSubmitVo = confirmVoThreadLocal.get();
+        OrderSubmitVo orderSubmitVo = orderSubmitVoThreadLocal.get();
 
         R r = wareFeignService.getFare(orderSubmitVo.getAddrId());
-        FareVo fareResp = r.getData(new TypeReference<FareVo>() {
-        });
+        FareVo fareResp = r.getData(new TypeReference<FareVo>() {});
 
         orderEntity.setFreightAmount(fareResp.getFare());
 

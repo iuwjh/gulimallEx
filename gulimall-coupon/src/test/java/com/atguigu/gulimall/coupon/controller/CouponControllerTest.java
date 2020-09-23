@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @WebMvcTest(controllers = CouponController.class,
     includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = ControllerTestConfig.class)
 )
-@ImportAutoConfiguration(classes = RefreshAutoConfiguration.class) // 当Controller
+@ImportAutoConfiguration(classes = RefreshAutoConfiguration.class)
 public class CouponControllerTest {
     @MockBean
     private CouponService couponService;

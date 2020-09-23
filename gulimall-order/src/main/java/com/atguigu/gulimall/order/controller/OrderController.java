@@ -3,6 +3,7 @@ package com.atguigu.gulimall.order.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,9 +22,10 @@ import com.atguigu.common.utils.R;
  */
 @RestController
 @RequestMapping("order/order")
+@RequiredArgsConstructor
 public class OrderController {
-    @Autowired
-    private OrderService orderService;
+
+    private final OrderService orderService;
 
     @GetMapping("status/{orderSn}")
     public R getOrderStatus(@PathVariable String orderSn) {

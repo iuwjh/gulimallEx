@@ -4,6 +4,7 @@ import com.alipay.api.AlipayApiException;
 import com.atguigu.gulimall.order.config.AlipayTemplate;
 import com.atguigu.gulimall.order.service.OrderService;
 import com.atguigu.gulimall.order.vo.PayVo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,13 +12,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
+@RequiredArgsConstructor
 public class PayWebController {
 
-    @Autowired
-    AlipayTemplate alipayTemplate;
+    private final AlipayTemplate alipayTemplate;
 
-    @Autowired
-    OrderService orderService;
+    private final OrderService orderService;
 
     @ResponseBody
     @GetMapping("/payOrder")

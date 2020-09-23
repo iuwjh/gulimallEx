@@ -21,6 +21,14 @@ public interface OrderService extends IService<OrderEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
 
+    /**
+     * 获取当前会员的收货地址、购物车中已勾选的商品、商品库存、积分等信息并返回，
+     * 以供<<订单确认页>>展示
+     *
+     * @return 返回<<订单确认页 >>页面所需信息
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     OrderConfirmVo confirmOrder() throws ExecutionException, InterruptedException;
 
     SubmitOrderResponseVo submitOrder(OrderSubmitVo vo) throws NoStockException;

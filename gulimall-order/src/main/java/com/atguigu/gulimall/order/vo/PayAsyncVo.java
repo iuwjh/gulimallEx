@@ -2,11 +2,13 @@ package com.atguigu.gulimall.order.vo;
 
 import lombok.Data;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 
 import java.util.Date;
 
 @ToString
 @Data
+@Accessors(chain = true)
 public class PayAsyncVo {
 
     private String gmt_create;

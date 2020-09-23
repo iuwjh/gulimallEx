@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public class LoginUserInterceptor implements HandlerInterceptor {
 
-    public static ThreadLocal<MemberRespVo> loginUserThreadLocal = new ThreadLocal<>();
+    public static final ThreadLocal<MemberRespVo> loginUserThreadLocal = new ThreadLocal<>();
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

@@ -4,6 +4,8 @@ plugins {
     id 'maven-publish'
     id 'project-report'
     id 'idea'
+    id "org.sonarqube" version "${sonarqube_plugin_version}"
+
     id "io.freefair.lombok" version "${lombok_plugin_version}" apply false
     id "org.liquibase.gradle" version "${liquibase_plugin_version}" apply false
     id 'org.springframework.boot' version "${spring_boot_version}" apply false

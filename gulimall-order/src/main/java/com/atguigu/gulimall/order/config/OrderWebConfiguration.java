@@ -15,11 +15,6 @@ import java.util.Date;
 public class OrderWebConfiguration implements WebMvcConfigurer {
 
     @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginUserInterceptor()).addPathPatterns("/**");
-    }
-
-    @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(new Converter<String, Date>() {
             @Override

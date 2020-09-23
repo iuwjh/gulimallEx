@@ -3,11 +3,13 @@ package com.atguigu.gulimall.order.vo;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Data
+@Accessors(chain = true)
 public class OrderItemVo {
     private Long skuId;
     private Boolean check;

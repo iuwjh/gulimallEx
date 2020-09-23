@@ -1,10 +1,12 @@
 package com.atguigu.gulimall.order.web;
 
 import com.atguigu.common.exception.NoStockException;
+import com.atguigu.gulimall.order.constant.OrderSubmitStatus;
 import com.atguigu.gulimall.order.service.OrderService;
 import com.atguigu.gulimall.order.vo.OrderConfirmVo;
 import com.atguigu.gulimall.order.vo.OrderSubmitVo;
 import com.atguigu.gulimall.order.vo.SubmitOrderResponseVo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,10 +17,20 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.concurrent.ExecutionException;
 
 @Controller
+@RequiredArgsConstructor
 public class OrderWebController {
-    @Autowired
-    OrderService orderService;
 
+    private final OrderService orderService;
+
+    /**
+     * 订单确认页
+     * 通过{@link OrderService#confirmOrder()}获取确认页信息
+     *
+     * @param model
+     * @return
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     @GetMapping("/toTrade")
     public String toTrade(Model model) throws ExecutionException, InterruptedException {
         OrderConfirmVo orderConfirmVo = orderService.confirmOrder();
@@ -27,34 +39,28 @@ public class OrderWebController {
         return "confirm";
     }
 
+    /**
+     * 提交订单
+     *
+     * @param submitVo
+     * @param model
+     * @param redirectAttributes
+     * @return
+     */
     @PostMapping("/submitOrder")
-    public String submitOrder(OrderSubmitVo vo, Model model, RedirectAttributes redirectAttributes) {
+    public String submitOrder(OrderSubmitVo submitVo, Model model, RedirectAttributes redirectAttributes) {
         SubmitOrderResponseVo responseVo = null;
         String msg = "下单失败：";
-        try {
-            responseVo = orderService.submitOrder(vo);
 
-            if (responseVo.getCode() == 0) {
-                model.addAttribute("submitOrderResp", responseVo);
-                return "pay";
-            } else {
-                switch (responseVo.getCode()) {
-                    case 1:
-                        msg += "订单信息过期，请刷新后再提交";
-                        break;
-                    case 2:
-                        msg += "订单商品价格发生变化，请确认后再提交";
-                        break;
-                    case 3:
-                        msg += "锁库存失败，商品库存不足";
-                        break;
-                }
-            }
-        } catch (NoStockException e) {
-            msg += e.getMessage();
-        } catch (Exception e) {
-            e.printStackTrace();
+        responseVo = orderService.submitOrder(submitVo);
+
+        if (responseVo.getStatus() == OrderSubmitStatus.OK) {
+            model.addAttribute("submitOrderResp", responseVo);
+            return "pay";
+        } else {
+            msg += responseVo.getStatus().getMsg();
         }
+
         redirectAttributes.addFlashAttribute("msg", msg);
         return "redirect:http://order.gulimall.com/toTrade";
     }

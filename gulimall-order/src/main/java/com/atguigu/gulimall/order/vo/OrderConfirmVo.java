@@ -3,6 +3,7 @@ package com.atguigu.gulimall.order.vo;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Data
+@Accessors(chain = true)
 public class OrderConfirmVo {
     List<MemberAddressVo> address;
 
