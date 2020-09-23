@@ -20,9 +20,9 @@ public class CartController {
     private final CartService cartService;
 
     @ResponseBody
-    @GetMapping("/currentUserCartItems")
-    public List<CartItem> currentUserCartItems() {
-        return cartService.currentUserCartItems();
+    @GetMapping("/currentUserCartCheckedItems")
+    public List<CartItem> currentUserCartCheckedItems() {
+        return cartService.currentUserCartCheckedItems();
     }
 
     @GetMapping("/checkItem")
