@@ -125,7 +125,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public List<CartItem> currentUserCartItems() {
+    public List<CartItem> currentUserCartCheckedItems() {
         UserInfoTo userInfoTo = CartInterceptor.userInfoThreadLocal.get();
         if (userInfoTo.getUserId() == null) {
             return null;

@@ -21,5 +21,5 @@ public interface CartService {
 
     void deleteItem(Long skuId);
 
-    List<CartItem> currentUserCartItems();
+    List<CartItem> currentUserCartCheckedItems();
 }
