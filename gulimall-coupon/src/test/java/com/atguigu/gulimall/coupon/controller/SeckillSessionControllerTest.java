@@ -1,13 +1,10 @@
 package com.atguigu.gulimall.coupon.controller;
 
 import com.alibaba.fastjson.TypeReference;
-import com.atguigu.common.ControllerTestConfig;
-import com.atguigu.gulimall.coupon.entity.CouponEntity;
+import com.atguigu.common.controller.ControllerTestConfig;
 import com.atguigu.gulimall.coupon.entity.SeckillSessionEntity;
-import com.atguigu.gulimall.coupon.service.CouponService;
 import com.atguigu.gulimall.coupon.service.SeckillSessionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;

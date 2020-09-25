@@ -2,7 +2,7 @@ package com.atguigu.gulimall.member.controller;
 
 import com.alibaba.fastjson.TypeReference;
 import com.atguigu.common.CommonTestHelper;
-import com.atguigu.common.ControllerTestConfig;
+import com.atguigu.common.controller.ControllerTestConfig;
 import com.atguigu.common.utils.PageUtils;
 import com.atguigu.common.utils.R;
 import com.atguigu.gulimall.member.controller.vo.MemberRegistVo;

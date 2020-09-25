@@ -1,11 +1,9 @@
 package com.atguigu.gulimall.authServer.controller;
 
-import com.alibaba.fastjson.TypeReference;
-import com.atguigu.common.ControllerTestConfig;
+import com.atguigu.common.controller.ControllerTestConfig;
 import com.atguigu.common.constant.AuthServerConstant;
 import com.atguigu.common.utils.R;
 import com.atguigu.common.vo.MemberRespVo;
-import com.atguigu.gulimall.authServer.service.LoginService;
 import com.atguigu.gulimall.authServer.service.OAuth2Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -15,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 

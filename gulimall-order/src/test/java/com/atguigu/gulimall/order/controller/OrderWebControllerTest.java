@@ -1,8 +1,8 @@
 package com.atguigu.gulimall.order.controller;
 
 import com.atguigu.common.CommonTestHelper;
-import com.atguigu.common.ControllerTestBase;
-import com.atguigu.common.ControllerTestConfig;
+import com.atguigu.common.controller.ControllerTestBase;
+import com.atguigu.common.controller.ControllerTestConfig;
 import com.atguigu.gulimall.order.constant.OrderSubmitStatus;
 import com.atguigu.gulimall.order.entity.OrderEntity;
 import com.atguigu.gulimall.order.service.OrderService;
@@ -11,7 +11,6 @@ import com.atguigu.gulimall.order.vo.OrderConfirmVo;
 import com.atguigu.gulimall.order.vo.OrderSubmitVo;
 import com.atguigu.gulimall.order.vo.SubmitOrderResponseVo;
 import com.atguigu.gulimall.order.web.OrderWebController;
-import com.atguigu.gulimall.order.web.PayWebController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -21,10 +20,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.web.context.request.RequestContextHolder;
 
 import java.util.Map;
 

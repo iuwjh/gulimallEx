@@ -1,8 +1,8 @@
 package com.atguigu.gulimall.order.controller;
 
 import com.alibaba.fastjson.TypeReference;
-import com.atguigu.common.ControllerTestBase;
-import com.atguigu.common.ControllerTestConfig;
+import com.atguigu.common.controller.ControllerTestBase;
+import com.atguigu.common.controller.ControllerTestConfig;
 import com.atguigu.common.utils.PageUtils;
 import com.atguigu.gulimall.order.entity.OrderEntity;
 import com.atguigu.gulimall.order.service.OrderService;

@@ -1,9 +1,7 @@
 package com.atguigu.gulimall.coupon.controller;
 
-import com.atguigu.common.ControllerTestConfig;
+import com.atguigu.common.controller.ControllerTestConfig;
 import com.atguigu.common.to.SkuReductionTo;
-import com.atguigu.gulimall.coupon.entity.CouponEntity;
-import com.atguigu.gulimall.coupon.service.SeckillSessionService;
 import com.atguigu.gulimall.coupon.service.SkuFullReductionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;

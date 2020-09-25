@@ -1,11 +1,10 @@
 package com.atguigu.gulimall.cart.dao;
 
 import com.atguigu.common.CommonTestHelper;
-import com.atguigu.common.EmbeddedRedisConfig;
+import com.atguigu.common.config.RedisConfig;
 import com.atguigu.gulimall.cart.interceptor.CartInterceptor;
 import com.atguigu.gulimall.cart.vo.CartItem;
 import com.atguigu.gulimall.cart.vo.UserInfoTo;
-import org.junit.BeforeClass;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +19,8 @@ import org.springframework.test.context.ContextConfiguration;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@Import(EmbeddedRedisConfig.class)
-@ActiveProfiles("testWithoutSQL")
+@Import(RedisConfig.Embedded.class)
+@ActiveProfiles({"test", "withoutSQL"})
 @ContextConfiguration(initializers = CartRedisDaoTest.UserInit.class)
 public class CartRedisDaoTest {
     /**

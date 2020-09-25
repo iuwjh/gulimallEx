@@ -1,7 +1,7 @@
 package com.atguigu.gulimall.authServer.controller;
 
 import com.atguigu.common.CommonTestHelper;
-import com.atguigu.common.ControllerTestConfig;
+import com.atguigu.common.controller.ControllerTestConfig;
 import com.atguigu.common.constant.AuthServerConstant;
 import com.atguigu.common.utils.R;
 import com.atguigu.common.vo.MemberRespVo;

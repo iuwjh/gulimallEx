@@ -1,6 +1,6 @@
 package com.atguigu.gulimall.cart.controller;
 
-import com.atguigu.common.ControllerTestConfig;
+import com.atguigu.common.controller.ControllerTestConfig;
 import com.atguigu.gulimall.cart.service.CartService;
 import com.atguigu.gulimall.cart.vo.Cart;
 import com.atguigu.gulimall.cart.vo.CartItem;
@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 
 import static com.atguigu.common.Rmatcher.Rm;
 import static java.util.Collections.singletonList;
-import static java.util.Collections.singletonMap;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @WebMvcTest(controllers = CartController.class,
