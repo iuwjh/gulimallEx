@@ -1,5 +1,6 @@
 package com.atguigu.gulimall.product.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +17,10 @@ import com.atguigu.gulimall.product.service.SkuImagesService;
 
 
 @Service("skuImagesService")
+@RequiredArgsConstructor
 public class SkuImagesServiceImpl extends ServiceImpl<SkuImagesDao, SkuImagesEntity> implements SkuImagesService {
+
+    private final SkuImagesDao skuImagesDao;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -31,7 +35,7 @@ public class SkuImagesServiceImpl extends ServiceImpl<SkuImagesDao, SkuImagesEnt
     @Override
     public List<SkuImagesEntity> getImagesBySkuId(Long skuId) {
 
-        List<SkuImagesEntity> skuImagesEntities = baseMapper.selectList(new QueryWrapper<SkuImagesEntity>().eq("sku_id", skuId));
+        List<SkuImagesEntity> skuImagesEntities = skuImagesDao.listBySkuId(skuId);
 
         return skuImagesEntities;
     }

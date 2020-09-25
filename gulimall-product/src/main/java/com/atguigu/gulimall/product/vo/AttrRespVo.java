@@ -2,9 +2,11 @@ package com.atguigu.gulimall.product.vo;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+@Accessors(chain = true)
 public class AttrRespVo extends AttrVo {
     /**
      * 			"catelogName": "手机/数码/手机", //所属分类名字

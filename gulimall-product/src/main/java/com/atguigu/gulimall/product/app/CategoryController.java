@@ -3,6 +3,7 @@ package com.atguigu.gulimall.product.app;
 import java.util.Arrays;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,9 +21,10 @@ import com.atguigu.common.utils.R;
  */
 @RestController
 @RequestMapping("product/category")
+@RequiredArgsConstructor
 public class CategoryController {
-    @Autowired
-    private CategoryService categoryService;
+
+    private final CategoryService categoryService;
 
     /**
      * 查出所有分类以及子分类，以树形结构组装起来

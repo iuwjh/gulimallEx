@@ -9,7 +9,7 @@ import com.atguigu.gulimall.product.entity.ProductAttrValueEntity;
 import com.atguigu.gulimall.product.service.ProductAttrValueService;
 import com.atguigu.gulimall.product.vo.AttrRespVo;
 import com.atguigu.gulimall.product.vo.AttrVo;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import com.atguigu.gulimall.product.service.AttrService;
@@ -27,12 +27,12 @@ import com.atguigu.common.utils.R;
  */
 @RestController
 @RequestMapping("product/attr")
+@RequiredArgsConstructor
 public class AttrController {
-    @Autowired
-    private AttrService attrService;
 
-    @Autowired
-    ProductAttrValueService productAttrValueService;
+    private final AttrService attrService;
+
+    private final ProductAttrValueService productAttrValueService;
 
     ///product/attr/info/{attrId}
 
@@ -119,10 +119,10 @@ public class AttrController {
 
     ///product/attr/update/{spuId}
     @PostMapping("/update/{spuId}")
-    public R updateSpuAttr(@PathVariable("spuId") Long spuId,
-                           @RequestBody List<ProductAttrValueEntity> entities){
+    public R replaceSpuAttr(@PathVariable("spuId") Long spuId,
+                            @RequestBody List<ProductAttrValueEntity> entities){
 
-        productAttrValueService.updateSpuAttr(spuId,entities);
+        productAttrValueService.replaceSpuAttr(spuId,entities);
 
         return R.ok();
     }

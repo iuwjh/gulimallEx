@@ -8,6 +8,7 @@ import com.atguigu.gulimall.product.entity.SpuInfoDescEntity;
 import com.atguigu.gulimall.product.feign.SeckillFeignService;
 import com.atguigu.gulimall.product.service.*;
 import com.atguigu.gulimall.product.vo.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,23 +35,22 @@ import org.springframework.util.StringUtils;
 
 
 @Service("skuInfoService")
+@RequiredArgsConstructor
 public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> implements SkuInfoService {
-    @Autowired
-    SkuImagesService skuImagesService;
 
-    @Autowired
-    SpuInfoDescService spuInfoDescService;
+    private final SkuImagesService skuImagesService;
 
-    @Autowired
-    AttrGroupService attrGroupService;
+    private final SpuInfoDescService spuInfoDescService;
 
-    @Autowired
-    SkuSaleAttrValueDao skuSaleAttrValueDao;
-    @Autowired
-    SeckillFeignService seckillFeignService;
+    private final AttrGroupService attrGroupService;
 
-    @Autowired
-    ThreadPoolExecutor executor;
+    private final SkuSaleAttrValueDao skuSaleAttrValueDao;
+
+    private final SeckillFeignService seckillFeignService;
+
+    private final SkuInfoDao skuInfoDao;
+
+    private final ThreadPoolExecutor executor;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -106,13 +106,12 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
             try {
                 BigDecimal bigDecimal = new BigDecimal(max);
 
-                if (bigDecimal.compareTo(new BigDecimal("0")) == 1) {
+                if (bigDecimal.compareTo(new BigDecimal("0")) > 0) {
                     queryWrapper.le("price", max);
                 }
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
-
         }
 
         IPage<SkuInfoEntity> page = this.page(
@@ -125,8 +124,7 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
 
     @Override
     public List<SkuInfoEntity> getSkusById(Long spuId) {
-        List<SkuInfoEntity> skuList = this.list(new QueryWrapper<SkuInfoEntity>().eq("spu_id", spuId));
-
+        List<SkuInfoEntity> skuList = skuInfoDao.listBySpuId(spuId);
         return skuList;
     }
 
@@ -135,7 +133,7 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
         SkuItemVo skuItemVo = new SkuItemVo();
 
         CompletableFuture<SkuInfoEntity> infoFuture = CompletableFuture.supplyAsync(() -> {
-            SkuInfoEntity skuInfo = getById(skuId);
+            SkuInfoEntity skuInfo = skuInfoDao.selectById(skuId);
             skuItemVo.setInfo(skuInfo);
             return skuInfo;
         }, executor);
@@ -180,8 +178,7 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
         CompletableFuture<Void> seckillFuture = CompletableFuture.runAsync(() -> {
             R r = seckillFeignService.getSkuSeckillInfo(skuId);
             if (r.getCode() == 0) {
-                SeckillInfoVo data = r.getData(new TypeReference<SeckillInfoVo>() {
-                });
+                SeckillInfoVo data = r.getData(new TypeReference<SeckillInfoVo>() {});
                 skuItemVo.setSeckillInfo(data);
             }
 
