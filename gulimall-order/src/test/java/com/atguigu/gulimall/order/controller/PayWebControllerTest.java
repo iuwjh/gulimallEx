@@ -1,17 +1,12 @@
 package com.atguigu.gulimall.order.controller;
 
-import com.alibaba.fastjson.TypeReference;
-import com.atguigu.common.ControllerTestBase;
-import com.atguigu.common.ControllerTestConfig;
+import com.atguigu.common.controller.ControllerTestBase;
+import com.atguigu.common.controller.ControllerTestConfig;
 import com.atguigu.gulimall.order.config.AlipayTemplate;
-import com.atguigu.gulimall.order.entity.OrderEntity;
 import com.atguigu.gulimall.order.service.OrderService;
-import com.atguigu.gulimall.order.vo.MemberAddressVo;
-import com.atguigu.gulimall.order.vo.OrderConfirmVo;
 import com.atguigu.gulimall.order.web.PayWebController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -19,10 +14,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static com.atguigu.common.Rmatcher.Rm;
-import static java.util.Collections.singletonList;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 

@@ -1,6 +1,6 @@
 package com.atguigu.gulimall.member.controller;
 
-import com.atguigu.common.ControllerTestConfig;
+import com.atguigu.common.controller.ControllerTestConfig;
 import com.atguigu.gulimall.member.entity.MemberReceiveAddressEntity;
 import com.atguigu.gulimall.member.service.MemberReceiveAddressService;
 import com.fasterxml.jackson.databind.ObjectMapper;
