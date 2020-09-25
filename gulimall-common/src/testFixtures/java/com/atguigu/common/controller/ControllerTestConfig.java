@@ -1,4 +1,4 @@
-package com.atguigu.common;
+package com.atguigu.common.controller;
 
 import com.atguigu.common.config.GulimallProps;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,7 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 import javax.annotation.PostConstruct;
 
 @TestConfiguration
-@ActiveProfiles("testWithData")
+@ActiveProfiles({"test", "withData"})
 @EnableConfigurationProperties(GulimallProps.class)
 public class ControllerTestConfig {
     @Bean
@@ -26,8 +26,4 @@ public class ControllerTestConfig {
         return mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }
 
-    @PostConstruct
-    void initUser(){
-
-    }
 }

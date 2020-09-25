@@ -1,7 +1,7 @@
-package com.atguigu.common;
+package com.atguigu.common.controller;
 
 import org.springframework.test.context.ActiveProfiles;
 
-@ActiveProfiles("testWithData")
+@ActiveProfiles({"test", "withData"})
 public class ControllerTestBase {
 }
