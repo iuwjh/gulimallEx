@@ -103,7 +103,7 @@ subprojects {
             testFixturesImplementation 'com.fasterxml.jackson.core:jackson-databind'
             testFixturesImplementation "com.alibaba:fastjson:${fastjson_version}"
             testFixturesCompileOnly 'javax.servlet:javax.servlet-api'
-            testFixturesImplementation "it.ozimov:embedded-redis:${embedded_redis_version}"
+            //testFixturesImplementation "it.ozimov:embedded-redis:${embedded_redis_version}"
             testFixturesImplementation('org.springframework.boot:spring-boot-starter-data-redis')
         }
 
@@ -150,7 +150,7 @@ subprojects {
         implementation('org.springframework.boot:spring-boot-starter-data-redis') {
             exclude group: 'io.lettuce', module: 'lettuce-core'
         }
-        testImplementation "it.ozimov:embedded-redis:${embedded_redis_version}"
+        implementation "it.ozimov:embedded-redis:${embedded_redis_version}"
 
         implementation 'javax.validation:validation-api'
         implementation 'org.hibernate.validator:hibernate-validator'

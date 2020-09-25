@@ -10,12 +10,15 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import redis.embedded.RedisServer;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.net.UnknownHostException;
 
 @Configuration
 @EnableRedisRepositories
-@Profile({"dev", "prod"})
+// @Profile({"dev", "prod"})
 public class RedisConfig {
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
@@ -40,4 +43,28 @@ public class RedisConfig {
         return template;
     }
 
+    @Configuration
+    @Profile("test")
+    public static class Embedded {
+        private final RedisServer redisServer;
+
+        public Embedded() {
+            this.redisServer = new RedisServer();
+        }
+
+        @PostConstruct
+        public void postConstruct() {
+            redisServer.start();
+        }
+
+        @PreDestroy
+        public void preDestroy() {
+            redisServer.stop();
+        }
+
+        @Bean
+        public RedisConnectionFactory redisConnectionFactory() {
+            return new LettuceConnectionFactory("localhost", 6379);
+        }
+    }
 }

@@ -38,6 +38,12 @@ public class Rmatcher {
         };
     }
 
+    public ResultMatcher RHasKey(String key) {
+        return mvcResult -> {
+            assertThat(mvcResultToR(mvcResult)).isNotNull().containsKey(key);
+        };
+    }
+
     /**
      * {@link R#getData(TypeReference)}中是否存在指定对象
      * 实现采用JSON字符串序列化
