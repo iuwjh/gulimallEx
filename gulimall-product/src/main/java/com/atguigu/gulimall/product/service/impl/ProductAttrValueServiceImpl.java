@@ -1,5 +1,6 @@
 package com.atguigu.gulimall.product.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Service("productAttrValueService")
+@RequiredArgsConstructor
 public class ProductAttrValueServiceImpl extends ServiceImpl<ProductAttrValueDao, ProductAttrValueEntity> implements ProductAttrValueService {
+
+    private final ProductAttrValueDao productAttrValueDao;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -44,16 +48,12 @@ public class ProductAttrValueServiceImpl extends ServiceImpl<ProductAttrValueDao
 
     @Transactional
     @Override
-    public void updateSpuAttr(Long spuId, List<ProductAttrValueEntity> entities) {
+    public void replaceSpuAttr(Long spuId, List<ProductAttrValueEntity> entities) {
         //1、删除这个spuId之前对应的所有属性
-        this.baseMapper.delete(new QueryWrapper<ProductAttrValueEntity>().eq("spu_id",spuId));
+        productAttrValueDao.deleteBySpuId(spuId);
 
-
-        List<ProductAttrValueEntity> collect = entities.stream().map(item -> {
-            item.setSpuId(spuId);
-            return item;
-        }).collect(Collectors.toList());
-        this.saveBatch(collect);
+        List<ProductAttrValueEntity> collect = entities.stream().peek(item -> item.setSpuId(spuId)).collect(Collectors.toList());
+        saveProductAttr(collect);
     }
 
 }

@@ -2,7 +2,10 @@ package com.atguigu.gulimall.product.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
@@ -16,6 +19,9 @@ import java.io.Serializable;
  */
 @Data
 @Accessors(chain = true)
+@Builder(toBuilder = true)
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName("pms_category_brand_relation")
 public class CategoryBrandRelationEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

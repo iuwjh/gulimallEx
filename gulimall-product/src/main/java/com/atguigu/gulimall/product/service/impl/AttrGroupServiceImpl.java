@@ -4,6 +4,7 @@ import com.atguigu.gulimall.product.entity.AttrEntity;
 import com.atguigu.gulimall.product.service.AttrService;
 import com.atguigu.gulimall.product.vo.AttrGroupWithAttrsVo;
 import com.atguigu.gulimall.product.vo.SpuItemAttrGroupVo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,10 +26,12 @@ import org.springframework.util.StringUtils;
 
 
 @Service("attrGroupService")
+@RequiredArgsConstructor
 public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEntity> implements AttrGroupService {
 
-    @Autowired
-    AttrService attrService;
+    private final AttrService attrService;
+
+    private final AttrGroupDao attrGroupDao;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -73,7 +76,7 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
     public List<AttrGroupWithAttrsVo> getAttrGroupWithAttrsByCatelogId(Long catelogId) {
             //com.atguigu.gulimall.product.vo
         //1、查询分组信息
-        List<AttrGroupEntity> attrGroupEntities = this.list(new QueryWrapper<AttrGroupEntity>().eq("catelog_id", catelogId));
+        List<AttrGroupEntity> attrGroupEntities = attrGroupDao.listByCatalogId(catelogId);
 
         //2、查询所有属性
         List<AttrGroupWithAttrsVo> collect = attrGroupEntities.stream().map(group -> {

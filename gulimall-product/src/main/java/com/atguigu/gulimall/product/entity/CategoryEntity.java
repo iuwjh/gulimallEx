@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
@@ -23,6 +23,9 @@ import java.util.List;
 
 @Data
 @Accessors(chain = true)
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @TableName("pms_category")
 public class CategoryEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -68,6 +71,7 @@ public class CategoryEntity implements Serializable {
 
 	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	@TableField(exist=false)
+    @Singular
 	private List<CategoryEntity> children;
 
 

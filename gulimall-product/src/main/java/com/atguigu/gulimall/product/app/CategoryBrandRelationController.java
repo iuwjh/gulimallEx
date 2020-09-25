@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import com.atguigu.gulimall.product.entity.BrandEntity;
 import com.atguigu.gulimall.product.vo.BrandVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,9 +28,10 @@ import com.atguigu.common.utils.R;
  */
 @RestController
 @RequestMapping("product/categorybrandrelation")
+@RequiredArgsConstructor
 public class CategoryBrandRelationController {
-    @Autowired
-    private CategoryBrandRelationService categoryBrandRelationService;
+
+    private final CategoryBrandRelationService categoryBrandRelationService;
 
     /**
      * 获取当前品牌关联的所有分类列表

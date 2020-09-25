@@ -1,5 +1,6 @@
 package com.atguigu.gulimall.product.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +17,10 @@ import com.atguigu.gulimall.product.service.SkuSaleAttrValueService;
 
 
 @Service("skuSaleAttrValueService")
+@RequiredArgsConstructor
 public class SkuSaleAttrValueServiceImpl extends ServiceImpl<SkuSaleAttrValueDao, SkuSaleAttrValueEntity> implements SkuSaleAttrValueService {
+
+    private final SkuSaleAttrValueDao skuSaleAttrValueDao;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -30,7 +34,7 @@ public class SkuSaleAttrValueServiceImpl extends ServiceImpl<SkuSaleAttrValueDao
 
     @Override
     public List<SkuSaleAttrValueEntity> getBySkuId(Long skuId) {
-        return baseMapper.selectList(new QueryWrapper<SkuSaleAttrValueEntity>().eq("sku_id", skuId));
+        return skuSaleAttrValueDao.listBySkuId(skuId);
 
     }
 

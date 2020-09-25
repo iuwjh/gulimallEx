@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,9 +28,10 @@ import com.atguigu.common.utils.R;
  */
 @RestController
 @RequestMapping("product/skusaleattrvalue")
+@RequiredArgsConstructor
 public class SkuSaleAttrValueController {
-    @Autowired
-    private SkuSaleAttrValueService skuSaleAttrValueService;
+
+    private final SkuSaleAttrValueService skuSaleAttrValueService;
 
     /**
      * 列表
