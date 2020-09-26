@@ -1,10 +1,16 @@
 package com.atguigu.common.config;
 
 import com.alibaba.fastjson.support.spring.GenericFastJsonRedisSerializer;
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -18,8 +24,14 @@ import java.net.UnknownHostException;
 
 @Configuration
 @EnableRedisRepositories
-// @Profile({"dev", "prod"})
+@DependsOn("embeddedRedisConfig")
 public class RedisConfig {
+    @Value("${spring.redis.host}")
+    String redisHost;
+
+    @Value("${spring.redis.port}")
+    String redisPort;
+
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
@@ -43,8 +55,15 @@ public class RedisConfig {
         return template;
     }
 
-    @Configuration
-    @Profile("test")
+    @Bean
+    public RedissonClient redisson() {
+        Config config = new Config();
+        config.useSingleServer().setAddress("redis://" + redisHost + ":" + redisPort);
+        return Redisson.create(config);
+    }
+
+    @Configuration(value = "embeddedRedisConfig")
+    @Profile("redisEmbed")
     public static class Embedded {
         private final RedisServer redisServer;
 
@@ -60,11 +79,6 @@ public class RedisConfig {
         @PreDestroy
         public void preDestroy() {
             redisServer.stop();
-        }
-
-        @Bean
-        public RedisConnectionFactory redisConnectionFactory() {
-            return new LettuceConnectionFactory("localhost", 6379);
         }
     }
 }

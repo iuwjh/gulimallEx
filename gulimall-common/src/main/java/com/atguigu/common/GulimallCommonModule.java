@@ -1,6 +1,7 @@
 package com.atguigu.common;
 
 import com.atguigu.common.config.GulimallProps;
+import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
@@ -14,18 +15,15 @@ public class GulimallCommonModule {
 
     @Configuration
     @PropertySource("classpath:base.properties")
-    static class ProfilesWithBase {
+    @PropertySource("classpath:dev.properties")
+    @Profile("dev")
+    static class ProfileDev {}
 
-        @Configuration
-        @PropertySource("classpath:dev.properties")
-        @Profile("dev")
-        static class ProfileDev {}
-
-        @Configuration
-        @PropertySource("classpath:prod.properties")
-        @Profile("prod")
-        static class ProfileProd {}
-    }
+    @Configuration
+    @PropertySource("classpath:base.properties")
+    @PropertySource("classpath:prod.properties")
+    @Profile("prod")
+    static class ProfileProd {}
 
     @Configuration
     @PropertySource("classpath:h2mem.properties")
@@ -36,6 +34,11 @@ public class GulimallCommonModule {
     @PropertySource("classpath:mysql.properties")
     @Profile("mysql")
     static class ProfileMysql {}
+
+    @Configuration
+    @PropertySource("classpath:redis-embed.properties")
+    @Profile("redisEmbed")
+    static class ProfileRedisEmbed {}
 
     @Configuration
     @PropertySource("classpath:test-base.properties")
