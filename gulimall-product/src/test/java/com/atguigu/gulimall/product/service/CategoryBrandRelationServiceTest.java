@@ -33,14 +33,11 @@ public class CategoryBrandRelationServiceTest {
     @Mock
     private CategoryBrandRelationDao relationDao;
 
-    @Mock
-    private BrandService brandService;
-
     private CategoryBrandRelationService categoryBrandRelationService;
 
     @BeforeEach
     void setup() {
-        categoryBrandRelationService = Mockito.spy(new CategoryBrandRelationServiceImpl(brandDao, categoryDao, relationDao, brandService));
+        categoryBrandRelationService = Mockito.spy(new CategoryBrandRelationServiceImpl(brandDao, categoryDao, relationDao));
         ReflectionTestUtils.setField(categoryBrandRelationService, "baseMapper", relationDao);
     }
 
@@ -65,17 +62,5 @@ public class CategoryBrandRelationServiceTest {
         categoryBrandRelationService.updateBrandName(relationEntity.getBrandId(), relationEntity.getBrandName());
         Mockito.verify(relationDao, Mockito.times(1)).updateByBrandId(relationEntity.getBrandId(),
             new CategoryBrandRelationEntity().setBrandId(relationEntity.getBrandId()).setBrandName(relationEntity.getBrandName()));
-    }
-
-    @Test
-    void getBrandsByCatId() throws Exception {
-        final BrandEntity brandEntity = new BrandEntity();
-        final CategoryBrandRelationEntity relationEntity = new CategoryBrandRelationEntity();
-        Mockito.when(relationDao.getByCatelogId(relationEntity.getCatelogId())).thenReturn(singletonList(relationEntity));
-        Mockito.when(brandService.getById(relationEntity.getBrandId())).thenReturn(brandEntity);
-
-        final List<BrandEntity> result = categoryBrandRelationService.getBrandsByCatId(relationEntity.getCatelogId());
-        assertThat(result).isNotNull().hasSize(1);
-        assertThat(result.get(0)).isNotNull().isEqualTo(brandEntity);
     }
 }
