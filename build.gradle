@@ -78,6 +78,10 @@ subprojects {
         }
     }
 
+    bootJar {
+        enabled = true
+    }
+
     if (project.name.startsWith("gulimall-")) {
         springBoot {
             def pkgNameParts = project.name.split('-', 2)
@@ -147,10 +151,14 @@ subprojects {
 
         // Redis
         implementation 'org.springframework.session:spring-session-data-redis'
-        implementation('org.springframework.boot:spring-boot-starter-data-redis') {
-            exclude group: 'io.lettuce', module: 'lettuce-core'
+        implementation('org.springframework.boot:spring-boot-starter-data-redis')
+        //    {
+        //    exclude group: 'io.lettuce', module: 'lettuce-core'
+        //}
+        implementation("it.ozimov:embedded-redis:${embedded_redis_version}") {
+            exclude group: 'org.slf4j', module: 'slf4j-simple'
         }
-        implementation "it.ozimov:embedded-redis:${embedded_redis_version}"
+        implementation "org.redisson:redisson:${redisson_version}"
 
         implementation 'javax.validation:validation-api'
         implementation 'org.hibernate.validator:hibernate-validator'

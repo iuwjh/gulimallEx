@@ -1,9 +1,9 @@
 spring:
-  datasource:
-    username: root
-    password: root
-    url: jdbc:mysql://gulimall.com:3306/gulimall_sms
-    driver-class-name: com.mysql.cj.jdbc.Driver
+#  datasource:
+#    username: root
+#    password: root
+#    url: jdbc:mysql://gulimall.com:3306/(.*)
+#    driver-class-name: com.mysql.cj.jdbc.Driver
 
   application:
     name: gulimall-coupon
