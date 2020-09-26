@@ -4,6 +4,7 @@ import com.atguigu.common.controller.ControllerTestBase;
 import com.atguigu.common.controller.ControllerTestConfig;
 import com.atguigu.gulimall.product.app.CategoryBrandRelationController;
 import com.atguigu.gulimall.product.entity.AttrAttrgroupRelationEntity;
+import com.atguigu.gulimall.product.service.BrandService;
 import com.atguigu.gulimall.product.service.CategoryBrandRelationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 public class CategoryBrandRelationControllerTest extends ControllerTestBase {
     @MockBean
     private CategoryBrandRelationService categoryBrandRelationService;
+
+    @MockBean
+    private BrandService brandService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -58,6 +62,6 @@ public class CategoryBrandRelationControllerTest extends ControllerTestBase {
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .param("catId", String.valueOf(catId)))
             .andExpect(Rm().RHasKey("data"));
-        Mockito.verify(categoryBrandRelationService, Mockito.times(1)).getBrandsByCatId(catId);
+        Mockito.verify(brandService, Mockito.times(1)).getBrandsByCatId(catId);
     }
 }
