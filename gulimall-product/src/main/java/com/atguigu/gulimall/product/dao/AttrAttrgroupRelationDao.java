@@ -19,7 +19,7 @@ import java.util.List;
 @Mapper
 public interface AttrAttrgroupRelationDao extends BaseMapper<AttrAttrgroupRelationEntity> {
 
-    void deleteBatchRelation(@Param("entities") List<AttrAttrgroupRelationEntity> entities);
+    void deleteBatchByAttrIdAndAttrGroupId(@Param("entities") List<AttrAttrgroupRelationEntity> entities);
 
     default AttrAttrgroupRelationEntity getOneByAttrId(long attrId) {
         return this.selectOne(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_id", attrId));

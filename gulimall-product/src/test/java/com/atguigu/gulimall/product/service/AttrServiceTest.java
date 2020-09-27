@@ -17,7 +17,6 @@ import com.atguigu.gulimall.product.vo.AttrVo;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Collections.singletonList;
-import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 
@@ -145,7 +143,7 @@ public class AttrServiceTest {
         final AttrAttrgroupRelationEntity relationEntity = objectMapper.convertValue(relationVo, AttrAttrgroupRelationEntity.class);
 
         attrService.deleteRelation(singletonList(relationVo).toArray(new AttrGroupRelationVo[0]));
-        Mockito.verify(relationDao, Mockito.times(1)).deleteBatchRelation(singletonList(relationEntity));
+        Mockito.verify(relationDao, Mockito.times(1)).deleteBatchByAttrIdAndAttrGroupId(singletonList(relationEntity));
     }
 
     @Test

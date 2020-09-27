@@ -312,7 +312,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
         R r = searchFeignService.productStartUp(upProducts);
         if (r.getCode() == 0) {
-            spuInfoDao.updateSpuStatus(spuId, ProductConstant.StatusEnum.SPU_UP.getCode());
+            spuInfoDao.updateSpuPublishStatus(spuId, ProductConstant.StatusEnum.SPU_UP.getCode());
         } else {
 
         }
