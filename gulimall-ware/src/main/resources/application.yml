@@ -1,6 +1,3 @@
-server:
-  port: 38230
-
 spring:
 #  datasource:
 #    username: root

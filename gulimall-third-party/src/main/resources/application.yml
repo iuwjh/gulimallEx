@@ -16,5 +16,3 @@ spring:
   application:
     name: gulimall-third-party
 
-server:
-  port: 38250

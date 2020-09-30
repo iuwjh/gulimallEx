@@ -5,5 +5,5 @@ import org.springframework.context.annotation.Configuration;
 
 @EnableDiscoveryClient
 @Configuration
-public class NacosConfig {
+public class ServiceDiscoveryConfig {
 }

@@ -11,7 +11,8 @@ plugins {
     id 'org.springframework.boot' version "${spring_boot_version}" apply false
     id 'com.google.cloud.tools.jib' version "${jib_plugin_version}" apply false
     id 'nebula.lint' version "16.9.1" apply false
-    id "me.champeau.gradle.jmh" version "0.5.1" apply false
+    //id "me.champeau.gradle.jmh" version "0.5.1" apply false
+    //id 'com.avast.gradle.docker-compose' version "${docker_compose_plugin_version}"
 }
 
 allprojects {
@@ -57,7 +58,7 @@ subprojects {
     apply plugin: 'io.freefair.lombok'
     apply plugin: "org.liquibase.gradle"
     apply plugin: 'org.springframework.boot'
-    apply plugin: 'com.google.cloud.tools.jib'
+    //apply plugin: 'docker-compose'
 
     group = "com.atguigu.gulimall"
     version = '0.0.1-SNAPSHOT'
@@ -76,10 +77,24 @@ subprojects {
         jar {
             enabled = true
         }
-    }
+    } else {
+        apply plugin: 'com.google.cloud.tools.jib'
 
-    bootJar {
-        enabled = true
+        bootJar {
+            enabled = true
+        }
+
+        jib {
+            allowInsecureRegistries true
+
+            container {
+                from {
+                    image = 'gcr.io/distroless/java@sha256:084645ffc35ef0cfc20792faec935b2ba8c71c10f6f5b19edffcb03075a0ee65'
+                    //image = 'gcr.io/distroless/java@sha256:3ee3b695d556ba53af51a074a4cd5ea175cb100d6d57a4be7bbc71bc8c6a3da7'
+                }
+                creationTime = "USE_CURRENT_TIMESTAMP"
+            }
+        }
     }
 
     if (project.name.startsWith("gulimall-")) {
@@ -130,10 +145,11 @@ subprojects {
         // Spring cloud
         implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
         implementation 'org.springframework.cloud:spring-cloud-starter-zipkin'
+        implementation 'org.springframework.cloud:spring-cloud-starter-consul-all'
 
         // Spring cloud alibaba
-        implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery'
-        implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config'
+        //implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery'
+        //implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config'
         implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-sentinel'
         implementation 'com.alibaba.csp:sentinel-spring-webmvc-adapter'
 
@@ -152,9 +168,9 @@ subprojects {
         // Redis
         implementation 'org.springframework.session:spring-session-data-redis'
         implementation('org.springframework.boot:spring-boot-starter-data-redis')
-        //    {
-        //    exclude group: 'io.lettuce', module: 'lettuce-core'
-        //}
+            {
+                exclude group: 'io.lettuce', module: 'lettuce-core'
+            }
         implementation("it.ozimov:embedded-redis:${embedded_redis_version}") {
             exclude group: 'org.slf4j', module: 'slf4j-simple'
         }
@@ -163,10 +179,15 @@ subprojects {
         implementation 'javax.validation:validation-api'
         implementation 'org.hibernate.validator:hibernate-validator'
 
-        compileOnly 'javax.servlet:javax.servlet-api'
+        if (project.name == 'gulimall-gateway') {
+            implementation 'javax.servlet:javax.servlet-api'
+        } else {
+            compileOnly 'javax.servlet:javax.servlet-api'
+        }
 
         implementation 'org.apache.httpcomponents:fluent-hc:4.5.12'
-        implementation 'commons-lang:commons-lang:2.6'
+        implementation 'org.apache.commons:commons-lang3:3.11'
+        //implementation 'commons-lang:commons-lang:2.6'
         testImplementation 'org.assertj:assertj-core'
         testImplementation 'com.baomidou:mybatis-plus-boot-starter-test:3.4.0'
 
@@ -205,10 +226,6 @@ subprojects {
             }
         }
         runList = project.ext.runList
-    }
-
-    jib {
-        allowInsecureRegistries true
     }
 
     publishing {

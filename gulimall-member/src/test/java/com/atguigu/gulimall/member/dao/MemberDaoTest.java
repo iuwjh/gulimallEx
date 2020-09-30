@@ -1,6 +1,5 @@
 package com.atguigu.gulimall.member.dao;
 
-import com.alibaba.cloud.nacos.registry.NacosServiceRegistryAutoConfiguration;
 import com.atguigu.gulimall.member.entity.MemberEntity;
 import com.baomidou.mybatisplus.test.autoconfigure.MybatisPlusTest;
 import org.junit.jupiter.api.AfterEach;

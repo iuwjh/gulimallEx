@@ -4,6 +4,7 @@ import com.alibaba.fastjson.support.spring.GenericFastJsonRedisSerializer;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,13 +25,16 @@ import java.net.UnknownHostException;
 
 @Configuration
 @EnableRedisRepositories
-@DependsOn("embeddedRedisConfig")
+// @DependsOn("embeddedRedisConfig")
 public class RedisConfig {
     @Value("${spring.redis.host}")
     String redisHost;
 
     @Value("${spring.redis.port}")
     String redisPort;
+
+    @Autowired(required = false)
+    Embedded embedded;
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
@@ -62,7 +66,7 @@ public class RedisConfig {
         return Redisson.create(config);
     }
 
-    @Configuration(value = "embeddedRedisConfig")
+    @Configuration
     @Profile("redisEmbed")
     public static class Embedded {
         private final RedisServer redisServer;
