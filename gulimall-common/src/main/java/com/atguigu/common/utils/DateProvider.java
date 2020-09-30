@@ -12,4 +12,13 @@ public class DateProvider {
     public Date now() {
         return new Date();
     }
+
+    /**
+     * @see System#currentTimeMillis()
+     */
+    public long nowInMillis() {
+        return System.currentTimeMillis();
+    }
+
+
 }

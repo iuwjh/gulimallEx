@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-public class SeckillSessionsWithSKus {
+public class SeckillSessionsWithSkus {
     private Long id;
     /**
      * 场次名称

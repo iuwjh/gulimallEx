@@ -3,6 +3,7 @@ package com.atguigu.gulimall.seckill.controller;
 import com.atguigu.common.utils.R;
 import com.atguigu.gulimall.seckill.service.SeckillService;
 import com.atguigu.gulimall.seckill.to.SeckillSkuRedisTo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,9 +12,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 public class SeckillController {
-    @Autowired
-    SeckillService seckillService;
+
+    private final SeckillService seckillService;
 
     @ResponseBody
     @GetMapping("/currentSeckillSkus")

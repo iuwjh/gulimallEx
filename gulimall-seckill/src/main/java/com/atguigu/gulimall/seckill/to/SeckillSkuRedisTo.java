@@ -2,10 +2,12 @@ package com.atguigu.gulimall.seckill.to;
 
 import com.atguigu.gulimall.seckill.vo.SkuInfoVo;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 
 @Data
+@Accessors(chain = true)
 public class SeckillSkuRedisTo {
     private Long promotionId;
     /**
