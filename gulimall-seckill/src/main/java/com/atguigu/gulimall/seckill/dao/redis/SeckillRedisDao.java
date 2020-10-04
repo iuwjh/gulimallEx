@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Repository
-@RequiredArgsConstructor
 public class SeckillRedisDao {
 
     private final StringRedisTemplate stringRedisTemplate;
@@ -33,10 +32,13 @@ public class SeckillRedisDao {
     public static final String SKUKILL_CACHE_PREFIX = "seckill:skus";
     public static final String SKU_STOCK_SEMAPHORE = "seckill:stock:";
 
-    private BoundHashOperations<String, String, String> skuHashOps;
+    private final BoundHashOperations<String, String, String> skuHashOps;
 
-    @PostConstruct
-    void init() {
+    public SeckillRedisDao(StringRedisTemplate stringRedisTemplate, RedissonClient redissonClient, DateProvider dateProvider) {
+        this.stringRedisTemplate = stringRedisTemplate;
+        this.redissonClient = redissonClient;
+        this.dateProvider = dateProvider;
+
         skuHashOps = stringRedisTemplate.boundHashOps(SKUKILL_CACHE_PREFIX);
     }
 
@@ -107,12 +109,35 @@ public class SeckillRedisDao {
         return skuHashOps.hasKey(skuKey);
     }
 
-    // TODO 同步
+    public Set<String> listSkuKeys() {
+        return skuHashOps.keys();
+    }
+
+    /**
+     * 使用redisson分布式信号量存储库存量
+     *
+     * @param skuSecretCode
+     * @param skuCount
+     */
+    public void setSkuStock(String skuSecretCode, int skuCount) {
+        RSemaphore semaphore = redissonClient.getSemaphore(SKU_STOCK_SEMAPHORE + skuSecretCode);
+        semaphore.trySetPermits(skuCount);
+    }
+
+    /**
+     * 同一个会员在同一场次同一件商品只能下单一次
+     *
+     * @param memberId
+     * @param skuTo
+     * @param skuCount
+     * @return 库存扣减成功返回true；重复下单或库存不足返回false
+     */
     public boolean tryDeductStock(Long memberId, SeckillSkuRedisTo skuTo, Integer skuCount) {
-        final long now = dateProvider.nowInMillis();
+        final long nowInMillis = dateProvider.nowInMillis();
+        // 会员_场次_商品
         final String memberOrderKey = memberId + "_" + skuTo.getPromotionSessionId() + "_" + skuTo.getSkuId();
         Boolean isFirstTimeOrder = stringRedisTemplate.opsForValue().setIfAbsent(memberOrderKey, skuCount.toString(),
-            skuTo.getEndTime() - now, TimeUnit.MILLISECONDS);
+            skuTo.getEndTime() - nowInMillis, TimeUnit.MILLISECONDS);
         if (isFirstTimeOrder != null && isFirstTimeOrder) {
             RSemaphore semaphore = redissonClient.getSemaphore(SKU_STOCK_SEMAPHORE + skuTo.getRandomCode());
             boolean isStockDeducted = semaphore.tryAcquire(skuCount);

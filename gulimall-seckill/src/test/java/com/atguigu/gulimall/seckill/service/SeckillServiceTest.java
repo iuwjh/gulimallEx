@@ -3,6 +3,7 @@ package com.atguigu.gulimall.seckill.service;
 import com.atguigu.common.to.SeckillOrderTo;
 import com.atguigu.common.utils.DateProvider;
 import com.atguigu.common.utils.R;
+import com.atguigu.common.utils.RandomProvider;
 import com.atguigu.common.vo.MemberRespVo;
 import com.atguigu.gulimall.seckill.dao.amqp.SeckillRabbitSender;
 import com.atguigu.gulimall.seckill.dao.redis.SeckillRedisDao;
@@ -12,9 +13,10 @@ import com.atguigu.gulimall.seckill.interceptor.LoginUserInterceptor;
 import com.atguigu.gulimall.seckill.service.impl.SeckillServiceImpl;
 import com.atguigu.gulimall.seckill.to.SeckillSkuRedisTo;
 import com.atguigu.gulimall.seckill.vo.SeckillSessionsWithSkus;
+import com.atguigu.gulimall.seckill.vo.SeckillSkuVo;
+import com.atguigu.gulimall.seckill.vo.SkuInfoVo;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,6 +29,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import static java.util.Collections.singleton;
@@ -40,13 +43,7 @@ public class SeckillServiceTest {
     private CouponFeignService couponFeignService;
 
     @Mock
-    private StringRedisTemplate stringRedisTemplate;
-
-    @Mock
     private ProductFeignService productFeignService;
-
-    @Mock
-    private RedissonClient redissonClient;
 
     @Mock
     private SeckillRabbitSender rabbitSender;
@@ -56,6 +53,9 @@ public class SeckillServiceTest {
 
     @Mock
     private DateProvider dateProvider;
+
+    @Mock
+    private RandomProvider randomProvider;
 
     @InjectMocks
     private SeckillServiceImpl seckillService;
@@ -67,12 +67,26 @@ public class SeckillServiceTest {
         // seckillService = Mockito.spy(new SeckillServiceImpl());
     }
 
-    // @Test
+    @Test
     void uploadSeckillSkuLatest3Days() throws Exception {
-        final SeckillSessionsWithSkus sessionsWithSKus = new SeckillSessionsWithSkus();
+        final String secretCode = "aaabbbccceeeffff";
+        final SeckillSkuVo skuVo = new SeckillSkuVo().setPromotionSessionId(30L).setSkuId(40L).setSeckillCount(200);
+        final SeckillSessionsWithSkus sessionsWithSKus = new SeckillSessionsWithSkus().setStartTime(new Date(40L))
+            .setEndTime(new Date(60L)).setRelationSkus(singletonList(skuVo));
+        final SkuInfoVo skuInfoVo = new SkuInfoVo().setSpuId(7L);
+        final SeckillSkuRedisTo skuRedisTo = objectMapper.convertValue(skuVo, SeckillSkuRedisTo.class)
+            .setStartTime(40L).setEndTime(60L).setRandomCode(secretCode);
         Mockito.when(couponFeignService.getLatest3DaySession()).thenReturn(R.ok().setData(singletonList(sessionsWithSKus)));
+        Mockito.when(productFeignService.getSkuInfo(skuVo.getSkuId())).thenReturn(R.ok().setData(skuInfoVo));
+        Mockito.when(randomProvider.alphanumeric(16)).thenReturn(secretCode);
 
         seckillService.uploadSeckillSkuLatest3Days();
+        Mockito.verify(seckillRedisDao, Mockito.times(1))
+            .saveSessionSkuKeys(SeckillRedisDao.SESSIONS_CACHE_PREFIX + "40_60",
+                singletonList("30_40"));
+        Mockito.verify(seckillRedisDao, Mockito.times(1)).saveSku(skuRedisTo);
+        Mockito.verify(seckillRedisDao, Mockito.times(1))
+            .setSkuStock(secretCode, skuVo.getSeckillCount());
     }
 
     @Test
@@ -117,7 +131,7 @@ public class SeckillServiceTest {
         Mockito.when(seckillRedisDao.tryDeductStock(memberId, skuTo, skuCount)).thenReturn(true);
         Mockito.when(dateProvider.nowInMillis()).thenReturn(now);
 
-        final String result = seckillService.kill(skuKey, secretCode, skuCount);
+        final String result = seckillService.tryOrder(skuKey, secretCode, skuCount);
         assertThat(result).isNotBlank();
         Mockito.verify(rabbitSender, Mockito.times(1)).createOrder(orderTo.setOrderSn(result));
     }

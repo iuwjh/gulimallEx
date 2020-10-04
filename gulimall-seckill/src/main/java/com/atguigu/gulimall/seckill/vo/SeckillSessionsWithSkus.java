@@ -1,11 +1,13 @@
 package com.atguigu.gulimall.seckill.vo;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.util.Date;
 import java.util.List;
 
 @Data
+@Accessors(chain = true)
 public class SeckillSessionsWithSkus {
     private Long id;
     /**

@@ -4,7 +4,6 @@ import com.atguigu.common.utils.R;
 import com.atguigu.gulimall.seckill.service.SeckillService;
 import com.atguigu.gulimall.seckill.to.SeckillSkuRedisTo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -44,7 +43,7 @@ public class SeckillController {
                           @RequestParam("num") Integer num,
                           Model model) {
 
-        String orderSn = seckillService.kill(killId, key, num);
+        String orderSn = seckillService.tryOrder(killId, key, num);
         model.addAttribute("orderSn", orderSn);
         return "success";
     }

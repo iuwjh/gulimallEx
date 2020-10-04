@@ -11,8 +11,6 @@ public class SeckillRabbitSender {
 
     private final RabbitTemplate rabbitTemplate;
 
-
-
     public void createOrder(SeckillOrderTo orderTo) {
         rabbitTemplate.convertAndSend("order-event-exchange", "order.seckill.order", orderTo);
     }

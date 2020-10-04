@@ -1,8 +1,11 @@
 package com.atguigu.gulimall.seckill.controller;
 
 import com.alibaba.fastjson.TypeReference;
+import com.atguigu.common.anno.GulimallControllerTest;
+import com.atguigu.common.constant.AuthServerConstant;
 import com.atguigu.common.controller.ControllerTestBase;
 import com.atguigu.common.controller.ControllerTestConfig;
+import com.atguigu.common.vo.MemberRespVo;
 import com.atguigu.gulimall.seckill.service.SeckillService;
 import com.atguigu.gulimall.seckill.to.SeckillSkuRedisTo;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,9 +27,10 @@ import static com.atguigu.common.Rmatcher.Rm;
 import static java.util.Collections.singletonList;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-@WebMvcTest(controllers = SeckillController.class,
-    includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = ControllerTestConfig.class)
-)
+// @WebMvcTest(controllers = SeckillController.class,
+//     includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = ControllerTestConfig.class)
+// )
+@GulimallControllerTest(controllers = SeckillController.class)
 public class SeckillControllerTest extends ControllerTestBase {
     @MockBean
     private SeckillService seckillService;
@@ -73,9 +77,10 @@ public class SeckillControllerTest extends ControllerTestBase {
         params.add("killId", killId);
         params.add("key", key);
         params.add("num", String.valueOf(num));
-        Mockito.when(seckillService.kill(killId, key, num)).thenReturn(orderSn);
+        Mockito.when(seckillService.tryOrder(killId, key, num)).thenReturn(orderSn);
 
-        mockMvc.perform(get(BASE_URL + "/kill").params(params))
+        mockMvc.perform(get(BASE_URL + "/kill").params(params)
+            .sessionAttr(AuthServerConstant.LOGIN_USER, new MemberRespVo()))
             .andExpect(MockMvcResultMatchers.view().name("success"))
             .andExpect(MockMvcResultMatchers.model().attribute("orderSn", orderSn))
         ;
