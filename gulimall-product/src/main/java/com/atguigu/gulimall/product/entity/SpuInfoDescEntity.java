@@ -27,8 +27,8 @@ public class SpuInfoDescEntity implements Serializable {
 	@TableId(type = IdType.INPUT)
 	private Long spuId;
 	/**
-	 * 商品介绍
+	 * 商品介绍图片
 	 */
-	private String decriptImgs;
+	private String decript;
 
 }

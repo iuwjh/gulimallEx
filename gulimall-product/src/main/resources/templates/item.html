@@ -497,7 +497,7 @@
                             <!--	</tr>-->
                             <!--</table>-->
                             <img class="xiaoguo" th:src="${desp}"
-                                 th:each="desp:${#strings.listSplit(item.desp.getDecriptImgs,',')}"/>
+                                 th:each="desp:${#strings.listSplit(item.desp.decript,',')}"/>
                             <div class="guiGebox guiGebox1">
                                 <div class="guiGe" th:each="guige:${item.groupAttrs}">
                                     <h3>主体</h3>

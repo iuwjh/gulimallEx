@@ -3,7 +3,6 @@ package com.atguigu.gulimall.product.service;
 import com.atguigu.common.to.SkuHasStockVo;
 import com.atguigu.common.to.SkuReductionTo;
 import com.atguigu.common.to.SpuBoundTo;
-import com.atguigu.common.to.es.SkuEsModel;
 import com.atguigu.common.utils.DateProvider;
 import com.atguigu.common.utils.R;
 import com.atguigu.gulimall.product.dao.SpuInfoDao;
@@ -113,7 +112,7 @@ public class SpuInfoServiceTest {
         Mockito.verify(spuInfoDao, Mockito.times(1))
             .insert(spuInfoEntity.setCreateTime(date).setUpdateTime(date));
         Mockito.verify(spuInfoDescService, Mockito.times(1))
-            .saveSpuInfoDesc(new SpuInfoDescEntity().setSpuId(spuInfoEntity.getId()).setDecriptImgs(descriptImg));
+            .saveSpuInfoDesc(new SpuInfoDescEntity().setSpuId(spuInfoEntity.getId()).setDecript(descriptImg));
         Mockito.verify(imagesService, Mockito.times(1))
             .saveSpuImages(spuInfoEntity.getId(), spuSaveVo.getSpuImages());
 
