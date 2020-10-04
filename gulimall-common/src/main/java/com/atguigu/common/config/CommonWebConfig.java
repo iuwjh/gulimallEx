@@ -9,7 +9,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 @Configuration
-public class WebConfig {
+public class CommonWebConfig {
     @Bean
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(ObjectMapper mapper) {
         final MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter(mapper);

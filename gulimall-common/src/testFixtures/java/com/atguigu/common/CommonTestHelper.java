@@ -1,5 +1,6 @@
 package com.atguigu.common;
 
+import com.alibaba.fastjson.JSON;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -7,6 +8,7 @@ import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -18,6 +20,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.EMPTY_LIST;
 import static java.util.Collections.singletonList;
 
 public final class CommonTestHelper {
@@ -54,7 +57,10 @@ public final class CommonTestHelper {
     }
 
     public static void clearRedis(RedisTemplate<String, ?> redisTemplate) {
-        redisTemplate.delete(Optional.ofNullable(redisTemplate.keys("*")).orElse(Collections.emptySet()));
+        final Optional<Set<String>> keys = Optional.ofNullable(redisTemplate.keys("*"));
+        if (keys.isPresent() && !keys.get().isEmpty()) {
+            redisTemplate.delete(keys.get());
+        }
     }
 
     public static <T> Comparator<T> treeComparatorBFS(Function<T, List<T>> childrenGetter) {

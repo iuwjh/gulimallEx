@@ -122,8 +122,8 @@ subprojects {
             testFixturesImplementation 'com.fasterxml.jackson.core:jackson-databind'
             testFixturesImplementation "com.alibaba:fastjson:${fastjson_version}"
             testFixturesCompileOnly 'javax.servlet:javax.servlet-api'
-            //testFixturesImplementation "it.ozimov:embedded-redis:${embedded_redis_version}"
             testFixturesImplementation('org.springframework.boot:spring-boot-starter-data-redis')
+            testFixturesImplementation "com.baomidou:mybatis-plus-boot-starter-test:3.4.0"
         }
 
         // Spring boot
@@ -145,11 +145,9 @@ subprojects {
         // Spring cloud
         implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
         implementation 'org.springframework.cloud:spring-cloud-starter-zipkin'
-        implementation 'org.springframework.cloud:spring-cloud-starter-consul-all'
+        implementation 'org.springframework.cloud:spring-cloud-starter-consul-discovery'
 
         // Spring cloud alibaba
-        //implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery'
-        //implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config'
         implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-sentinel'
         implementation 'com.alibaba.csp:sentinel-spring-webmvc-adapter'
 
@@ -186,10 +184,10 @@ subprojects {
         }
 
         implementation 'org.apache.httpcomponents:fluent-hc:4.5.12'
-        implementation 'org.apache.commons:commons-lang3:3.11'
-        //implementation 'commons-lang:commons-lang:2.6'
+        implementation "org.apache.commons:commons-lang3:${apache_commons_lang3_version}"
+
         testImplementation 'org.assertj:assertj-core'
-        testImplementation 'com.baomidou:mybatis-plus-boot-starter-test:3.4.0'
+        testImplementation "com.baomidou:mybatis-plus-boot-starter-test:3.4.0"
 
     }
 

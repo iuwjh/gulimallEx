@@ -7,9 +7,11 @@ import com.atguigu.gulimall.cart.vo.UserInfoTo;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.context.WebApplicationContext;
 
 import javax.annotation.PostConstruct;
 import java.util.Collections;
@@ -25,31 +27,43 @@ public class CartRedisDao {
 
     public static final String CART_PREFIX = "gulimall:cart:";
 
-    private BoundHashOperations<String, String, Object> cartOps;
+    // private BoundHashOperations<String, String, Object> cartOps;
+    //
+    // private BoundHashOperations<String, String, Object> tempCartOps = null;
+    //
+    // @PostConstruct
+    // private void init() {
+    //     UserInfoTo userInfoTo = CartInterceptor.userInfoThreadLocal.get();
+    //     if (userInfoTo.getUserId() != null) {
+    //         cartOps = stringRedisTemplate.boundHashOps(CART_PREFIX + userInfoTo.getUserId());
+    //         tempCartOps = stringRedisTemplate.boundHashOps(CART_PREFIX + userInfoTo.getUserKey());
+    //     } else {
+    //         cartOps = stringRedisTemplate.boundHashOps(CART_PREFIX + userInfoTo.getUserKey());
+    //     }
+    // }
 
-    private BoundHashOperations<String, String, Object> tempCartOps = null;
-
-    @PostConstruct
-    private void init() {
+    private BoundHashOperations<String, String, Object> cartOps() {
         UserInfoTo userInfoTo = CartInterceptor.userInfoThreadLocal.get();
-        if (userInfoTo.getUserId() != null) {
-            cartOps = stringRedisTemplate.boundHashOps(CART_PREFIX + userInfoTo.getUserId());
-            tempCartOps = stringRedisTemplate.boundHashOps(CART_PREFIX + userInfoTo.getUserKey());
-        } else {
-            cartOps = stringRedisTemplate.boundHashOps(CART_PREFIX + userInfoTo.getUserKey());
-        }
+        return stringRedisTemplate.boundHashOps(CART_PREFIX +
+            (userInfoTo.getUserId() != null ? userInfoTo.getUserKey() : null));
+    }
+
+    private BoundHashOperations<String, String, Object> tempCartOps() {
+        UserInfoTo userInfoTo = CartInterceptor.userInfoThreadLocal.get();
+        return stringRedisTemplate.boundHashOps(CART_PREFIX +
+            (userInfoTo.getUserId() != null ? userInfoTo.getUserId() : userInfoTo.getUserKey()));
     }
 
     public void setCartItem(String skuId, CartItem cartItem) {
-        cartOps.put(skuId, JSON.toJSONString(cartItem));
+        cartOps().put(skuId, JSON.toJSONString(cartItem));
     }
 
     public void remoteCartItem(String skuId) {
-        cartOps.delete(skuId);
+        cartOps().delete(skuId);
     }
 
     public CartItem getCartItem(String skuId) {
-        final String json = (String) cartOps.get(skuId);
+        final String json = (String) cartOps().get(skuId);
         if (StringUtils.isNotBlank(json)) {
             return JSON.parseObject(json, CartItem.class);
         }
@@ -57,18 +71,18 @@ public class CartRedisDao {
     }
 
     public List<CartItem> getAllItems() {
-        return Objects.requireNonNull(cartOps.values()).stream()
+        return Objects.requireNonNull(cartOps().values()).stream()
             .map((item) -> JSON.parseObject((String) item, CartItem.class))
             .collect(Collectors.toList());
     }
 
     public void clear() {
-        stringRedisTemplate.delete(cartOps.getKey());
+        stringRedisTemplate.delete(cartOps().getKey());
     }
 
     public List<CartItem> getTempCardItems() {
-        if (tempCartOps != null) {
-            return Objects.requireNonNull(tempCartOps.values()).stream()
+        if (tempCartOps() != null) {
+            return Objects.requireNonNull(tempCartOps().values()).stream()
                 .map((item) -> JSON.parseObject((String) item, CartItem.class))
                 .collect(Collectors.toList());
         }
@@ -76,8 +90,8 @@ public class CartRedisDao {
     }
 
     public void clearTemp() {
-        if (tempCartOps != null) {
-            stringRedisTemplate.delete(tempCartOps.getKey());
+        if (tempCartOps() != null) {
+            stringRedisTemplate.delete(tempCartOps().getKey());
         }
     }
 }

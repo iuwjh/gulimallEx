@@ -27,10 +27,10 @@ import java.net.UnknownHostException;
 @EnableRedisRepositories
 // @DependsOn("embeddedRedisConfig")
 public class RedisConfig {
-    @Value("${spring.redis.host}")
+    @Value("${spring.redis.host:localhost}")
     String redisHost;
 
-    @Value("${spring.redis.port}")
+    @Value("${spring.redis.port:6379}")
     String redisPort;
 
     @Autowired(required = false)
