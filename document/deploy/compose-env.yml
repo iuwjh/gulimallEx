@@ -1,43 +1,53 @@
-version: '3'
+version: '3.5'
+networks:
+  gulinet:
+    name: gulinet
 services:
   mysql:
     image: mysql:8.0.20
     container_name: mysql
-    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root # root帐号密码
+    networks:
+      - gulinet
     ports:
-      - 3306:3306
+      - "${HOST_IP}:3306:3306"
     volumes:
-      - /docker-data/mysql/conf:/etc/mysql/conf.d # 配置文件
-      - /docker-data/mysql/data:/var/lib/mysql # 持久化文件
+      - "${HOST_DIR_ROOT}/mysql/conf:/etc/mysql/conf.d" # 配置文件
+      - "${HOST_DIR_ROOT}/mysql/data:/var/lib/mysql" # 持久化文件
+      - "${HOST_DIR_ROOT}/mysql/init:/docker-entrypoint-initdb.d" # 初始化SQL文件
   redis:
     image: redis:6.0.5
     container_name: redis
     command: redis-server
     volumes:
-      - /docker-data/redis/conf/redis.conf:/etc/redis/redis.conf # 配置文件
-      - /docker-data/redis/data:/data # 持久化文件
+      - "${HOST_DIR_ROOT}/redis/conf/redis.conf:/etc/redis/redis.conf" # 配置文件
+      - "${HOST_DIR_ROOT}/redis/data:/data" # 持久化文件
+    networks:
+      - gulinet
     ports:
-      - 6379:6379
+      - "${HOST_IP}:6379:6379"
   nginx:
     image: nginx:1.19
     container_name: nginx
     volumes:
-      - /docker-data/nginx/conf:/etc/nginx # 配置文件
-      - /docker-data/nginx/html:/usr/share/nginx/html # HTML静态资源
-      - /docker-data/nginx/logs:/var/log/nginx # 日志文件
+      - "${HOST_DIR_ROOT}/nginx/conf:/etc/nginx" # 配置文件
+      - "${HOST_DIR_ROOT}/nginx/html:/usr/share/nginx/html" # HTML静态资源
+      - "${HOST_DIR_ROOT}/nginx/logs:/var/log/nginx" # 日志文件
+    networks:
+      - gulinet
     ports:
-      - 80:80
+      - "${HOST_IP}:80:80"
   rabbitmq:
     image: rabbitmq:3.8.5-management
     container_name: rabbitmq
     volumes:
-      - /docker-data/rabbitmq/data:/var/lib/rabbitmq # 数据文件
-      - /docker-data/rabbitmq/log:/var/log/rabbitmq # 日志文件
+      - "${HOST_DIR_ROOT}/rabbitmq/log:/var/log/rabbitmq" # 日志文件
+    networks:
+      - gulinet
     ports:
-      - 5672:5672
-      - 15672:15672
+      - "${HOST_IP}:5672:5672"
+      - "${HOST_IP}:15672:15672"
   elasticsearch:
     image: elasticsearch:7.8.0
     container_name: elasticsearch
@@ -45,33 +55,44 @@ services:
       - "discovery.type=single-node" # 单一节点模式
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m" # jvm内存大小
     volumes:
-      - /docker-data/elasticsearch/data:/usr/share/elasticsearch/data # 数据文件
-      - /docker-data/elasticsearch/plugins:/usr/share/elasticsearch/plugins # 插件文件
+      - "${HOST_DIR_ROOT}/elasticsearch/conf/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml" # 配置文件
+      - "${HOST_DIR_ROOT}/elasticsearch/data:/usr/share/elasticsearch/data" # 数据文件
+      - "${HOST_DIR_ROOT}/elasticsearch/plugins:/usr/share/elasticsearch/plugins" # 插件文件
+    networks:
+      - gulinet
     ports:
-      - 9200:9200
-      - 9300:9300
-  kibana:
-    image: kibana:7.8.0
-    container_name: kibana
-    depends_on:
-      - elasticsearch # kibana在elasticsearch启动之后再启动
-    environment:
-      - "elasticsearch.hosts=http://elasticsearch:9200" # 设置访问elasticsearch的地址
-    volumes:
-      - /docker-data/kibana/conf/kibana.yml:/usr/share/kibana/config/kibana.yml
+      - "${HOST_IP}:9200:9200"
+      - "${HOST_IP}:9300:9300"
+  consul:
+    image: consul:1.8.4
+    container_name: consul
+    networks:
+      - gulinet
     ports:
-      - 5601:5601
-  nacos:
-    image: nacos/nacos-server:1.3.2
-    container_name: nacos
-    depends_on:
-      - mysql # nacos在mysql启动之后再启动
-    volumes:
-      - /docker-data/nacos/conf:/home/nacos/conf
+      - "${HOST_IP}:8500:8500"
+  zipkin:
+    image: openzipkin/zipkin:2.21.5
+    container_name: zipkin
+    networks:
+      - gulinet
     ports:
-      - 8848:8848
-  sentinel-dashboard:
-    image: bladex/sentinel-dashboard:1.8.0
-    container_name: sentinel-dashboard
-    ports:
-      - 8858:8858
+      - "${HOST_IP}:9411:9411"
+
+#  kibana:
+#    image: kibana:7.8.0
+#    container_name: kibana
+#    depends_on:
+#      - elasticsearch # kibana在elasticsearch启动之后再启动
+#    environment:
+#      - "elasticsearch.hosts=http://elasticsearch:9200" # 设置访问elasticsearch的地址
+#    networks:
+#      - gulinet
+#    ports:
+#      - "${HOST_IP}:5601:5601"
+#  sentinel-dashboard:
+#    image: bladex/sentinel-dashboard:1.8.0
+#    container_name: sentinel-dashboard
+#    networks:
+#      - gulinet
+#    ports:
+#      - "${HOST_IP}:8858:8858"
