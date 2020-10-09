@@ -12,6 +12,31 @@ spring:
         #          predicates:
         #            - Query=url,qq
 
+        - id: gulimall_admin_vue_route
+          uri: lb://gulimall-admin-vue
+          predicates:
+            - Host=admin.gulimall.com
+
+        - id: gulimall_admin_vue_route
+          uri: lb://zipkin-9411
+          predicates:
+            - Host=zipkin.gulimall.com
+
+        - id: gulimall_admin_vue_route
+          uri: lb://rabbitmq-15672
+          predicates:
+            - Host=rabbitmq.gulimall.com
+
+        - id: gulimall_admin_vue_route
+          uri: lb://consul-8500
+          predicates:
+            - Host=consul.gulimall.com
+
+        - id: gulimall_admin_vue_route
+          uri: lb://portainer-ce-9000
+          predicates:
+            - Host=portainer.gulimall.com
+
         - id: product_route
           uri: lb://gulimall-product
           predicates:
