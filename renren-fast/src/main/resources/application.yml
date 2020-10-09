@@ -4,7 +4,7 @@ server:
     uri-encoding: UTF-8
     max-threads: 1000
     min-spare-threads: 30
-  port: 8080
+  port: 80
   connection-timeout: 5000ms
   servlet:
     context-path: /renren-fast
@@ -25,7 +25,7 @@ spring:
   redis:
     open: false  # 是否开启redis缓存  true开启   false关闭
     database: 0
-    host: localhost
+    host: redis
     port: 6379
     password:    # 密码（默认为空）
     timeout: 6000ms  # 连接超时时长（毫秒）
@@ -40,13 +40,17 @@ spring:
   application:
     name: renren-fast
   cloud:
-    nacos:
+#    nacos:
+#      discovery:
+#        server-addr: 127.0.0.1:8848
+    consul:
+      host: consul
+      port: 8500
       discovery:
-        server-addr: 127.0.0.1:8848
+        instance-id: renren-fast
+        health-check-path: /renren-fast/actuator/health
 #  resources:
 #    add-mappings: false
-
-
 #mybatis
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
@@ -80,3 +84,8 @@ renren:
     # token有效时长，7天，单位秒
     expire: 604800
     header: token
+
+management:
+  endpoint:
+    health:
+      show-details: always

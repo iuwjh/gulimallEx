@@ -3,6 +3,6 @@ services:
   renren-fast:
     image: renren/fast
     ports:
-      - "8080:8080"
+      - "8080:80"
     environment:
       - spring.profiles.active=dev

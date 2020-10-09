@@ -39,6 +39,7 @@
 		<fastjson.version>1.2.60</fastjson.version>
 		<hutool.version>4.1.1</hutool.version>
 		<lombok.version>1.18.4</lombok.version>
+        <spring.cloud-version>Greenwich.SR6</spring.cloud-version>
 
 		<!--wagon plugin 配置-->
 		<service-path>/work/renren</service-path>
@@ -49,11 +50,11 @@
 	</properties>
 
 	<dependencies>
-		<dependency>
-			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-			<version>2.1.0.RELEASE</version>
-		</dependency>
+		<!--<dependency>-->
+		<!--	<groupId>com.alibaba.cloud</groupId>-->
+		<!--	<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>-->
+		<!--	<version>2.1.0.RELEASE</version>-->
+		<!--</dependency>-->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
@@ -235,7 +236,27 @@
 			<artifactId>lombok</artifactId>
 			<version>${lombok.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-consul-discovery</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 	</dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring.cloud-version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 	<build>
 		<finalName>${project.artifactId}</finalName>
@@ -247,6 +268,20 @@
 			</extension>
 		</extensions>
 		<plugins>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>2.5.2</version>
+                <configuration>
+                    <from>
+                        <image>gcr.io/distroless/java@sha256:084645ffc35ef0cfc20792faec935b2ba8c71c10f6f5b19edffcb03075a0ee65</image>
+                    </from>
+                    <allowInsecureRegistries>true</allowInsecureRegistries>
+                    <container>
+                        <!--<creationTime>USE_CURRENT_TIMESTAMP</creationTime>-->
+                    </container>
+                </configuration>
+            </plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -314,7 +349,7 @@
 		<repository>
 			<id>public</id>
 			<name>aliyun nexus</name>
-			<url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+			<url>https://maven.aliyun.com/repository/public</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -324,7 +359,7 @@
 		<pluginRepository>
 			<id>public</id>
 			<name>aliyun nexus</name>
-			<url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+			<url>https://maven.aliyun.com/repository/public</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
