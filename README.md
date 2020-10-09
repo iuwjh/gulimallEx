@@ -82,6 +82,8 @@ gradlew dockerDeployAll
 TODO
 -
 
+* 内存调优
+* 远程调试
 * Sentinel熔断降级
 * Spring Security
 * Https
