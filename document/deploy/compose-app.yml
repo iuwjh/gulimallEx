@@ -1,115 +1,190 @@
-version: '3.5'
+version: '3.8'
 networks:
   gulinet:
     name: gulinet
 services:
   gulimall-product:
     image: gulimall-product:0.0.1-SNAPSHOT
+    deploy:
+      resources:
+        limits:
+          memory: "${APP_MEMORY_LIMIT}"
     container_name: gulimall-product
     environment:
-      - "JAVA_TOOL_OPTIONS=${JVM_FLAGS}"
+      - "SERVICE_IGNORE=true"
+      - "JAVA_TOOL_OPTIONS=${APP_JVM_FLAGS}"
     networks:
       - gulinet
     ports:
       - "${HOST_IP}:${GULIMALL_PRODUCT_PORT}:80"
   gulimall-coupon:
     image: gulimall-coupon:0.0.1-SNAPSHOT
+    deploy:
+      resources:
+        limits:
+          memory: "${APP_MEMORY_LIMIT}"
     container_name: gulimall-coupon
     environment:
-      - "JAVA_TOOL_OPTIONS=${JVM_FLAGS}"
+      - "SERVICE_IGNORE=true"
+      - "JAVA_TOOL_OPTIONS=${APP_JVM_FLAGS}"
     networks:
       - gulinet
     ports:
       - "${HOST_IP}:${GULIMALL_COUPON_PORT}:80"
   gulimall-order:
     image: gulimall-order:0.0.1-SNAPSHOT
+    deploy:
+      resources:
+        limits:
+          memory: "${APP_MEMORY_LIMIT}"
     container_name: gulimall-order
     environment:
-      - "JAVA_TOOL_OPTIONS=${JVM_FLAGS}"
+      - "SERVICE_IGNORE=true"
+      - "JAVA_TOOL_OPTIONS=${APP_JVM_FLAGS}"
     networks:
       - gulinet
     ports:
       - "${HOST_IP}:${GULIMALL_ORDER_PORT}:80"
   gulimall-ware:
     image: gulimall-ware:0.0.1-SNAPSHOT
+    deploy:
+      resources:
+        limits:
+          memory: "${APP_MEMORY_LIMIT}"
     container_name: gulimall-ware
     environment:
-      - "JAVA_TOOL_OPTIONS=${JVM_FLAGS}"
+      - "SERVICE_IGNORE=true"
+      - "JAVA_TOOL_OPTIONS=${APP_JVM_FLAGS}"
     networks:
       - gulinet
     ports:
       - "${HOST_IP}:${GULIMALL_WARE_PORT}:80"
   gulimall-member:
     image: gulimall-member:0.0.1-SNAPSHOT
+    deploy:
+      resources:
+        limits:
+          memory: "${APP_MEMORY_LIMIT}"
     container_name: gulimall-member
     environment:
-      - "JAVA_TOOL_OPTIONS=${JVM_FLAGS}"
+      - "SERVICE_IGNORE=true"
+      - "JAVA_TOOL_OPTIONS=${APP_JVM_FLAGS}"
     networks:
       - gulinet
     ports:
       - "${HOST_IP}:${GULIMALL_PRODUCT_PORT}:80"
   gulimall-third-party:
     image: gulimall-third-party:0.0.1-SNAPSHOT
+    deploy:
+      resources:
+        limits:
+          memory: "${APP_MEMORY_LIMIT}"
     container_name: gulimall-third-party
     environment:
-      - "JAVA_TOOL_OPTIONS=${JVM_FLAGS}"
+      - "SERVICE_IGNORE=true"
+      - "JAVA_TOOL_OPTIONS=${APP_JVM_FLAGS}"
     networks:
       - gulinet
     ports:
       - "${HOST_IP}:${GULIMALL_THIRD_PARTY_PORT}:80"
   gulimall-search:
     image: gulimall-search:0.0.1-SNAPSHOT
+    deploy:
+      resources:
+        limits:
+          memory: "${APP_MEMORY_LIMIT}"
     container_name: gulimall-search
     environment:
-      - "JAVA_TOOL_OPTIONS=${JVM_FLAGS}"
+      - "SERVICE_IGNORE=true"
+      - "JAVA_TOOL_OPTIONS=${APP_JVM_FLAGS}"
     networks:
       - gulinet
     ports:
       - "${HOST_IP}:${GULIMALL_SEARCH_PORT}:80"
   gulimall-auth-server:
     image: gulimall-auth-server:0.0.1-SNAPSHOT
+    deploy:
+      resources:
+        limits:
+          memory: "${APP_MEMORY_LIMIT}"
     container_name: gulimall-auth-server
     environment:
-      - "JAVA_TOOL_OPTIONS=${JVM_FLAGS}"
+      - "SERVICE_IGNORE=true"
+      - "JAVA_TOOL_OPTIONS=${APP_JVM_FLAGS}"
     networks:
       - gulinet
     ports:
       - "${HOST_IP}:${GULIMALL_AUTH_SERVER_PORT}:80"
   gulimall-cart:
     image: gulimall-cart:0.0.1-SNAPSHOT
+    deploy:
+      resources:
+        limits:
+          memory: "${APP_MEMORY_LIMIT}"
     container_name: gulimall-cart
     environment:
-      - "JAVA_TOOL_OPTIONS=${JVM_FLAGS}"
+      - "SERVICE_IGNORE=true"
+      - "JAVA_TOOL_OPTIONS=${APP_JVM_FLAGS}"
     networks:
       - gulinet
     ports:
       - "${HOST_IP}:${GULIMALL_CART_PORT}:80"
-#  gulimall-seckill:
-#    image: gulimall-seckill:0.0.1-SNAPSHOT
-#    container_name: gulimall-seckill
-#    environment:
-#      - "JAVA_TOOL_OPTIONS=${JVM_FLAGS}"
-#    networks:
-#      - gulinet
-#    ports:
-#      - "${HOST_IP}:${GULIMALL_SECKILL_PORT}:80"
+      - "${HOST_IP}:5005:5005"
+  gulimall-seckill:
+    image: gulimall-seckill:0.0.1-SNAPSHOT
+    deploy:
+      resources:
+        limits:
+          memory: "${APP_MEMORY_LIMIT}"
+    container_name: gulimall-seckill
+    environment:
+      - "SERVICE_IGNORE=true"
+      - "JAVA_TOOL_OPTIONS=${APP_JVM_FLAGS}"
+    networks:
+      - gulinet
+    ports:
+      - "${HOST_IP}:${GULIMALL_SECKILL_PORT}:80"
   gulimall-gateway:
     image: gulimall-gateway:0.0.1-SNAPSHOT
+    deploy:
+      resources:
+        limits:
+          memory: "${APP_MEMORY_LIMIT}"
     container_name: gulimall-gateway
     environment:
-      - "JAVA_TOOL_OPTIONS=${JVM_FLAGS}"
+      - "SERVICE_IGNORE=true"
+      - "JAVA_TOOL_OPTIONS=${APP_JVM_FLAGS}"
     networks:
       - gulinet
     ports:
       - "${HOST_IP}:${GULIMALL_GATEWAY_PORT}:80"
-#      - "${HOST_IP}:5005:5005"
 
-#  renren-fast:
-#    image: renren-fast:0.0.1-SNAPSHOT
-#    container_name: renren-fast
-#    environment:
-#      - "JAVA_TOOL_OPTIONS=${JVM_FLAGS}"
-#    networks:
-#      - gulinet
-#    ports:
-#      - "${HOST_IP}:${RENREN_FAST_PORT}:80"
+  renren-fast:
+    image: renren-fast:3.0.0
+    deploy:
+      resources:
+        limits:
+          memory: "${APP_MEMORY_LIMIT}"
+    container_name: renren-fast
+    environment:
+      - "SERVICE_IGNORE=true"
+      - "JAVA_TOOL_OPTIONS=${APP_JVM_FLAGS}"
+    networks:
+      - gulinet
+    ports:
+      - "${HOST_IP}:${RENREN_FAST_PORT}:80"
+  gulimall-admin-vue:
+    build: ../../gulimall-admin-vue
+    image: gulimall-admin-vue:0.0.1-SNAPSHOT
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+      resources:
+        limits:
+          memory: "${APP_MEMORY_LIMIT}"
+    container_name: gulimall-admin-vue
+    networks:
+      - gulinet
+    ports:
+      - "${HOST_IP}:${GULIMALL_ADMIN_VUE_PORT}:80"

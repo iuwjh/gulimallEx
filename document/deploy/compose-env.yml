@@ -1,10 +1,14 @@
-version: '3.5'
+version: '3.8'
 networks:
   gulinet:
     name: gulinet
 services:
   mysql:
     image: mysql:8.0.20
+    deploy:
+      resources:
+        limits:
+          memory: "${ENV_MEMORY_LIMIT}"
     container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: root # root帐号密码
@@ -16,8 +20,13 @@ services:
       - "${HOST_DIR_ROOT}/mysql/conf:/etc/mysql/conf.d" # 配置文件
       - "${HOST_DIR_ROOT}/mysql/data:/var/lib/mysql" # 持久化文件
       - "${HOST_DIR_ROOT}/mysql/init:/docker-entrypoint-initdb.d" # 初始化SQL文件
+
   redis:
     image: redis:6.0.5
+    deploy:
+      resources:
+        limits:
+          memory: "${ENV_MEMORY_LIMIT}"
     container_name: redis
     command: redis-server
     volumes:
@@ -27,8 +36,16 @@ services:
       - gulinet
     ports:
       - "${HOST_IP}:6379:6379"
+
   nginx:
     image: nginx:1.19
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+      resources:
+        limits:
+          memory: "${ENV_MEMORY_LIMIT}"
     container_name: nginx
     volumes:
       - "${HOST_DIR_ROOT}/nginx/conf:/etc/nginx" # 配置文件
@@ -38,8 +55,13 @@ services:
       - gulinet
     ports:
       - "${HOST_IP}:80:80"
+
   rabbitmq:
     image: rabbitmq:3.8.5-management
+    deploy:
+      resources:
+        limits:
+          memory: "${ENV_MEMORY_LIMIT}"
     container_name: rabbitmq
     volumes:
       - "${HOST_DIR_ROOT}/rabbitmq/log:/var/log/rabbitmq" # 日志文件
@@ -48,8 +70,13 @@ services:
     ports:
       - "${HOST_IP}:5672:5672"
       - "${HOST_IP}:15672:15672"
+
   elasticsearch:
     image: elasticsearch:7.8.0
+    deploy:
+      resources:
+        limits:
+          memory: "${ENV_MEMORY_LIMIT}"
     container_name: elasticsearch
     environment:
       - "discovery.type=single-node" # 单一节点模式
@@ -63,24 +90,68 @@ services:
     ports:
       - "${HOST_IP}:9200:9200"
       - "${HOST_IP}:9300:9300"
+
   consul:
     image: consul:1.8.4
+    deploy:
+      resources:
+        limits:
+          memory: "${ENV_MEMORY_LIMIT}"
     container_name: consul
     networks:
       - gulinet
     ports:
       - "${HOST_IP}:8500:8500"
+
   zipkin:
     image: openzipkin/zipkin:2.21.5
+    deploy:
+      resources:
+        limits:
+          memory: "${ENV_MEMORY_LIMIT}"
     container_name: zipkin
     networks:
       - gulinet
     ports:
       - "${HOST_IP}:9411:9411"
 
+  registrator:
+    image: gliderlabs/registrator:v7
+    deploy:
+      resources:
+        limits:
+          memory: "${ENV_MEMORY_LIMIT}"
+    container_name: registrator
+    depends_on:
+      - consul
+    volumes:
+      - "/var/run/docker.sock:/tmp/docker.sock"
+    networks:
+      - gulinet
+    command: [ "-internal", "-retry-attempts", "-1", "-cleanup", "consul://consul:8500" ]
+
+  portainer:
+    image: portainer/portainer-ce:2.0.0-alpine
+    deploy:
+      resources:
+        limits:
+          memory: "${ENV_MEMORY_LIMIT}"
+    container_name: portainer
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - gulinet
+    ports:
+      - "${HOST_IP}:8000:8000"
+      - "${HOST_IP}:9000:9000"
+
 #  kibana:
 #    image: kibana:7.8.0
-#    container_name: kibana
+# deploy:
+#       resources:
+#         limits:
+#           memory: "${ENV_MEMORY_LIMIT}"
+# container_name: kibana
 #    depends_on:
 #      - elasticsearch # kibana在elasticsearch启动之后再启动
 #    environment:
@@ -91,7 +162,11 @@ services:
 #      - "${HOST_IP}:5601:5601"
 #  sentinel-dashboard:
 #    image: bladex/sentinel-dashboard:1.8.0
-#    container_name: sentinel-dashboard
+# deploy:
+#       resources:
+#         limits:
+#           memory: "${ENV_MEMORY_LIMIT}"
+# container_name: sentinel-dashboard
 #    networks:
 #      - gulinet
 #    ports:
