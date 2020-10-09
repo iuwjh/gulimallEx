@@ -12,27 +12,22 @@ spring:
         #          predicates:
         #            - Query=url,qq
 
-        - id: gulimall_admin_vue_route
-          uri: lb://gulimall-admin-vue
-          predicates:
-            - Host=admin.gulimall.com
-
-        - id: gulimall_admin_vue_route
+        - id: zipkin_route
           uri: lb://zipkin-9411
           predicates:
             - Host=zipkin.gulimall.com
 
-        - id: gulimall_admin_vue_route
+        - id: rabbitmq_route
           uri: lb://rabbitmq-15672
           predicates:
             - Host=rabbitmq.gulimall.com
 
-        - id: gulimall_admin_vue_route
+        - id: consul_route
           uri: lb://consul-8500
           predicates:
             - Host=consul.gulimall.com
 
-        - id: gulimall_admin_vue_route
+        - id: portainer_route
           uri: lb://portainer-ce-9000
           predicates:
             - Host=portainer.gulimall.com
@@ -78,6 +73,11 @@ spring:
             - Path=/api/**
           filters:
             - RewritePath=/api/(?<segment>.*),/renren-fast/$\{segment}
+
+        - id: admin_vue_route
+          uri: lb://gulimall-admin-vue
+          predicates:
+            - Host=admin.gulimall.com
 
         - id: gulimall_host_route
           uri: lb://gulimall-product

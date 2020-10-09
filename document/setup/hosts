@@ -10,3 +10,4 @@
 192.168.56.11	zipkin.gulimall.com
 192.168.56.11	consul.gulimall.com
 192.168.56.11	portainer.gulimall.com
+192.168.56.11	rabbitmq.gulimall.com
