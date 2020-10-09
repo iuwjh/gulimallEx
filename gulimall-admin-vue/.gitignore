@@ -84,3 +84,6 @@ typings/
 
 # Ignore Gradle build output directory
 build
+
+# Ignore Gulp build output directory
+dist

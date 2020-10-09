@@ -1,6 +1,5 @@
-FROM nginx
-MAINTAINER leifengyang
-ADD html.tar.gz /usr/share/nginx/html
-ADD conf.tar.gz /etc/nginx
+FROM nginx:stable-alpine
+COPY nginx.conf /etc/nginx
+COPY /dist /usr/share/nginx/html
 EXPOSE 80
-ENTRYPOINT nginx -g "daemon off;"
+CMD ["nginx", "-g", "daemon off;"]

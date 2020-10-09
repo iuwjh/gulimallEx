@@ -11,14 +11,19 @@
     "e2e": "node test/e2e/runner.js",
     "test": "npm run unit && npm run e2e",
     "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs",
-    "build": "gulp"
+    "build": "gulp",
+    "clean": "gulp clean",
+    "composeUp": "cd ../document/deploy/ && docker-compose -f compose-app.yml up --build -d gulimall-admin-vue",
+    "composeDown": "cd ../document/deploy/ && docker-compose -f compose-app.yml rm -f -s -v gulimall-admin-vue",
+    "composeRecreate": "npm run composeDown && npm run composeUp",
+    "dockerBuild": "npm run build && npm run composeRecreate"
   },
   "dependencies": {
     "axios": "0.17.1",
     "babel-plugin-component": "0.10.1",
     "babel-polyfill": "6.26.0",
     "element-ui": "2.8.2",
-    "gulp": "3.9.1",
+    "gulp": "4.0.0",
     "gulp-concat": "2.6.1",
     "gulp-load-plugins": "1.5.0",
     "gulp-replace": "0.6.1",
