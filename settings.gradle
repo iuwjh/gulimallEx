@@ -16,3 +16,6 @@ include 'gulimall-third-party'
 include 'gulimall-auth-server'
 include 'gulimall-cart'
 include 'gulimall-seckill'
+
+include 'gulimall-admin-vue'
+include 'renren-fast'

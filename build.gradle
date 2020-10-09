@@ -1,4 +1,5 @@
 import org.springframework.boot.gradle.plugin.SpringBootPlugin
+import org.gradle.internal.os.OperatingSystem;
 
 plugins {
     id 'maven-publish'
@@ -15,231 +16,293 @@ plugins {
     //id 'com.avast.gradle.docker-compose' version "${docker_compose_plugin_version}"
 }
 
-allprojects {
-    //apply plugin: 'nebula.lint'
-    //
-    //gradleLint {
-    //    rules=['unused-dependency']
-    //}
+def nonGradleProjects = ['gulimall-admin-vue', 'renren-fast']
 
-    repositories {
-        mavenLocal()
-        maven {
-            url 'https://maven.aliyun.com/repository/public'
-        }
-        maven {
-            url 'https://maven.aliyun.com/repository/spring'
-        }
-        maven {
-            url 'https://maven.aliyun.com/repository/spring-plugin'
-        }
-        maven {
-            url 'https://maven.aliyun.com/repository/gradle-plugin'
-        }
-        maven {
-            url 'https://maven.aliyun.com/repository/google'
-        }
-        mavenCentral()
+// 为Exec任务提供跨平台支持
+private static Iterable<String> xpCmd(String... cmds) {
+    def result = []
+    if (OperatingSystem.current().isWindows()) {
+        result = ['cmd', '/c']
     }
+    result.addAll(cmds)
+    return result
+}
 
-    configurations.all {
-        resolutionStrategy {
-            force "com.alibaba:fastjson:${fastjson_version}"
+allprojects.findAll({ !nonGradleProjects.contains(it.name) }).each {
+    configure(it) {
+        //apply plugin: 'nebula.lint'
+        //
+        //gradleLint {
+        //    rules=['unused-dependency']
+        //}
+
+        repositories {
+            mavenLocal()
+            maven {
+                url 'https://maven.aliyun.com/repository/public'
+            }
+            maven {
+                url 'https://maven.aliyun.com/repository/spring'
+            }
+            maven {
+                url 'https://maven.aliyun.com/repository/spring-plugin'
+            }
+            maven {
+                url 'https://maven.aliyun.com/repository/gradle-plugin'
+            }
+            maven {
+                url 'https://maven.aliyun.com/repository/google'
+            }
+            mavenCentral()
+        }
+
+        configurations.all {
+            // 解决版本冲突
+            resolutionStrategy {
+                force "com.alibaba:fastjson:${fastjson_version}"
+            }
         }
     }
 }
 
-subprojects {
-    apply plugin: 'java'
-    apply plugin: 'java-library'
-    apply plugin: 'maven-publish'
-    apply plugin: 'project-report'
-    apply plugin: 'idea'
-    apply plugin: 'io.freefair.lombok'
-    apply plugin: "org.liquibase.gradle"
-    apply plugin: 'org.springframework.boot'
-    //apply plugin: 'docker-compose'
+subprojects.findAll({ !nonGradleProjects.contains(it.name) }).each {
+    configure(it) {
+        apply plugin: 'java'
+        apply plugin: 'java-library'
+        apply plugin: 'maven-publish'
+        apply plugin: 'project-report'
+        apply plugin: 'idea'
+        apply plugin: 'io.freefair.lombok'
+        apply plugin: "org.liquibase.gradle"
+        apply plugin: 'org.springframework.boot'
+        //apply plugin: 'docker-compose'
 
-    group = "com.atguigu.gulimall"
-    version = '0.0.1-SNAPSHOT'
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+        group = "com.atguigu.gulimall"
+        version = '0.0.1-SNAPSHOT'
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
 
-    assert System.properties["java.specification.version"] == "1.8" || "11" || "12" || "13" || "14"
+        assert System.properties["java.specification.version"] == "1.8" || "11" || "12" || "13" || "14"
 
-    if (project.name == 'gulimall-common') {
+        if (project.name == 'gulimall-common') {
+            apply plugin: 'java-test-fixtures'
 
-        apply plugin: 'java-test-fixtures'
+            bootJar {
+                enabled = false
+            }
+            jar {
+                enabled = true
+            }
+        } else {
+            apply plugin: 'com.google.cloud.tools.jib'
 
-        bootJar {
-            enabled = false
-        }
-        jar {
-            enabled = true
-        }
-    } else {
-        apply plugin: 'com.google.cloud.tools.jib'
+            bootJar {
+                enabled = true
+            }
 
-        bootJar {
-            enabled = true
-        }
+            jib {
+                allowInsecureRegistries true
 
-        jib {
-            allowInsecureRegistries true
-
-            container {
                 from {
+                    /**
+                     * 1、固定镜像digest值，第二次构建直接利用缓存，无需联网
+                     * 2、Java8版本8u131以前不能感知容器的资源限制
+                     * 3、distroless Java不自带jstack等工具
+                     */
+                    // Java 11
+                    // image = 'gcr.io/distroless/java@sha256:28ec552405a92ed1a3767b81aaece5c48bd1b89dfb5f3c144b0e4cea4dd5ffa4'
+                    // Debug
+                    // image = 'gcr.io/distroless/java@sha256:77b241a8ddb027d0f180e0ab50f990dfc5daf973356be0f01855886d5b571387'
+                    // Java 8
                     image = 'gcr.io/distroless/java@sha256:084645ffc35ef0cfc20792faec935b2ba8c71c10f6f5b19edffcb03075a0ee65'
-                    //image = 'gcr.io/distroless/java@sha256:3ee3b695d556ba53af51a074a4cd5ea175cb100d6d57a4be7bbc71bc8c6a3da7'
+                    // Debug
+                    // image = 'gcr.io/distroless/java@sha256:3ee3b695d556ba53af51a074a4cd5ea175cb100d6d57a4be7bbc71bc8c6a3da7'
                 }
-                creationTime = "USE_CURRENT_TIMESTAMP"
+                container {
+                    //creationTime = "USE_CURRENT_TIMESTAMP"
+                }
+            }
+
+            task dockerBuild {
+                dependsOn jibDockerBuild
+                doLast {
+                    exec {
+                        workingDir '../document/deploy/'
+                        commandLine xpCmd('docker-compose -f compose-app.yml up -d ' + project.name)
+                    }
+                }
+            }
+
+            task dockerClean(type: Exec) {
+                workingDir '../document/deploy/'
+                commandLine xpCmd('docker-compose -f compose-app.yml rm -f -s -v ' + project.name)
             }
         }
-    }
 
-    if (project.name.startsWith("gulimall-")) {
-        springBoot {
-            def pkgNameParts = project.name.split('-', 2)
-            def pkgName = "com.atguigu.${pkgNameParts[0]}.${pkgNameParts[1].split('-').collect { it.capitalize() }.join("").uncapitalize()}"
-            def appName = "${project.name.split("-").collect { it.capitalize() }.join("")}Application"
-            mainClassName = "${pkgName}.${appName}"
-        }
-    }
-
-    dependencies {
-        // 导入依赖BOM文件
-        implementation platform(SpringBootPlugin.BOM_COORDINATES)
-        implementation platform("org.springframework.cloud:spring-cloud-dependencies:${spring_cloud_version}")
-        implementation platform("com.alibaba.cloud:spring-cloud-alibaba-dependencies:${spring_cloud_alibaba_version}")
-
-        if (project.name != 'gulimall-common') {
-            implementation(project(':gulimall-common'))
-            testImplementation(testFixtures(project(':gulimall-common')))
-        } else {
-            testFixturesImplementation platform(SpringBootPlugin.BOM_COORDINATES)
-            testFixturesImplementation 'org.springframework.boot:spring-boot-starter-test'
-            testFixturesImplementation 'org.springframework:spring-webmvc'
-            testFixturesImplementation 'com.fasterxml.jackson.core:jackson-databind'
-            testFixturesImplementation "com.alibaba:fastjson:${fastjson_version}"
-            testFixturesCompileOnly 'javax.servlet:javax.servlet-api'
-            testFixturesImplementation('org.springframework.boot:spring-boot-starter-data-redis')
-            testFixturesImplementation "com.baomidou:mybatis-plus-boot-starter-test:3.4.0"
-        }
-
-        // Spring boot
-        implementation 'org.springframework.boot:spring-boot-starter-actuator'
-        implementation 'org.springframework.boot:spring-boot-configuration-processor'
-        testImplementation('org.springframework.boot:spring-boot-starter-test') {
-            exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-        }
-
-        //// Spring Security
-        //implementation 'org.springframework.boot:spring-boot-starter-security'
-        //implementation 'org.springframework.security:spring-security-test'
-        //implementation "io.jsonwebtoken:jjwt-api:${jsonwebtoken_version}"
-        //runtimeOnly "io.jsonwebtoken:jjwt-impl:${jsonwebtoken_version}",
-        //    // Uncomment the next line if you want to use RSASSA-PSS (PS256, PS384, PS512) algorithms:
-        //    //'org.bouncycastle:bcprov-jdk15on:1.60',
-        //    "io.jsonwebtoken:jjwt-jackson:${jsonwebtoken_version}" // or 'io.jsonwebtoken:jjwt-gson:0.11.2' for gson
-
-        // Spring cloud
-        implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
-        implementation 'org.springframework.cloud:spring-cloud-starter-zipkin'
-        implementation 'org.springframework.cloud:spring-cloud-starter-consul-discovery'
-
-        // Spring cloud alibaba
-        implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-sentinel'
-        implementation 'com.alibaba.csp:sentinel-spring-webmvc-adapter'
-
-        // SQL Database 数据库
-        implementation "com.baomidou:mybatis-plus-boot-starter:${mybatis_plus_version}"
-        implementation "mysql:mysql-connector-java:${mysql_driver_version}"
-        implementation "com.h2database:h2"
-        testImplementation "com.h2database:h2"
-
-        // Liquibase 数据库版本管理
-        implementation "org.liquibase:liquibase-core"
-        liquibaseRuntime "org.liquibase:liquibase-core"
-        liquibaseRuntime "mysql:mysql-connector-java"
-        liquibaseRuntime "com.h2database:h2"
-
-        // Redis
-        implementation 'org.springframework.session:spring-session-data-redis'
-        implementation('org.springframework.boot:spring-boot-starter-data-redis')
-            {
-                exclude group: 'io.lettuce', module: 'lettuce-core'
-            }
-        implementation("it.ozimov:embedded-redis:${embedded_redis_version}") {
-            exclude group: 'org.slf4j', module: 'slf4j-simple'
-        }
-        implementation "org.redisson:redisson:${redisson_version}"
-
-        implementation 'javax.validation:validation-api'
-        implementation 'org.hibernate.validator:hibernate-validator'
-
-        if (project.name == 'gulimall-gateway') {
-            implementation 'javax.servlet:javax.servlet-api'
-        } else {
-            compileOnly 'javax.servlet:javax.servlet-api'
-        }
-
-        implementation 'org.apache.httpcomponents:fluent-hc:4.5.12'
-        implementation "org.apache.commons:commons-lang3:${apache_commons_lang3_version}"
-
-        testImplementation 'org.assertj:assertj-core'
-        testImplementation "com.baomidou:mybatis-plus-boot-starter-test:3.4.0"
-
-    }
-
-    ext {
-        diffChangelogFile = "src/main/resources/config/liquibase/changelog/" + new Date().format("yyyyMMddHHmmss") + "_changelog.xml"
-    }
-
-    if (!project.hasProperty("runList")) {
-        project.ext.runList = "main"
-    }
-
-    liquibase {
-        activities {
-            main {
-                driver ""
-                url ""
-                username "gulimall"
-                password ""
-                changeLogFile "src/main/resources/config/liquibase/master.xml"
-                defaultSchemaName ""
-                logLevel "debug"
-                classpath "src/main/resources/"
-            }
-            diffLog {
-                driver ""
-                url ""
-                username "gulimall"
-                password ""
-                changeLogFile project.ext.diffChangelogFile
-                referenceUrl "hibernate:spring:com.mycompany.myapp.domain?dialect=&hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy"
-                defaultSchemaName ""
-                logLevel "debug"
-                classpath "$buildDir/classes/java/main"
+        // 设置springBoot.mainClassName
+        if (project.name.startsWith("gulimall-")) {
+            springBoot {
+                def pkgNameParts = project.name.split('-', 2)
+                def pkgName = "com.atguigu.${pkgNameParts[0]}.${pkgNameParts[1].split('-').collect { it.capitalize() }.join("").uncapitalize()}"
+                def appName = "${project.name.split("-").collect { it.capitalize() }.join("")}Application"
+                mainClassName = "${pkgName}.${appName}"
             }
         }
-        runList = project.ext.runList
-    }
 
-    publishing {
-        publications {
-            maven(MavenPublication) {
-                from(components.java)
+        dependencies {
+            // 导入依赖BOM文件
+            implementation platform(SpringBootPlugin.BOM_COORDINATES)
+            implementation platform("org.springframework.cloud:spring-cloud-dependencies:${spring_cloud_version}")
+            implementation platform("com.alibaba.cloud:spring-cloud-alibaba-dependencies:${spring_cloud_alibaba_version}")
+
+            if (project.name != 'gulimall-common') {
+                implementation(project(':gulimall-common'))
+                testImplementation(testFixtures(project(':gulimall-common')))
+            } else {
+                testFixturesImplementation platform(SpringBootPlugin.BOM_COORDINATES)
+                testFixturesImplementation 'org.springframework.boot:spring-boot-starter-test'
+                testFixturesImplementation 'org.springframework:spring-webmvc'
+                testFixturesImplementation 'com.fasterxml.jackson.core:jackson-databind'
+                testFixturesImplementation "com.alibaba:fastjson:${fastjson_version}"
+                testFixturesCompileOnly 'javax.servlet:javax.servlet-api'
+                testFixturesImplementation('org.springframework.boot:spring-boot-starter-data-redis')
+                testFixturesImplementation "com.baomidou:mybatis-plus-boot-starter-test:3.4.0"
+            }
+
+            // Spring boot
+            implementation 'org.springframework.boot:spring-boot-starter-actuator'
+            implementation 'org.springframework.boot:spring-boot-configuration-processor'
+            testImplementation('org.springframework.boot:spring-boot-starter-test') {
+                exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+            }
+
+            //// Spring Security
+            //implementation 'org.springframework.boot:spring-boot-starter-security'
+            //implementation 'org.springframework.security:spring-security-test'
+            //implementation "io.jsonwebtoken:jjwt-api:${jsonwebtoken_version}"
+            //runtimeOnly "io.jsonwebtoken:jjwt-impl:${jsonwebtoken_version}",
+            //    // Uncomment the next line if you want to use RSASSA-PSS (PS256, PS384, PS512) algorithms:
+            //    //'org.bouncycastle:bcprov-jdk15on:1.60',
+            //    "io.jsonwebtoken:jjwt-jackson:${jsonwebtoken_version}" // or 'io.jsonwebtoken:jjwt-gson:0.11.2' for gson
+
+            // Spring cloud
+            implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+            implementation 'org.springframework.cloud:spring-cloud-starter-zipkin'
+            implementation 'org.springframework.cloud:spring-cloud-starter-consul-discovery'
+
+            // Spring cloud alibaba
+            implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-sentinel'
+            implementation 'com.alibaba.csp:sentinel-spring-webmvc-adapter'
+
+            // SQL Database 数据库
+            implementation "com.baomidou:mybatis-plus-boot-starter:${mybatis_plus_version}"
+            implementation "mysql:mysql-connector-java:${mysql_driver_version}"
+            implementation "com.h2database:h2"
+            testImplementation "com.h2database:h2"
+
+            // Liquibase 数据库版本管理
+            implementation "org.liquibase:liquibase-core"
+            liquibaseRuntime "org.liquibase:liquibase-core"
+            liquibaseRuntime "mysql:mysql-connector-java"
+            liquibaseRuntime "com.h2database:h2"
+
+            // Redis
+            implementation 'org.springframework.session:spring-session-data-redis'
+            implementation('org.springframework.boot:spring-boot-starter-data-redis')
+                {
+                    exclude group: 'io.lettuce', module: 'lettuce-core'
+                }
+            implementation("it.ozimov:embedded-redis:${embedded_redis_version}") {
+                exclude group: 'org.slf4j', module: 'slf4j-simple'
+            }
+            implementation "org.redisson:redisson:${redisson_version}"
+
+            implementation 'javax.validation:validation-api'
+            implementation 'org.hibernate.validator:hibernate-validator'
+
+            if (project.name == 'gulimall-gateway') {
+                implementation 'javax.servlet:javax.servlet-api'
+            } else {
+                compileOnly 'javax.servlet:javax.servlet-api'
+            }
+
+            implementation 'org.apache.httpcomponents:fluent-hc:4.5.12'
+            implementation "org.apache.commons:commons-lang3:${apache_commons_lang3_version}"
+
+            testImplementation 'org.assertj:assertj-core'
+            testImplementation "com.baomidou:mybatis-plus-boot-starter-test:3.4.0"
+
+        }
+
+        ext {
+            diffChangelogFile = "src/main/resources/config/liquibase/changelog/" + new Date().format("yyyyMMddHHmmss") + "_changelog.xml"
+        }
+
+        if (!project.hasProperty("runList")) {
+            project.ext.runList = "main"
+        }
+
+        liquibase {
+            activities {
+                main {
+                    driver ""
+                    url ""
+                    username "gulimall"
+                    password ""
+                    changeLogFile "src/main/resources/config/liquibase/master.xml"
+                    defaultSchemaName ""
+                    logLevel "debug"
+                    classpath "src/main/resources/"
+                }
+                diffLog {
+                    driver ""
+                    url ""
+                    username "gulimall"
+                    password ""
+                    changeLogFile project.ext.diffChangelogFile
+                    referenceUrl "hibernate:spring:com.mycompany.myapp.domain?dialect=&hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy"
+                    defaultSchemaName ""
+                    logLevel "debug"
+                    classpath "$buildDir/classes/java/main"
+                }
+            }
+            runList = project.ext.runList
+        }
+
+        publishing {
+            publications {
+                maven(MavenPublication) {
+                    from(components.java)
+                }
             }
         }
-    }
 
-    test {
-        useJUnitPlatform()
-    }
+        test {
+            useJUnitPlatform()
+        }
 
-    tasks.withType(JavaCompile) {
-        options.encoding = 'UTF-8'
+        tasks.withType(JavaCompile) {
+            options.encoding = 'UTF-8'
+        }
+    }
+}
+
+project(':gulimall-admin-vue') {
+    task dockerBuild(type: Exec) {
+        commandLine xpCmd('npm run dockerBuild')
+    }
+    task clean(type: Exec) {
+        commandLine xpCmd('npm run clean')
+    }
+}
+
+project(':renren-fast') {
+    task dockerBuild(type: Exec) {
+        commandLine xpCmd('mvn compile jib:dockerBuild && cd ../document/deploy/ && ' +
+            'docker-compose -f compose-app.yml up -d renren-fast')
+    }
+    task clean(type: Exec) {
+        commandLine xpCmd('mvn clean')
     }
 }
 
@@ -247,9 +310,49 @@ wrapper {
     gradleVersion = "6.5"
 }
 
-task listSubprojects() {
+task listSubprojects {
     subprojects.each { println(it.name) }
 }
-task listApps() {
-    subprojects.each { println(it.springBoot.mainClassName) }
+task listApps {
+    subprojects.findAll { it.hasProperty("springBoot") }
+        .each { println(it.springBoot.mainClassName) }
+}
+
+task composeEnvUp(type: Exec) {
+    workingDir './document/deploy/'
+    commandLine xpCmd('docker-compose -f compose-env.yml up -d')
+}
+
+task composeAppUp(type: Exec) {
+    workingDir './document/deploy/'
+    commandLine xpCmd('docker-compose -f compose-app.yml up -d')
+}
+
+task composeEnvClean(type: Exec) {
+    workingDir './document/deploy/'
+    commandLine xpCmd('docker-compose -f compose-env.yml down --rmi local -v')
+    ignoreExitValue true
+}
+
+task composeAppClean(type: Exec) {
+    workingDir './document/deploy/'
+    commandLine xpCmd('docker-compose -f compose-app.yml down --rmi all -v')
+    ignoreExitValue true
+}
+
+task dockerBuild {
+    subprojects.findAll { it.name != 'gulimall-common' }
+        .each { dependsOn(":${it.name}:dockerBuild") }
+}
+
+task dockerDeployAll {
+    dependsOn composeEnvUp
+    dependsOn dockerBuild
+    dockerBuild.mustRunAfter composeEnvUp
+}
+
+task dockerCleanAll {
+    dependsOn composeAppClean
+    dependsOn composeEnvClean
+    composeEnvClean.mustRunAfter composeAppClean
 }
