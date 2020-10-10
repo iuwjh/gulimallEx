@@ -148,7 +148,7 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
         orderTaskService.save(taskEntity);
 
 
-        List<OrderItemVo> locks = vo.getLocks();
+        List<OrderItemVo> locks = vo.getItemsToLock();
 
         List<SkuWareHasStock> stockList = locks.stream().map((item) -> {
             SkuWareHasStock stock = new SkuWareHasStock();

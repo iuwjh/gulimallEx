@@ -124,8 +124,28 @@ o.s.c.s.i.a.ExecutorBeanPostProcessor    : Not instrumenting bean catalogWatchTa
 ```
 -agentlib:jdwp=transport=dt_socket,server=n,address=host.docker.internal:5005,suspend=y
 ```
-`address` 修改为容器可以访问到的主机地址，然后利用 `document/deploy/compose-app.yml` 重新部署。部署成功后可以在调试器终端看到连接成功的日志。
+`address` 修改为容器可以访问到的主机地址，然后利用 `document/deploy/compose-app.yml` 重新部署。部署成功后可以在调试器终端看到以下连接成功的日志。
+```
+Connected to the target VM, address: 'localhost:5005', transport: 'socket'
+```
 
 * 如何查看Java容器的JVM参数
 
 在 `.env` 文件中 `APP_JVM_FLAGS` 变量后面加上 `-XX:+PrintFlagsFinal`
+
+* Java容器OOMKilled
+
+Java `8u131` 以前版本不支持感知容器资源限制，以后版本可以通过以下参数开启感知功能。
+```
+-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
+```
+Java `8u191` 以后
+```
++UseContainerSupport
+```
+像 `distroless/java` 这些对容器部署优化过的镜像默认开启感知。
+
+但即使开启了感知，堆外内存增长仍然会导致容器OOMKilled。此时应利用以下参数限制堆外内存
+```
+-XX:MaxMetaspaceSize -XX:ReservedCodeCacheSize
+```

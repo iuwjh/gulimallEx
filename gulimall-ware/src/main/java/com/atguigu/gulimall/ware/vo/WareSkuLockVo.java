@@ -7,5 +7,5 @@ import java.util.List;
 @Data
 public class WareSkuLockVo {
     String orderSn;
-    List<OrderItemVo> locks;
+    List<OrderItemVo> itemsToLock;
 }

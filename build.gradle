@@ -114,9 +114,9 @@ subprojects.findAll({ !nonGradleProjects.contains(it.name) }).each {
                     // Debug
                     // image = 'gcr.io/distroless/java@sha256:77b241a8ddb027d0f180e0ab50f990dfc5daf973356be0f01855886d5b571387'
                     // Java 8
-                    image = 'gcr.io/distroless/java@sha256:084645ffc35ef0cfc20792faec935b2ba8c71c10f6f5b19edffcb03075a0ee65'
+                    //image = 'gcr.io/distroless/java@sha256:084645ffc35ef0cfc20792faec935b2ba8c71c10f6f5b19edffcb03075a0ee65'
                     // Debug
-                    // image = 'gcr.io/distroless/java@sha256:3ee3b695d556ba53af51a074a4cd5ea175cb100d6d57a4be7bbc71bc8c6a3da7'
+                     image = 'gcr.io/distroless/java@sha256:3ee3b695d556ba53af51a074a4cd5ea175cb100d6d57a4be7bbc71bc8c6a3da7'
                 }
                 container {
                     //creationTime = "USE_CURRENT_TIMESTAMP"
